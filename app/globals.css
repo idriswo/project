@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/*
+ * Дизайн-токены лендинга TIM.
+ * Источник: design/DESIGN-SPEC.md (макет из Claude Design).
+ * Tailwind v4 — конфигурация живёт здесь, файла tailwind.config.ts нет.
+ */
+@theme {
+  /* ---------- Цвета: бренд ---------- */
+  --color-brand-50: #e7eefb;
+  --color-brand-100: #c9d9f5;
+  --color-brand-600: #0f52ba;
+  --color-brand-700: #0b3f8f;
+
+  /* ---------- Цвета: акцент ---------- */
+  --color-accent-50: #fdf3e1;
+  --color-accent-500: #f2a623;
+  --color-accent-600: #e0980f;
+
+  /* ---------- Цвета: текст ---------- */
+  --color-ink: #1a1f2b;
+  --color-muted: #51586a;
+  --color-subtle: #7a8296;
+
+  /* ---------- Цвета: тёмные блоки (футер, выделенный тариф) ---------- */
+  --color-navy: #000926;
+  --color-navy-rule: #182042;
+  --color-navy-text: #8a94ad;
+  --color-navy-dim: #6b7590;
+
+  /* ---------- Цвета: подложки и границы ---------- */
+  --color-surface: #f8fafc;
+  --color-surface-alt: #f5f8fd;
+  --color-line: #eef2f7;
+  --color-line-alt: #e7ecf3;
+  --color-line-strong: #dde4ee;
+
+  /* ---------- Шрифт ---------- */
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+
+  /* ---------- Типографическая шкала ---------- */
+  --text-eyebrow: 0.875rem; /* 14px, uppercase, ls 1px */
+  --text-body: 0.96875rem; /* 15.5px — текст карточек */
+  --text-lead: 1.1875rem; /* 19px — лид в Hero */
+  --text-h3: 1.3125rem; /* 21px */
+  --text-price: 2.75rem; /* 44px */
+  --text-h2: 2.625rem; /* 42px */
+  --text-h1: 3.625rem; /* 58px */
+
+  /* ---------- Радиусы ---------- */
+  --radius-btn: 11px;
+  --radius-card: 14px;
+  --radius-plan: 16px;
+  --radius-frame: 18px;
+  --radius-cta: 20px;
+
+  /* ---------- Тени ---------- */
+  --shadow-mockup: 0 24px 60px -30px rgb(15 82 186 / 0.25);
+  --shadow-plan: 0 30px 60px -30px rgb(15 82 186 / 0.5);
+
+  /* ---------- Брейкпоинты макета ----------
+   * Оригинал использует max-width 620px и 980px.
+   * Здесь они в mobile-first виде (min-width), поэтому +1px.
+   * Дефолтные sm/md/lg/xl Tailwind остаются доступными. */
+  --breakpoint-tablet: 621px;
+  --breakpoint-desktop: 981px;
+  /* Страница входа: в макете левая панель скрыта на ≤900px */
+  --breakpoint-auth: 901px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Высота sticky-хедера — иначе якорь уезжает под него */
+    scroll-padding-top: 76px;
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-accent-500);
+    color: var(--color-ink);
+  }
+
+  /* Уважаем системную настройку «уменьшить движение» — доступность, ТЗ п. 4.3 */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* ---------- Анимации страницы входа (макет TIM Auth) ---------- */
+@keyframes tim-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes tim-float-alt {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+@keyframes tim-grow {
+  from {
+    transform: scaleY(0.55);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@utility animate-tim-float {
+  animation: tim-float 9s ease-in-out infinite;
+}
+
+@utility animate-tim-float-alt {
+  animation: tim-float-alt 8s ease-in-out infinite;
+}
+
+@utility animate-tim-grow {
+  animation: tim-grow 0.7s ease both;
+  transform-origin: bottom;
+}
+
+/* Декоративные анимации полностью выключаются по системной настройке */
+@media (prefers-reduced-motion: reduce) {
+  .animate-tim-float,
+  .animate-tim-float-alt,
+  .animate-tim-grow {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "meta": {
+    "title": "TIM — your entire business in one system",
+    "description": "A business management system for shops, restaurants and companies: inventory, till, accounting and staff in one place. Clear, with no training needed."
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "industries": "Industries",
+    "contacts": "Contacts",
+    "signIn": "Sign in",
+    "cta": "Get started",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "home": "Go to homepage"
+  },
+  "hero": {
+    "badge": "Trade · Management · Finance",
+    "title": "Your entire business — in one system",
+    "lead": "Inventory, till, accounting and staff — in one system. Clear from day one, with no training and no lengthy setup.",
+    "ctaPrimary": "Start for free",
+    "ctaSecondary": "Watch demo",
+    "trust": {
+      "noCard": "No card required",
+      "fastStart": "Up and running in 5 minutes",
+      "yourLanguage": "In your language"
+    },
+    "mockupAlt": "The TIM system interface"
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "Everything your business needs, in one place",
+    "lead": "Inventory, till, accounting and staff all run in one system. The numbers add up automatically.",
+    "items": {
+      "warehouse": {
+        "title": "Inventory",
+        "text": "Stock in, stock out and balances per location. Stocktaking without pausing work."
+      },
+      "checkout": {
+        "title": "Till",
+        "text": "Sales, refunds and shifts. The receipt prints and stock is deducted straight away."
+      },
+      "accounting": {
+        "title": "Accounting",
+        "text": "Income, expenses and cash flow. Reports build themselves — no manual spreadsheets."
+      },
+      "staff": {
+        "title": "Staff",
+        "text": "Role-based access, shifts and each person's sales. You can see who did what."
+      }
+    }
+  },
+  "industries": {
+    "eyebrow": "Industries",
+    "title": "Ready-made solutions for your business",
+    "lead": "Pick your industry — TIM configures itself automatically.",
+    "items": {
+      "clothing": { "name": "Clothing", "desc": "sizes, colours, collections" },
+      "grocery": { "name": "Groceries", "desc": "shelf life, weight" },
+      "restaurant": { "name": "Restaurant", "desc": "menu, tables, kitchen" },
+      "company": { "name": "Company", "desc": "services and clients" },
+      "hypermarket": {
+        "name": "Hypermarket",
+        "desc": "warehouses and branches"
+      }
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "Up and running in three simple steps",
+    "steps": {
+      "signup": {
+        "title": "Sign up",
+        "text": "Create an account in a minute — just an email and your business name. No card."
+      },
+      "modules": {
+        "title": "Pick your modules",
+        "text": "Tick what you need: till, inventory, finance. TIM assembles the system around your business."
+      },
+      "start": {
+        "title": "Start working",
+        "text": "Add your products and start selling. Reports and stock levels are calculated automatically."
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Honest plans with no surprises",
+    "lead": "Pay only for what you need. Change your plan at any time.",
+    "popular": "Popular",
+    "cta": "See pricing",
+    "plans": {
+      "basic": {
+        "name": "Basic",
+        "tagline": "For a single location, to get started",
+        "price": "0",
+        "period": "/ mo",
+        "features": [
+          "1 retail location",
+          "Till and sales",
+          "Product tracking",
+          "Basic reports"
+        ]
+      },
+      "standard": {
+        "name": "Standard",
+        "tagline": "For a growing business",
+        "price": "149,000",
+        "period": "UZS / mo",
+        "features": [
+          "Up to 3 locations",
+          "Inventory and stock",
+          "Finance and cash registers",
+          "Staff roles",
+          "Priority support"
+        ]
+      },
+      "full": {
+        "name": "Full",
+        "tagline": "For chains and hypermarkets",
+        "price": "349,000",
+        "period": "UZS / mo",
+        "features": [
+          "Unlimited locations",
+          "Every TIM module",
+          "Analytics and API",
+          "Bank integration",
+          "Dedicated account manager"
+        ]
+      }
+    }
+  },
+  "ctaStrip": {
+    "title": "Ready to bring order to your business?",
+    "lead": "Try TIM for free. No card, no training, no complicated setup.",
+    "cta": "Start for free"
+  },
+  "footer": {
+    "description": "Trade · Management · Finance. A simple business management system for shops, restaurants and companies.",
+    "product": "Product",
+    "company": "Company",
+    "contacts": "Contacts",
+    "about": "About us",
+    "blog": "Blog",
+    "partners": "Partners",
+    "telegram": "Telegram",
+    "copyright": "© {year} TIM. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "auth": {
+    "meta": {
+      "titleLogin": "Sign in — TIM",
+      "titleSignup": "Sign up — TIM",
+      "description": "Sign in to the TIM business management system with your phone number."
+    },
+    "login": {
+      "heading": "Sign in to your account",
+      "subheading": "Enter your phone number — we'll send you a sign-in code",
+      "switchPrompt": "Don't have an account yet?",
+      "switchAction": "Sign up"
+    },
+    "signup": {
+      "heading": "Create an account",
+      "subheading": "A couple of minutes and you're running your business in TIM",
+      "switchPrompt": "Already have an account?",
+      "switchAction": "Sign in"
+    },
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "00 000 00 00",
+    "countryLabel": "Country code: Tajikistan, +992",
+    "cta": "Get the code",
+    "sending": "Sending the code…",
+    "dividerSocial": "or continue with",
+    "forgotPassword": "Forgot your password?",
+    "errors": {
+      "phoneRequired": "Enter your phone number",
+      "phoneIncomplete": "The number must be 9 digits"
+    },
+    "notImplemented": "Sending the code is not wired up yet — it needs a backend (task 10.7 in ROADMAP).",
+    "visual": {
+      "revenueLabel": "Revenue · month",
+      "revenueValue": "+ 24.8%",
+      "growthBadge": "growth",
+      "ordersLabel": "Orders",
+      "ordersValue": "1,284",
+      "stockLabel": "In stock",
+      "stockValue": "98%",
+      "chartAlt": "Schematic chart of revenue growth over the month",
+      "title": "Your entire business — in one system",
+      "subtitle": "Sales, inventory and finance under control. Simple and clear."
+    }
+  },
+  "common": {
+    "languageSwitcher": "Interface language"
+  }
+}

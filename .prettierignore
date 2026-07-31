@@ -1,0 +1,7 @@
+# Исходное ТЗ заказчика — форматируется как есть, Prettier его не трогает
+TZ_TIM_landing_RU.md
+
+# Артефакты сборки и зависимости
+.next/
+node_modules/
+package-lock.json
