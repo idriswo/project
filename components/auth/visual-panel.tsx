@@ -2,6 +2,7 @@ import { TrendingUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Logo } from "@/components/logo";
+import { Link } from "@/i18n/navigation";
 
 /** Столбики схематичного графика: высота, цвет, задержка анимации. */
 const BARS = [
@@ -28,6 +29,7 @@ const panelSurface = "border border-white/10 bg-white/5";
  */
 export function VisualPanel() {
   const t = useTranslations("auth.visual");
+  const tAuth = useTranslations("auth");
 
   return (
     <div className="relative hidden flex-col justify-between overflow-hidden bg-navy p-14 auth:flex">
@@ -50,7 +52,14 @@ export function VisualPanel() {
       />
 
       <div className="relative">
-        <Logo tone="dark" />
+        {/* Логотип тоже ведёт на лендинг: привычный способ вернуться */}
+        <Link
+          href="/"
+          aria-label={tAuth("backToSite")}
+          className="inline-block rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        >
+          <Logo tone="dark" />
+        </Link>
       </div>
 
       <div className="relative my-2">

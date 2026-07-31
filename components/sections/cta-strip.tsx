@@ -8,9 +8,9 @@ export function CtaStrip() {
   const t = useTranslations("ctaStrip");
 
   return (
-    <section className="bg-white pb-24">
+    <section className="bg-page pb-24">
       <Container>
-        <div className="rounded-cta bg-brand-600 px-6 py-16 text-center tablet:px-12">
+        <div className="reveal rounded-cta bg-brand-600 px-6 py-16 text-center tablet:px-12">
           <h2 className="text-[30px] leading-[1.1] font-extrabold tracking-[-1px] text-balance text-white tablet:text-[38px]">
             {t("title")}
           </h2>

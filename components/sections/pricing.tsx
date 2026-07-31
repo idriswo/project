@@ -18,7 +18,7 @@ export function Pricing() {
   const t = useTranslations("pricing");
 
   return (
-    <section id={anchors.pricing.slice(1)} className="bg-white py-26">
+    <section id={anchors.pricing.slice(1)} className="bg-page py-26">
       <Container>
         <SectionHeader
           eyebrow={t("eyebrow")}
@@ -27,21 +27,22 @@ export function Pricing() {
         />
 
         <div className="mt-14 grid items-stretch gap-6 tablet:grid-cols-2 desktop:grid-cols-3">
-          {PLANS.map(({ key, featured }) => {
+          {PLANS.map(({ key, featured }, index) => {
             const features = t.raw(`plans.${key}.features`) as string[];
 
             return (
               <div
                 key={key}
+                style={{ "--i": index } as React.CSSProperties}
                 className={cn(
-                  "flex flex-col rounded-plan border px-8 py-9.5",
+                  "reveal-item flex flex-col rounded-plan border px-8 py-9.5",
                   featured
                     ? "border-navy bg-navy shadow-plan"
-                    : "border-line bg-white",
+                    : "border-line bg-card",
                 )}
               >
                 {featured ? (
-                  <span className="mb-4 self-start rounded-full bg-accent-500 px-3 py-[5px] text-[12.5px] font-bold tracking-[0.4px] text-ink">
+                  <span className="mb-4 self-start rounded-full bg-accent-500 px-3 py-[5px] text-[12.5px] font-bold tracking-[0.4px] text-on-accent">
                     {t("popular")}
                   </span>
                 ) : null}

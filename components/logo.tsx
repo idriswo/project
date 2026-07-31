@@ -22,7 +22,7 @@ export function Logo({
       <span
         className={cn(
           "text-[22px] font-extrabold tracking-[-0.5px]",
-          tone === "dark" ? "text-white" : "text-brand-600",
+          tone === "dark" ? "text-white" : "text-brand-ink",
         )}
       >
         TIM

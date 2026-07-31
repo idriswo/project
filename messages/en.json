@@ -12,7 +12,8 @@
     "cta": "Get started",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "home": "Go to homepage"
+    "home": "Go to homepage",
+    "backToTop": "Back to top"
   },
   "hero": {
     "badge": "Trade · Management · Finance",
@@ -55,10 +56,22 @@
     "title": "Ready-made solutions for your business",
     "lead": "Pick your industry — TIM configures itself automatically.",
     "items": {
-      "clothing": { "name": "Clothing", "desc": "sizes, colours, collections" },
-      "grocery": { "name": "Groceries", "desc": "shelf life, weight" },
-      "restaurant": { "name": "Restaurant", "desc": "menu, tables, kitchen" },
-      "company": { "name": "Company", "desc": "services and clients" },
+      "clothing": {
+        "name": "Clothing",
+        "desc": "sizes, colours, collections"
+      },
+      "grocery": {
+        "name": "Groceries",
+        "desc": "shelf life, weight"
+      },
+      "restaurant": {
+        "name": "Restaurant",
+        "desc": "menu, tables, kitchen"
+      },
+      "company": {
+        "name": "Company",
+        "desc": "services and clients"
+      },
       "hypermarket": {
         "name": "Hypermarket",
         "desc": "warehouses and branches"
@@ -166,18 +179,19 @@
       "switchPrompt": "Already have an account?",
       "switchAction": "Sign in"
     },
-    "phoneLabel": "Phone number",
-    "phonePlaceholder": "00 000 00 00",
     "countryLabel": "Country code: Tajikistan, +992",
-    "cta": "Get the code",
     "sending": "Sending the code…",
     "dividerSocial": "or continue with",
     "forgotPassword": "Forgot your password?",
     "errors": {
       "phoneRequired": "Enter your phone number",
-      "phoneIncomplete": "The number must be 9 digits"
+      "phoneIncomplete": "The number must be 9 digits",
+      "emailRequired": "Enter your email address",
+      "emailInvalid": "Check the address: it should look like name@gmail.com",
+      "usernameRequired": "Enter your username",
+      "usernameInvalid": "5 to 32 characters: latin letters, digits and underscore"
     },
-    "notImplemented": "Sending the code is not wired up yet — it needs a backend (task 10.7 in ROADMAP).",
+    "notImplemented": "Sign-in is not wired up yet — it needs a backend (tasks 10.7 and 10.8 in ROADMAP).",
     "visual": {
       "revenueLabel": "Revenue · month",
       "revenueValue": "+ 24.8%",
@@ -189,9 +203,34 @@
       "chartAlt": "Schematic chart of revenue growth over the month",
       "title": "Your entire business — in one system",
       "subtitle": "Sales, inventory and finance under control. Simple and clear."
-    }
+    },
+    "backToSite": "Back to site",
+    "providers": {
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "00 000 00 00"
+      },
+      "google": {
+        "label": "Gmail address",
+        "placeholder": "you@gmail.com"
+      },
+      "telegram": {
+        "label": "Telegram username",
+        "placeholder": "username"
+      },
+      "whatsapp": {
+        "label": "WhatsApp number",
+        "placeholder": "00 000 00 00"
+      }
+    },
+    "ctaCode": "Get the code",
+    "ctaContinue": "Continue",
+    "providerHint": "Sign in with {name}",
+    "resetProvider": "Back to phone sign-in"
   },
   "common": {
-    "languageSwitcher": "Interface language"
+    "languageSwitcher": "Interface language",
+    "themeToDark": "Dark theme",
+    "themeToLight": "Light theme"
   }
 }

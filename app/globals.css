@@ -6,21 +6,38 @@
  * Tailwind v4 — конфигурация живёт здесь, файла tailwind.config.ts нет.
  */
 @theme {
+  /* ============================================================
+   * Значения ниже — светлая тема. Тёмная переопределяет те же
+   * переменные ниже по файлу, поэтому компоненты про тему не знают:
+   * они используют смысловые имена, а не конкретные цвета.
+   * ============================================================ */
+
   /* ---------- Цвета: бренд ---------- */
   --color-brand-50: #e7eefb;
   --color-brand-100: #c9d9f5;
   --color-brand-600: #0f52ba;
   --color-brand-700: #0b3f8f;
+  /* Бренд как цвет ТЕКСТА на фоне страницы. На тёмной теме
+   * #0f52ba не проходит по контрасту, поэтому вынесен отдельно. */
+  --color-brand-ink: #0f52ba;
 
   /* ---------- Цвета: акцент ---------- */
   --color-accent-50: #fdf3e1;
   --color-accent-500: #f2a623;
   --color-accent-600: #e0980f;
+  /* Текст поверх янтарного. Намеренно НЕ меняется в тёмной теме:
+   * янтарный светлый в обеих, и --color-ink там становится почти белым,
+   * что дало бы контраст около 1.9:1 на кнопках. */
+  --color-on-accent: #1a1f2b;
 
   /* ---------- Цвета: текст ---------- */
   --color-ink: #1a1f2b;
   --color-muted: #51586a;
-  --color-subtle: #7a8296;
+  /* В макете было #7a8296, но на белом это 3.85:1 — ниже порога WCAG AA
+   * для обычного текста (4.5:1), а ТЗ п. 4.3 требует Accessibility ≥ 90.
+   * Затемнено до минимума, который проходит: 4.80:1 на белом,
+   * 4.59:1 на подложке секций. Разница на глаз почти незаметна. */
+  --color-subtle: #6b7285;
 
   /* ---------- Цвета: тёмные блоки (футер, выделенный тариф) ---------- */
   --color-navy: #000926;
@@ -29,11 +46,21 @@
   --color-navy-dim: #6b7590;
 
   /* ---------- Цвета: подложки и границы ---------- */
-  --color-surface: #f8fafc;
-  --color-surface-alt: #f5f8fd;
+  --color-page: #ffffff; /* фон страницы */
+  --color-card: #ffffff; /* карточки, хедер, всплывающие панели */
+  --color-surface: #f8fafc; /* чередующийся фон секций */
+  --color-surface-alt: #f5f8fd; /* подложка иконок */
   --color-line: #eef2f7;
   --color-line-alt: #e7ecf3;
   --color-line-strong: #dde4ee;
+
+  /* ---------- Цвета: поля ввода ---------- */
+  --color-field: #ffffff;
+  --color-field-border: #e4e9f1;
+  --color-field-placeholder: #aab2c2;
+  --color-divider: #eaeef4;
+  --color-divider-text: #9aa3b3;
+  --color-danger: #c2341d;
 
   /* ---------- Шрифт ---------- */
   --font-sans: var(--font-manrope), system-ui, sans-serif;
@@ -68,6 +95,100 @@
   --breakpoint-auth: 901px;
 }
 
+/* ============================================================
+ * ТЁМНАЯ ТЕМА
+ *
+ * По умолчанию берём системную настройку пользователя.
+ * Атрибут data-theme на <html> перекрывает её в обе стороны —
+ * его ставит переключатель в шапке.
+ *
+ * Значения подобраны так, чтобы сохранить фирменные синий и янтарный
+ * и удержать контраст текста не ниже AA.
+ * ============================================================ */
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-brand-ink: #8fb4f7;
+    --color-brand-600: #2f6fe0;
+    --color-brand-700: #a8c6fa;
+    --color-brand-50: #16253f;
+    --color-brand-100: #cfdffb;
+
+    --color-accent-50: #2a2113;
+
+    --color-ink: #eaf0fa;
+    --color-muted: #a9b4c7;
+    --color-subtle: #8792a6;
+
+    --color-navy: #1c2743;
+    --color-navy-rule: #2f3c5e;
+    --color-navy-text: #9aa5ba;
+    --color-navy-dim: #808b9f;
+
+    --color-page: #0a0f1e;
+    --color-card: #121a2e;
+    --color-surface: #0e1526;
+    --color-surface-alt: #16203a;
+    --color-line: #1e2942;
+    --color-line-alt: #243050;
+    --color-line-strong: #2c3a5e;
+
+    --color-field: #0e1526;
+    --color-field-border: #2c3a5e;
+    --color-field-placeholder: #6b7688;
+    --color-divider: #1e2942;
+    --color-divider-text: #7c8699;
+    --color-danger: #ff8b76;
+
+    --shadow-mockup: 0 24px 60px -30px rgb(0 0 0 / 0.7);
+    --shadow-plan: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-brand-ink: #8fb4f7;
+  --color-brand-600: #2f6fe0;
+  --color-brand-700: #a8c6fa;
+  --color-brand-50: #16253f;
+  --color-brand-100: #cfdffb;
+
+  --color-accent-50: #2a2113;
+
+  --color-ink: #eaf0fa;
+  --color-muted: #a9b4c7;
+  --color-subtle: #8792a6;
+
+  --color-navy: #1c2743;
+  --color-navy-rule: #2f3c5e;
+  --color-navy-text: #9aa5ba;
+  --color-navy-dim: #808b9f;
+
+  --color-page: #0a0f1e;
+  --color-card: #121a2e;
+  --color-surface: #0e1526;
+  --color-surface-alt: #16203a;
+  --color-line: #1e2942;
+  --color-line-alt: #243050;
+  --color-line-strong: #2c3a5e;
+
+  --color-field: #0e1526;
+  --color-field-border: #2c3a5e;
+  --color-field-placeholder: #6b7688;
+  --color-divider: #1e2942;
+  --color-divider-text: #7c8699;
+  --color-danger: #ff8b76;
+
+  --shadow-mockup: 0 24px 60px -30px rgb(0 0 0 / 0.7);
+  --shadow-plan: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -76,7 +197,7 @@
   }
 
   body {
-    background: #ffffff;
+    background: var(--color-page);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -84,7 +205,8 @@
 
   ::selection {
     background: var(--color-accent-500);
-    color: var(--color-ink);
+    /* Не --color-ink: в тёмной теме он почти белый и на янтарном нечитаем */
+    color: var(--color-on-accent);
   }
 
   /* Уважаем системную настройку «уменьшить движение» — доступность, ТЗ п. 4.3 */
@@ -144,5 +266,67 @@
   .animate-tim-float-alt,
   .animate-tim-grow {
     animation: none !important;
+  }
+}
+
+/* ---------- Появление блоков при прокрутке ----------
+ *
+ * Сделано на CSS scroll-driven animations (animation-timeline: view()),
+ * без JavaScript: ноль килобайт в бандле и никакой работы в main thread,
+ * что важно для INP < 200ms из ТЗ п. 4.3.
+ *
+ * Деградация безопасная: в браузерах без поддержки (Firefox, Safari < 26)
+ * блок @supports не применяется и контент просто виден сразу.
+ * При prefers-reduced-motion анимация тоже не подключается.
+ */
+@keyframes tim-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: tim-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+
+    /* Каскад для карточек в ряду: --i сдвигает момент появления,
+     * поэтому соседние карточки проявляются друг за другом. */
+    .reveal-item {
+      animation: tim-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry calc(6% + var(--i, 0) * 7%) cover
+        calc(24% + var(--i, 0) * 7%);
+    }
+  }
+}
+
+/* ---------- Тень хедера при прокрутке ----------
+ * Тоже scroll-driven, без слушателя scroll (он бы дёргал main thread). */
+@keyframes tim-header-elevate {
+  from {
+    box-shadow: 0 0 0 0 rgb(15 25 60 / 0);
+  }
+  to {
+    box-shadow: 0 8px 24px -16px rgb(15 25 60 / 0.45);
+  }
+}
+
+@supports (animation-timeline: scroll(root)) {
+  .header-elevate {
+    animation: tim-header-elevate linear both;
+    /* Именно scroll(root): у html и body overflow: visible, поэтому
+     * scroll() без аргумента ищет ближайший скролл-контейнер и может
+     * не найти его. root однозначно указывает на прокрутку страницы. */
+    animation-timeline: scroll(root);
+    animation-range: 0 100px;
   }
 }

@@ -12,7 +12,8 @@
     "cta": "Оғоз кардан",
     "openMenu": "Кушодани меню",
     "closeMenu": "Пӯшидани меню",
-    "home": "Ба саҳифаи асосӣ"
+    "home": "Ба саҳифаи асосӣ",
+    "backToTop": "Ба боло"
   },
   "hero": {
     "badge": "Тиҷорат · Идора · Молия",
@@ -55,11 +56,26 @@
     "title": "Ҳалли тайёр барои тиҷорати шумо",
     "lead": "Соҳаро интихоб кунед — TIM худкор ба он мутобиқ мешавад.",
     "items": {
-      "clothing": { "name": "Либос", "desc": "андоза, ранг, коллексия" },
-      "grocery": { "name": "Маҳсулот", "desc": "мӯҳлати нигоҳдорӣ, вазн" },
-      "restaurant": { "name": "Тарабхона", "desc": "меню, мизҳо, ошхона" },
-      "company": { "name": "Ширкат", "desc": "хизматрасонӣ ва мизоҷон" },
-      "hypermarket": { "name": "Гипермаркет", "desc": "анборҳо ва филиалҳо" }
+      "clothing": {
+        "name": "Либос",
+        "desc": "андоза, ранг, коллексия"
+      },
+      "grocery": {
+        "name": "Маҳсулот",
+        "desc": "мӯҳлати нигоҳдорӣ, вазн"
+      },
+      "restaurant": {
+        "name": "Тарабхона",
+        "desc": "меню, мизҳо, ошхона"
+      },
+      "company": {
+        "name": "Ширкат",
+        "desc": "хизматрасонӣ ва мизоҷон"
+      },
+      "hypermarket": {
+        "name": "Гипермаркет",
+        "desc": "анборҳо ва филиалҳо"
+      }
     }
   },
   "howItWorks": {
@@ -163,18 +179,19 @@
       "switchPrompt": "Аллакай ҳисоб доред?",
       "switchAction": "Ворид шудан"
     },
-    "phoneLabel": "Рақами телефон",
-    "phonePlaceholder": "00 000 00 00",
     "countryLabel": "Рамзи кишвар: Тоҷикистон, +992",
-    "cta": "Гирифтани рамз",
     "sending": "Рамз фиристода мешавад…",
     "dividerSocial": "ё ворид шавед тавассути",
     "forgotPassword": "Рамзро фаромӯш кардед?",
     "errors": {
       "phoneRequired": "Рақами телефонро ворид кунед",
-      "phoneIncomplete": "Рақам бояд аз 9 рақам иборат бошад"
+      "phoneIncomplete": "Рақам бояд аз 9 рақам иборат бошад",
+      "emailRequired": "Суроғаи почтаро ворид кунед",
+      "emailInvalid": "Суроғаро санҷед: бояд ба мисли ном@gmail.com бошад",
+      "usernameRequired": "Номи корбарро ворид кунед",
+      "usernameInvalid": "Аз 5 то 32 аломат: лотинӣ, рақам ва зерхат"
     },
-    "notImplemented": "Фиристодани рамз ҳанӯз пайваст нашудааст — backend лозим аст (вазифаи 10.7 дар ROADMAP).",
+    "notImplemented": "Воридшавӣ ҳанӯз пайваст нашудааст — backend лозим аст (вазифаҳои 10.7 ва 10.8 дар ROADMAP).",
     "visual": {
       "revenueLabel": "Даромад · моҳ",
       "revenueValue": "+ 24.8%",
@@ -186,9 +203,34 @@
       "chartAlt": "Диаграммаи шартии афзоиши даромад дар як моҳ",
       "title": "Тамоми тиҷорати шумо — дар як система",
       "subtitle": "Савдо, анбор ва молия таҳти назорат. Содда ва фаҳмо."
-    }
+    },
+    "backToSite": "Ба сайт",
+    "providers": {
+      "phone": {
+        "label": "Рақами телефон",
+        "placeholder": "00 000 00 00"
+      },
+      "google": {
+        "label": "Суроғаи Gmail",
+        "placeholder": "шумо@gmail.com"
+      },
+      "telegram": {
+        "label": "Ном дар Telegram",
+        "placeholder": "username"
+      },
+      "whatsapp": {
+        "label": "Рақами WhatsApp",
+        "placeholder": "00 000 00 00"
+      }
+    },
+    "ctaCode": "Гирифтани рамз",
+    "ctaContinue": "Идома додан",
+    "providerHint": "Воридшавӣ тавассути {name}",
+    "resetProvider": "Бозгашт ба воридшавӣ бо телефон"
   },
   "common": {
-    "languageSwitcher": "Забони интерфейс"
+    "languageSwitcher": "Забони интерфейс",
+    "themeToDark": "Тамғаи торик",
+    "themeToLight": "Тамғаи равшан"
   }
 }

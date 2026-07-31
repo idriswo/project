@@ -36,7 +36,7 @@ export default function AuthPage({
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface px-5 py-8">
-      <div className="grid w-full max-w-[1040px] overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_40px_90px_-50px_rgb(15_25_60/0.35)] auth:grid-cols-[1.05fr_1fr]">
+      <div className="grid w-full max-w-[1040px] overflow-hidden rounded-[24px] border border-line bg-card shadow-[0_40px_90px_-50px_rgb(15_25_60/0.35)] auth:grid-cols-[1.05fr_1fr]">
         <VisualPanel />
         <AuthForm />
       </div>

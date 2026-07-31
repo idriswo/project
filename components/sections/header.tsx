@@ -2,12 +2,14 @@ import { useTranslations } from "next-intl";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { anchors } from "@/lib/site";
 
 import { MobileMenu } from "./mobile-menu";
+import { NavLinks } from "./nav-links";
 
 /** Хедер: sticky, высота 76px, полупрозрачный фон с размытием (макет п. 3.1). */
 export function Header({ locale }: { locale: Locale }) {
@@ -22,7 +24,7 @@ export function Header({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur-[10px]">
+    <header className="header-elevate sticky top-0 z-50 border-b border-line bg-card/90 backdrop-blur-[10px]">
       <div className="relative mx-auto flex h-[76px] w-full max-w-[1200px] items-center justify-between gap-6 px-6">
         <a
           href={anchors.top}
@@ -32,19 +34,14 @@ export function Header({ locale }: { locale: Locale }) {
           <Logo />
         </a>
 
-        <nav className="hidden items-center gap-[34px] tablet:flex">
-          {items.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-[15px] font-semibold text-ink transition-colors hover:text-brand-600"
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        <NavLinks items={items} />
 
         <div className="flex items-center gap-3.5">
+          <ThemeToggle
+            labelToDark={tCommon("themeToDark")}
+            labelToLight={tCommon("themeToLight")}
+          />
+
           <LanguageSwitcher
             current={locale}
             label={tCommon("languageSwitcher")}
@@ -52,7 +49,7 @@ export function Header({ locale }: { locale: Locale }) {
 
           <Link
             href="/auth"
-            className="hidden text-[15px] font-semibold text-ink transition-colors hover:text-brand-600 tablet:inline"
+            className="hidden text-[15px] font-semibold text-ink transition-colors hover:text-brand-ink tablet:inline"
           >
             {t("signIn")}
           </Link>

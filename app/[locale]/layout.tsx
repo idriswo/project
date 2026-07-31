@@ -3,7 +3,9 @@ import { Manrope } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 
+import { themeInitScript } from "@/components/theme-toggle";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -55,8 +57,16 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={manrope.variable}>
-      <body className="font-sans antialiased">
+    <html lang={locale} className={manrope.variable} suppressHydrationWarning>
+      <body className="bg-page font-sans antialiased">
+        {/* Выставляет сохранённую тему до первой отрисовки, иначе страница
+            мигает светлой темой перед загрузкой React. Через next/script,
+            а не голый <script>: React 19 ругается на script-теги внутри
+            дерева компонентов. */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
+
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

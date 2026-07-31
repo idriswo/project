@@ -12,7 +12,8 @@
     "cta": "Начать",
     "openMenu": "Открыть меню",
     "closeMenu": "Закрыть меню",
-    "home": "На главную"
+    "home": "На главную",
+    "backToTop": "Наверх"
   },
   "hero": {
     "badge": "Тиджорат · Идора · Молия",
@@ -55,11 +56,26 @@
     "title": "Готовые решения под ваш бизнес",
     "lead": "Выберите отрасль — TIM настроится под неё автоматически.",
     "items": {
-      "clothing": { "name": "Одежда", "desc": "размеры, цвета, коллекции" },
-      "grocery": { "name": "Продукты", "desc": "срок годности, вес" },
-      "restaurant": { "name": "Ресторан", "desc": "меню, столы, кухня" },
-      "company": { "name": "Компания", "desc": "услуги и клиенты" },
-      "hypermarket": { "name": "Гипермаркет", "desc": "склады и филиалы" }
+      "clothing": {
+        "name": "Одежда",
+        "desc": "размеры, цвета, коллекции"
+      },
+      "grocery": {
+        "name": "Продукты",
+        "desc": "срок годности, вес"
+      },
+      "restaurant": {
+        "name": "Ресторан",
+        "desc": "меню, столы, кухня"
+      },
+      "company": {
+        "name": "Компания",
+        "desc": "услуги и клиенты"
+      },
+      "hypermarket": {
+        "name": "Гипермаркет",
+        "desc": "склады и филиалы"
+      }
     }
   },
   "howItWorks": {
@@ -163,18 +179,19 @@
       "switchPrompt": "Уже есть аккаунт?",
       "switchAction": "Войти"
     },
-    "phoneLabel": "Номер телефона",
-    "phonePlaceholder": "00 000 00 00",
     "countryLabel": "Код страны: Таджикистан, +992",
-    "cta": "Получить код",
     "sending": "Отправляем код…",
     "dividerSocial": "или войти через",
     "forgotPassword": "Забыли пароль?",
     "errors": {
       "phoneRequired": "Введите номер телефона",
-      "phoneIncomplete": "Номер должен состоять из 9 цифр"
+      "phoneIncomplete": "Номер должен состоять из 9 цифр",
+      "emailRequired": "Введите адрес почты",
+      "emailInvalid": "Проверьте адрес: он должен быть вида имя@gmail.com",
+      "usernameRequired": "Введите имя пользователя",
+      "usernameInvalid": "От 5 до 32 символов: латиница, цифры и подчёркивание"
     },
-    "notImplemented": "Отправка кода ещё не подключена — нужен backend (задача 10.7 в ROADMAP).",
+    "notImplemented": "Вход пока не подключён — нужен backend (задачи 10.7 и 10.8 в ROADMAP).",
     "visual": {
       "revenueLabel": "Выручка · месяц",
       "revenueValue": "+ 24.8%",
@@ -186,9 +203,34 @@
       "chartAlt": "Схематичный график роста выручки за месяц",
       "title": "Весь ваш бизнес — в одной системе",
       "subtitle": "Торговля, склад и финансы под контролем. Просто и понятно."
-    }
+    },
+    "backToSite": "На сайт",
+    "providers": {
+      "phone": {
+        "label": "Номер телефона",
+        "placeholder": "00 000 00 00"
+      },
+      "google": {
+        "label": "Адрес Gmail",
+        "placeholder": "вы@gmail.com"
+      },
+      "telegram": {
+        "label": "Имя в Telegram",
+        "placeholder": "username"
+      },
+      "whatsapp": {
+        "label": "Номер WhatsApp",
+        "placeholder": "00 000 00 00"
+      }
+    },
+    "ctaCode": "Получить код",
+    "ctaContinue": "Продолжить",
+    "providerHint": "Вход через {name}",
+    "resetProvider": "Вернуться к входу по телефону"
   },
   "common": {
-    "languageSwitcher": "Язык интерфейса"
+    "languageSwitcher": "Язык интерфейса",
+    "themeToDark": "Тёмная тема",
+    "themeToLight": "Светлая тема"
   }
 }

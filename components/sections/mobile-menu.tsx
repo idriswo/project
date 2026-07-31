@@ -59,7 +59,7 @@ export function MobileMenu({
       {isOpen ? (
         <div
           id={panelId}
-          className="absolute inset-x-0 top-full border-b border-line bg-white px-6 pt-4 pb-6 shadow-lg"
+          className="absolute inset-x-0 top-full border-b border-line bg-card px-6 pt-4 pb-6 shadow-lg"
         >
           <nav className="flex flex-col">
             {items.map((item) => (
@@ -67,7 +67,7 @@ export function MobileMenu({
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="border-b border-line py-3.5 text-base font-semibold text-ink last:border-0 hover:text-brand-600"
+                className="border-b border-line py-3.5 text-base font-semibold text-ink last:border-0 hover:text-brand-ink"
               >
                 {item.label}
               </a>

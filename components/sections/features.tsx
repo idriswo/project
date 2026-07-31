@@ -34,7 +34,7 @@ export function Features() {
   const t = useTranslations("features");
 
   return (
-    <section id={anchors.features.slice(1)} className="bg-white pt-26 pb-10">
+    <section id={anchors.features.slice(1)} className="bg-page pt-26 pb-10">
       <Container>
         <SectionHeader
           eyebrow={t("eyebrow")}
@@ -43,8 +43,12 @@ export function Features() {
         />
 
         <div className="mt-14 grid gap-6 tablet:grid-cols-2 desktop:grid-cols-4">
-          {ITEMS.map(({ key, icon: Icon, tone }) => (
-            <Card key={key}>
+          {ITEMS.map(({ key, icon: Icon, tone }, index) => (
+            <Card
+              key={key}
+              className="reveal-item"
+              style={{ "--i": index } as React.CSSProperties}
+            >
               <IconBox tone={tone} className="mb-5">
                 <Icon className="size-6" aria-hidden />
               </IconBox>

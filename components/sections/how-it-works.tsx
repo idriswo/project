@@ -23,12 +23,15 @@ export function HowItWorks() {
         <ol className="mt-14 grid gap-7 tablet:grid-cols-2 desktop:grid-cols-3">
           {STEPS.map(({ key, tone }, index) => (
             <li key={key}>
-              <Card className="h-full px-8 py-9">
+              <Card
+                className="reveal-item h-full px-8 py-9"
+                style={{ "--i": index } as React.CSSProperties}
+              >
                 <span
                   className={cn(
                     "mb-5.5 flex size-11 items-center justify-center rounded-btn text-[19px] font-extrabold",
                     tone === "accent"
-                      ? "bg-accent-500 text-ink"
+                      ? "bg-accent-500 text-on-accent"
                       : "bg-brand-600 text-white",
                   )}
                   aria-hidden

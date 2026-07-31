@@ -19,7 +19,7 @@ export function Section({
       id={id}
       className={cn(
         "py-20 desktop:py-26",
-        tone === "surface" ? "bg-surface" : "bg-white",
+        tone === "surface" ? "bg-surface" : "bg-page",
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function Section({
 /** Надзаголовок секции: 14px, 700, uppercase, letter-spacing 1px. */
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-eyebrow font-bold tracking-[1px] text-brand-600 uppercase">
+    <span className="text-eyebrow font-bold tracking-[1px] text-brand-ink uppercase">
       {children}
     </span>
   );
@@ -48,7 +48,7 @@ export function SectionHeader({
   lead?: string;
 }) {
   return (
-    <div className="mx-auto max-w-[640px] text-center">
+    <div className="reveal mx-auto max-w-[640px] text-center">
       {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
       <h2 className="mt-3.5 text-[32px] leading-[1.1] font-extrabold tracking-[-1px] text-balance tablet:text-[36px] desktop:text-h2">
         {title}

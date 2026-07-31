@@ -1,6 +1,8 @@
+import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { use } from "react";
 
+import { BackToTop } from "@/components/back-to-top";
 import { CtaStrip } from "@/components/sections/cta-strip";
 import { Features } from "@/components/sections/features";
 import { Footer } from "@/components/sections/footer";
@@ -24,7 +26,6 @@ export default function HomePage({
       <Header locale={locale} />
 
       <main>
-        <div id="top" />
         <Hero />
         <Features />
         <Industries />
@@ -34,6 +35,13 @@ export default function HomePage({
       </main>
 
       <Footer />
+      <BackToTopButton />
     </>
   );
+}
+
+/** Обёртка: тянет подпись из переводов и отдаёт её клиентской кнопке. */
+function BackToTopButton() {
+  const t = useTranslations("nav");
+  return <BackToTop label={t("backToTop")} />;
 }
