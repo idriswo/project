@@ -1,7 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
 
 export const THEME_STORAGE_KEY = "tim-theme";
 
@@ -27,6 +27,42 @@ export const themeInitScript = `
 `;
 
 type Theme = "light" | "dark";
+
+/*
+ * useLayoutEffect применяется до отрисовки кадра, поэтому восстановленная
+ * тема не успевает мигнуть. На сервере такого хука нет, там подставляем
+ * обычный useEffect: тело всё равно выполнится только в браузере.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/**
+ * Держит атрибут data-theme на <html> в согласии с localStorage.
+ *
+ * Зачем нужен отдельно от инлайнового скрипта: при смене локали
+ * next-intl делает клиентский переход, React перерисовывает корневой
+ * layout и СБРАСЫВАЕТ выставленный скриптом data-theme. Скрипт при этом
+ * повторно не выполняется — он есть только в первоначальном HTML.
+ * Без этой синхронизации пользователь со светлой темой и тёмной
+ * системной настройкой при переключении языка проваливался в тёмную.
+ */
+export function ThemeSync() {
+  useIsomorphicLayoutEffect(() => {
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved !== "dark" && saved !== "light") return;
+
+      const root = document.documentElement;
+      if (root.getAttribute("data-theme") !== saved) {
+        root.setAttribute("data-theme", saved);
+      }
+    } catch {
+      // localStorage недоступен — остаётся системная настройка.
+    }
+  });
+
+  return null;
+}
 
 const THEME_CHANGE_EVENT = "tim:themechange";
 const DARK_QUERY = "(prefers-color-scheme: dark)";

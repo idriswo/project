@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 
-import { themeInitScript } from "@/components/theme-toggle";
+import { themeInitScript, ThemeSync } from "@/components/theme-toggle";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -66,6 +66,11 @@ export default async function LocaleLayout({
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
+
+        {/* Возвращает data-theme после клиентских переходов: при смене
+            локали React сбрасывает атрибут, а скрипт выше повторно
+            не выполняется. */}
+        <ThemeSync />
 
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
