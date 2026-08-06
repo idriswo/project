@@ -126,7 +126,7 @@ export function ThemeToggle({
       type="button"
       onClick={toggle}
       aria-label={isDark ? labelToLight : labelToDark}
-      className="inline-flex size-9 items-center justify-center rounded-lg text-subtle transition-colors hover:bg-surface hover:text-brand-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+      className="inline-flex size-11 items-center justify-center rounded-lg text-subtle transition-colors hover:bg-surface hover:text-brand-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
     >
       {/* До гидратации иконки нет — место под неё уже занято,
           поэтому вёрстка не прыгает. */}

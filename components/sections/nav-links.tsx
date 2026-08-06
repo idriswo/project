@@ -46,7 +46,7 @@ export function NavLinks({ items }: { items: NavItem[] }) {
   }, [items]);
 
   return (
-    <nav className="hidden items-center gap-[34px] tablet:flex">
+    <nav className="hidden items-center gap-[34px] desktop:flex">
       {items.map((item) => {
         const isActive = activeId === item.href.slice(1);
 

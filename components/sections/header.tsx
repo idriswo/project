@@ -37,26 +37,29 @@ export function Header({ locale }: { locale: Locale }) {
         <NavLinks items={items} />
 
         <div className="flex items-center gap-3.5">
-          <ThemeToggle
-            labelToDark={tCommon("themeToDark")}
-            labelToLight={tCommon("themeToLight")}
-          />
+          {/* На телефоне в шапке остаются только логотип и бургер:
+              тема, язык и обе кнопки переезжают внутрь меню, иначе
+              строка не помещается по ширине. */}
+          <div className="hidden items-center gap-3.5 tablet:flex">
+            <ThemeToggle
+              labelToDark={tCommon("themeToDark")}
+              labelToLight={tCommon("themeToLight")}
+            />
 
-          <LanguageSwitcher
-            current={locale}
-            label={tCommon("languageSwitcher")}
-          />
+            <LanguageSwitcher
+              current={locale}
+              label={tCommon("languageSwitcher")}
+            />
 
-          <Link
-            href="/auth"
-            className="hidden text-[15px] font-semibold text-ink transition-colors hover:text-brand-ink tablet:inline"
-          >
-            {t("signIn")}
-          </Link>
+            <Link
+              href="/auth"
+              className="text-[15px] font-semibold text-ink transition-colors hover:text-brand-ink"
+            >
+              {t("signIn")}
+            </Link>
 
-          <Button href="/auth" className="hidden tablet:inline-flex">
-            {t("cta")}
-          </Button>
+            <Button href="/auth">{t("cta")}</Button>
+          </div>
 
           <MobileMenu
             items={items}
@@ -66,7 +69,16 @@ export function Header({ locale }: { locale: Locale }) {
               signIn: t("signIn"),
               cta: t("cta"),
             }}
-          />
+          >
+            <ThemeToggle
+              labelToDark={tCommon("themeToDark")}
+              labelToLight={tCommon("themeToLight")}
+            />
+            <LanguageSwitcher
+              current={locale}
+              label={tCommon("languageSwitcher")}
+            />
+          </MobileMenu>
         </div>
       </div>
     </header>

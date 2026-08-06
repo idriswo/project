@@ -60,7 +60,7 @@ export function LanguageSwitcher({
         aria-controls={menuId}
         aria-label={label}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-lg py-1.5 pr-1.5 pl-2 text-[13px] font-bold uppercase transition-colors",
+          "inline-flex min-h-11 items-center gap-1.5 rounded-lg py-1.5 pr-1.5 pl-2 text-[13px] font-bold uppercase transition-colors",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",
           tone === "dark"
             ? "text-navy-text hover:bg-navy-rule hover:text-white"

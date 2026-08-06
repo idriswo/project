@@ -32,7 +32,7 @@ export function VisualPanel() {
   const tAuth = useTranslations("auth");
 
   return (
-    <div className="relative hidden flex-col justify-between overflow-hidden bg-navy p-14 auth:flex">
+    <div className="relative hidden min-h-0 flex-col justify-between overflow-x-hidden overflow-y-auto bg-navy p-14 auth:flex">
       {/* Размытые пятна фона */}
       <div
         aria-hidden

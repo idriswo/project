@@ -169,7 +169,7 @@
     },
     "login": {
       "heading": "Ба ҳисоби худ ворид шавед",
-      "subheading": "Рақами телефонро ворид кунед — мо рамзи воридшавӣ мефиристем",
+      "subheading": "Почта ва рамзи худро ворид кунед",
       "switchPrompt": "Ҳанӯз ҳисоб надоред?",
       "switchAction": "Бақайдгирӣ"
     },
@@ -189,9 +189,84 @@
       "emailRequired": "Суроғаи почтаро ворид кунед",
       "emailInvalid": "Суроғаро санҷед: бояд ба мисли ном@gmail.com бошад",
       "usernameRequired": "Номи корбарро ворид кунед",
-      "usernameInvalid": "Аз 5 то 32 аломат: лотинӣ, рақам ва зерхат"
+      "usernameInvalid": "Аз 5 то 32 аломат: лотинӣ, рақам ва зерхат",
+      "codeRequired": "Рамзро ворид кунед",
+      "passwordRequired": "Рамзи худро ворид кунед",
+      "passwordShort": "Рамз бояд ҳадди ақал 8 аломат бошад",
+      "generic": "Хатогӣ рух дод. Аз нав кӯшиш кунед."
     },
-    "notImplemented": "Воридшавӣ ҳанӯз пайваст нашудааст — backend лозим аст (вазифаҳои 10.7 ва 10.8 дар ROADMAP).",
+    "emailLogin": {
+      "emailLabel": "Почта",
+      "emailPlaceholder": "email@example.com",
+      "passwordLabel": "Рамз",
+      "passwordPlaceholder": "••••••••",
+      "cta": "Вуруд",
+      "checkingAccount": "Тафтиши ҳисоб…",
+      "checkingPassword": "Тафтиши рамз…"
+    },
+    "google": {
+      "buttonLabel": "Почта",
+      "heading": "Бақайдгирӣ бо почта",
+      "lead": "Почтаи худро ворид кунед ва барои вуруд рамз созед.",
+      "emailLabel": "Почта",
+      "emailPlaceholder": "шумо@example.com",
+      "passwordLabel": "Рамз",
+      "passwordPlaceholder": "Ҳадди ақал 8 аломат",
+      "cta": "Сохтани ҳисоб",
+      "ctaLoading": "Сохта истодааст…",
+      "confirmEmail": "Мо номаи тасдиқро фиристодем — барои идома пайванди дар он бударо пахш кунед."
+    },
+    "passwordReset": {
+      "backToLogin": "Бозгашт ба вуруд",
+      "emailStep": {
+        "heading": "Барқарорсозии рамз",
+        "lead": "Почтаро ворид кунед — рамзи барқарорсозиро мефиристем.",
+        "label": "Почта",
+        "placeholder": "email@example.com",
+        "cta": "Фиристодани рамз",
+        "ctaLoading": "Фиристода истодааст…"
+      },
+      "codeStep": {
+        "heading": "Рамзро ворид кунед",
+        "lead": "Мо рамзро ба {email} фиристодем",
+        "label": "Рамз аз почта",
+        "placeholder": "000000",
+        "cta": "Тасдиқ",
+        "ctaLoading": "Санҷида истодааст…"
+      },
+      "newPasswordStep": {
+        "heading": "Рамзи нав",
+        "lead": "Рамзи нав барои вуруд гузоред.",
+        "label": "Рамзи нав",
+        "placeholder": "Ҳадди ақал 8 аломат",
+        "confirmLabel": "Рамзро такрор кунед",
+        "confirmPlaceholder": "Рамзро дубора нависед",
+        "cta": "Нигоҳ доштани рамз",
+        "ctaLoading": "Нигоҳ дошта истодааст…"
+      },
+      "errors": {
+        "emailRequired": "Почтаро ворид кунед",
+        "codeRequired": "Рамзро ворид кунед",
+        "passwordShort": "Рамз бояд ҳадди ақал 8 аломат бошад",
+        "passwordMismatch": "Рамзҳо мувофиқат намекунанд",
+        "generic": "Хатогӣ рух дод. Аз нав кӯшиш кунед."
+      }
+    },
+    "codeStep": {
+      "heading": "Рамзро ворид кунед",
+      "subheading": "Мо рамзро ба {phone} фиристодем",
+      "label": "Рамзи тасдиқ",
+      "placeholder": "000000",
+      "submitCta": "Тасдиқ",
+      "resendCta": "Фиристодани дубора",
+      "changeNumber": "Тағйир додани рақам",
+      "resent": "Рамз дубора фиристода шуд"
+    },
+    "callback": {
+      "loading": "Вуруд иҷро шуда истодааст…",
+      "failed": "Вуруд муваффақ нашуд. Аз нав кӯшиш кунед.",
+      "retry": "Бозгашт ба вуруд"
+    },
     "visual": {
       "revenueLabel": "Даромад · моҳ",
       "revenueValue": "+ 24.8%",
@@ -209,24 +284,143 @@
       "phone": {
         "label": "Рақами телефон",
         "placeholder": "00 000 00 00"
-      },
-      "google": {
-        "label": "Суроғаи Gmail",
-        "placeholder": "шумо@gmail.com"
-      },
-      "telegram": {
-        "label": "Ном дар Telegram",
-        "placeholder": "username"
-      },
-      "whatsapp": {
-        "label": "Рақами WhatsApp",
-        "placeholder": "00 000 00 00"
       }
     },
     "ctaCode": "Гирифтани рамз",
     "ctaContinue": "Идома додан",
     "providerHint": "Воридшавӣ тавассути {name}",
     "resetProvider": "Бозгашт ба воридшавӣ бо телефон"
+  },
+  "onboarding": {
+    "stepLabel": "Қадами {current} аз {total}",
+    "back": "Бозгашт",
+    "backToStores": "Дӯконҳои ман",
+    "welcome": {
+      "heading": "Хуш омадед ба TIM!",
+      "lead": "Дар якчанд қадам мағозаи худро месозем — камтар аз як дақиқа.",
+      "cta": "Оғоз кунем"
+    },
+    "storeName": {
+      "heading": "Номи мағозаи шумо чист?",
+      "lead": "Ин ном дар система ва чекҳо нишон дода мешавад.",
+      "label": "Номи мағоза",
+      "placeholder": "Масалан: Гулистон Либос",
+      "errorShort": "Ҳадди ақал 2 ҳарф лозим аст",
+      "cta": "Идома"
+    },
+    "businessType": {
+      "heading": "Намуди тиҷорати шумо чист?",
+      "lead": "Ин ба танзими интерфейс кӯмак мекунад.",
+      "retail": { "name": "Фурӯши чакана", "desc": "Як мағоза, фурӯш ба муштарӣ" },
+      "wholesale": { "name": "Фурӯши яклухт", "desc": "Фурӯш ба дигар дӯконҳо" },
+      "network": { "name": "Шабака/Филиалҳо", "desc": "Якчанд нуқтаи фурӯш" },
+      "cta": "Идома"
+    },
+    "features": {
+      "heading": "Кадом функсияҳо лозиманд?",
+      "lead": "Метавонед баъдтар низ илова кунед — ҳоло 14 рӯз ройгон озмоед.",
+      "priceSuffix": "сомонӣ/моҳ",
+      "trialNote": "{days} рӯз ройгон, баъд тамос лозим аст",
+      "cta": "Мағозаро созед",
+      "ctaLoading": "Сохта истодааст…"
+    },
+    "errors": {
+      "generic": "Хатогӣ рух дод. Аз нав кӯшиш кунед."
+    },
+    "logout": "Баромадан аз ҳисоб"
+  },
+  "dashboard": {
+    "logout": "Баромадан",
+    "settings": "Танзимот",
+    "switchStore": "Дӯконҳои ман",
+    "loading": "Бор карда истодааст…",
+    "empty": {
+      "heading": "Хуш омадед, {name}!",
+      "lead": "Дӯкони шумо тайёр аст. Барои оғоз, аввалин молро илова кунед.",
+      "cta": "Мол илова кунед",
+      "checklist": {
+        "addProduct": "Мол илова кунед",
+        "inviteSeller": "Фурӯшанда даъват кунед",
+        "firstSale": "Аввалин фурӯшро сабт кунед"
+      },
+      "soon": "Ба зудӣ"
+    },
+    "overview": {
+      "healthLabel": "Ҳолати дӯкон",
+      "status": {
+        "good": "Хуб",
+        "warning": "Диққат лозим",
+        "critical": "Ҷиддӣ"
+      },
+      "revenue": "Даромад",
+      "netProfit": "Фоидаи соф",
+      "salesCount": "Шумораи фурӯш",
+      "openDebt": "Қарзи кушода"
+    }
+  },
+  "inventory": {
+    "new": {
+      "back": "Бозгашт",
+      "heading": "Аввалин молро илова кунед",
+      "lead": "Ном, нарх ва миқдорро ворид кунед — тафсилоти дигарро баъдтар илова мекунед.",
+      "nameLabel": "Номи мол",
+      "namePlaceholder": "Масалан: Куртаи мардона",
+      "priceLabel": "Нархи фурӯш",
+      "costPriceLabel": "Нархи харид",
+      "quantityLabel": "Миқдор дар мағоза",
+      "cta": "Илова кардан",
+      "ctaLoading": "Илова карда истодааст…",
+      "errors": {
+        "nameRequired": "Номи молро ворид кунед (ҳадди ақал 2 ҳарф)",
+        "priceRequired": "Нархи фурӯшро дуруст ворид кунед",
+        "generic": "Хатогӣ рух дод. Аз нав кӯшиш кунед."
+      }
+    }
+  },
+  "settings": {
+    "back": "Бозгашт",
+    "heading": "Роҳҳои вуруд",
+    "lead": "Роҳҳои вуруди ҳисоби худро идора кунед. Роҳи асосиро ҷудо кардан мумкин нест.",
+    "loading": "Бор карда истодааст…",
+    "primary": "Асосӣ",
+    "unlink": "Ҷудо кардан",
+    "cancel": "Бекор кардан",
+    "providers": {
+      "PHONE": "Телефон",
+      "WHATSAPP": "WhatsApp",
+      "TELEGRAM": "Telegram",
+      "GOOGLE": "Google"
+    },
+    "linkPhone": {
+      "cta": "Пайваст кардани телефон",
+      "label": "Рақами телефон",
+      "placeholder": "00 000 00 00",
+      "alsoWhatsapp": "Ин рақам инчунин дар WhatsApp истифода мешавад",
+      "sendCode": "Фиристодани рамз",
+      "codeLabel": "Рамз аз SMS",
+      "verifyCta": "Тасдиқ",
+      "ctaLoading": "Фиристода истодааст…",
+      "success": "Телефон пайваст шуд"
+    },
+    "telegram": {
+      "comingSoon": "Пайвасти Telegram ба зудӣ дастрас мешавад — бот-и Telegram лозим аст, ки ҳанӯз дар лоиҳа нест."
+    },
+    "errors": {
+      "phoneRequired": "Рақами телефонро ворид кунед",
+      "codeRequired": "Рамзро ворид кунед",
+      "generic": "Хатогӣ рух дод. Аз нав кӯшиш кунед."
+    }
+  },
+  "stores": {
+    "heading": "Дӯконҳои шумо",
+    "lead": "Барои идома як дӯконро интихоб кунед, ё нав созед.",
+    "loading": "Бор карда истодааст…",
+    "createNew": "Дӯкони нав созед",
+    "logout": "Баромадан",
+    "roles": {
+      "OWNER": "Соҳиб",
+      "STAFF": "Кормандон"
+    }
   },
   "common": {
     "languageSwitcher": "Забони интерфейс",

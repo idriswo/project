@@ -169,7 +169,7 @@
     },
     "login": {
       "heading": "Войдите в свой аккаунт",
-      "subheading": "Введите номер телефона — мы отправим код для входа",
+      "subheading": "Введите почту и пароль от вашего аккаунта",
       "switchPrompt": "Ещё нет аккаунта?",
       "switchAction": "Зарегистрироваться"
     },
@@ -189,9 +189,84 @@
       "emailRequired": "Введите адрес почты",
       "emailInvalid": "Проверьте адрес: он должен быть вида имя@gmail.com",
       "usernameRequired": "Введите имя пользователя",
-      "usernameInvalid": "От 5 до 32 символов: латиница, цифры и подчёркивание"
+      "usernameInvalid": "От 5 до 32 символов: латиница, цифры и подчёркивание",
+      "codeRequired": "Введите код",
+      "passwordRequired": "Введите пароль",
+      "passwordShort": "Пароль должен быть не короче 8 символов",
+      "generic": "Произошла ошибка. Попробуйте ещё раз."
     },
-    "notImplemented": "Вход пока не подключён — нужен backend (задачи 10.7 и 10.8 в ROADMAP).",
+    "emailLogin": {
+      "emailLabel": "Почта",
+      "emailPlaceholder": "email@example.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "••••••••",
+      "cta": "Войти",
+      "checkingAccount": "Проверяем аккаунт…",
+      "checkingPassword": "Проверяем пароль…"
+    },
+    "google": {
+      "buttonLabel": "Почта",
+      "heading": "Регистрация по почте",
+      "lead": "Введите почту и придумайте пароль для входа.",
+      "emailLabel": "Почта",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Минимум 8 символов",
+      "cta": "Создать аккаунт",
+      "ctaLoading": "Создаём…",
+      "confirmEmail": "Мы отправили письмо для подтверждения — перейдите по ссылке в нём, чтобы продолжить."
+    },
+    "passwordReset": {
+      "backToLogin": "Вернуться ко входу",
+      "emailStep": {
+        "heading": "Восстановление пароля",
+        "lead": "Введите почту — пришлём код для сброса пароля.",
+        "label": "Почта",
+        "placeholder": "email@example.com",
+        "cta": "Отправить код",
+        "ctaLoading": "Отправляем…"
+      },
+      "codeStep": {
+        "heading": "Введите код",
+        "lead": "Мы отправили код на {email}",
+        "label": "Код из письма",
+        "placeholder": "000000",
+        "cta": "Подтвердить",
+        "ctaLoading": "Проверяем…"
+      },
+      "newPasswordStep": {
+        "heading": "Новый пароль",
+        "lead": "Придумайте новый пароль для входа.",
+        "label": "Новый пароль",
+        "placeholder": "Минимум 8 символов",
+        "confirmLabel": "Повторите пароль",
+        "confirmPlaceholder": "Ещё раз пароль",
+        "cta": "Сохранить пароль",
+        "ctaLoading": "Сохраняем…"
+      },
+      "errors": {
+        "emailRequired": "Введите почту",
+        "codeRequired": "Введите код",
+        "passwordShort": "Пароль должен быть не короче 8 символов",
+        "passwordMismatch": "Пароли не совпадают",
+        "generic": "Произошла ошибка. Попробуйте ещё раз."
+      }
+    },
+    "codeStep": {
+      "heading": "Введите код",
+      "subheading": "Мы отправили код на {phone}",
+      "label": "Код подтверждения",
+      "placeholder": "000000",
+      "submitCta": "Подтвердить",
+      "resendCta": "Отправить снова",
+      "changeNumber": "Изменить номер",
+      "resent": "Код отправлен повторно"
+    },
+    "callback": {
+      "loading": "Выполняется вход…",
+      "failed": "Не удалось войти. Попробуйте ещё раз.",
+      "retry": "Вернуться ко входу"
+    },
     "visual": {
       "revenueLabel": "Выручка · месяц",
       "revenueValue": "+ 24.8%",
@@ -209,24 +284,143 @@
       "phone": {
         "label": "Номер телефона",
         "placeholder": "00 000 00 00"
-      },
-      "google": {
-        "label": "Адрес Gmail",
-        "placeholder": "вы@gmail.com"
-      },
-      "telegram": {
-        "label": "Имя в Telegram",
-        "placeholder": "username"
-      },
-      "whatsapp": {
-        "label": "Номер WhatsApp",
-        "placeholder": "00 000 00 00"
       }
     },
     "ctaCode": "Получить код",
     "ctaContinue": "Продолжить",
     "providerHint": "Вход через {name}",
     "resetProvider": "Вернуться к входу по телефону"
+  },
+  "onboarding": {
+    "stepLabel": "Шаг {current} из {total}",
+    "back": "Назад",
+    "backToStores": "Мои магазины",
+    "welcome": {
+      "heading": "Добро пожаловать в TIM!",
+      "lead": "За несколько шагов настроим ваш магазин — это займёт меньше минуты.",
+      "cta": "Начнём"
+    },
+    "storeName": {
+      "heading": "Как называется ваш магазин?",
+      "lead": "Это имя будет отображаться в системе и на чеках.",
+      "label": "Название магазина",
+      "placeholder": "Например: Гулистон Одежда",
+      "errorShort": "Нужно минимум 2 символа",
+      "cta": "Далее"
+    },
+    "businessType": {
+      "heading": "Какой у вас тип бизнеса?",
+      "lead": "Это поможет настроить интерфейс под вас.",
+      "retail": { "name": "Розничная торговля", "desc": "Один магазин, продажи покупателям" },
+      "wholesale": { "name": "Оптовая торговля", "desc": "Продажи другим магазинам" },
+      "network": { "name": "Сеть/Филиалы", "desc": "Несколько точек продаж" },
+      "cta": "Далее"
+    },
+    "features": {
+      "heading": "Какие функции нужны?",
+      "lead": "Можно добавить позже — сейчас 14 дней бесплатно.",
+      "priceSuffix": "сомони/мес",
+      "trialNote": "{days} дней бесплатно, затем потребуется связаться с нами",
+      "cta": "Создать магазин",
+      "ctaLoading": "Создаём…"
+    },
+    "errors": {
+      "generic": "Произошла ошибка. Попробуйте ещё раз."
+    },
+    "logout": "Выйти из аккаунта"
+  },
+  "dashboard": {
+    "logout": "Выйти",
+    "settings": "Настройки",
+    "switchStore": "Мои магазины",
+    "loading": "Загрузка…",
+    "empty": {
+      "heading": "Добро пожаловать, {name}!",
+      "lead": "Ваш магазин готов. Чтобы начать, добавьте первый товар.",
+      "cta": "Добавить товар",
+      "checklist": {
+        "addProduct": "Добавьте товар",
+        "inviteSeller": "Пригласите продавца",
+        "firstSale": "Запишите первую продажу"
+      },
+      "soon": "Скоро"
+    },
+    "overview": {
+      "healthLabel": "Состояние магазина",
+      "status": {
+        "good": "Хорошо",
+        "warning": "Нужно внимание",
+        "critical": "Критично"
+      },
+      "revenue": "Выручка",
+      "netProfit": "Чистая прибыль",
+      "salesCount": "Продаж",
+      "openDebt": "Открытый долг"
+    }
+  },
+  "inventory": {
+    "new": {
+      "back": "Назад",
+      "heading": "Добавьте первый товар",
+      "lead": "Введите название, цену и количество — остальное можно добавить позже.",
+      "nameLabel": "Название товара",
+      "namePlaceholder": "Например: Мужская куртка",
+      "priceLabel": "Цена продажи",
+      "costPriceLabel": "Цена закупки",
+      "quantityLabel": "Количество в магазине",
+      "cta": "Добавить",
+      "ctaLoading": "Добавляем…",
+      "errors": {
+        "nameRequired": "Введите название товара (минимум 2 символа)",
+        "priceRequired": "Введите корректную цену продажи",
+        "generic": "Произошла ошибка. Попробуйте ещё раз."
+      }
+    }
+  },
+  "settings": {
+    "back": "Назад",
+    "heading": "Способы входа",
+    "lead": "Управляйте способами входа в аккаунт. Основной способ нельзя отвязать.",
+    "loading": "Загрузка…",
+    "primary": "Основной",
+    "unlink": "Отвязать",
+    "cancel": "Отмена",
+    "providers": {
+      "PHONE": "Телефон",
+      "WHATSAPP": "WhatsApp",
+      "TELEGRAM": "Telegram",
+      "GOOGLE": "Google"
+    },
+    "linkPhone": {
+      "cta": "Привязать телефон",
+      "label": "Номер телефона",
+      "placeholder": "00 000 00 00",
+      "alsoWhatsapp": "Этот номер также используется в WhatsApp",
+      "sendCode": "Отправить код",
+      "codeLabel": "Код из SMS",
+      "verifyCta": "Подтвердить",
+      "ctaLoading": "Отправляем…",
+      "success": "Телефон привязан"
+    },
+    "telegram": {
+      "comingSoon": "Привязка Telegram скоро появится — нужен телеграм-бот, которого пока нет в проекте."
+    },
+    "errors": {
+      "phoneRequired": "Введите номер телефона",
+      "codeRequired": "Введите код",
+      "generic": "Произошла ошибка. Попробуйте ещё раз."
+    }
+  },
+  "stores": {
+    "heading": "Ваши магазины",
+    "lead": "Выберите магазин, чтобы продолжить, или создайте новый.",
+    "loading": "Загрузка…",
+    "createNew": "Создать новый магазин",
+    "logout": "Выйти",
+    "roles": {
+      "OWNER": "Владелец",
+      "STAFF": "Сотрудник"
+    }
   },
   "common": {
     "languageSwitcher": "Язык интерфейса",

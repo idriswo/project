@@ -169,7 +169,7 @@
     },
     "login": {
       "heading": "Sign in to your account",
-      "subheading": "Enter your phone number — we'll send you a sign-in code",
+      "subheading": "Enter your email and password",
       "switchPrompt": "Don't have an account yet?",
       "switchAction": "Sign up"
     },
@@ -189,9 +189,84 @@
       "emailRequired": "Enter your email address",
       "emailInvalid": "Check the address: it should look like name@gmail.com",
       "usernameRequired": "Enter your username",
-      "usernameInvalid": "5 to 32 characters: latin letters, digits and underscore"
+      "usernameInvalid": "5 to 32 characters: latin letters, digits and underscore",
+      "codeRequired": "Enter the code",
+      "passwordRequired": "Enter your password",
+      "passwordShort": "Password must be at least 8 characters",
+      "generic": "Something went wrong. Please try again."
     },
-    "notImplemented": "Sign-in is not wired up yet — it needs a backend (tasks 10.7 and 10.8 in ROADMAP).",
+    "emailLogin": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "cta": "Sign in",
+      "checkingAccount": "Checking account…",
+      "checkingPassword": "Checking password…"
+    },
+    "google": {
+      "buttonLabel": "Email",
+      "heading": "Sign up with email",
+      "lead": "Enter your email and choose a password to sign in with.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "cta": "Create account",
+      "ctaLoading": "Creating…",
+      "confirmEmail": "We sent a confirmation email — follow the link in it to continue."
+    },
+    "passwordReset": {
+      "backToLogin": "Back to sign-in",
+      "emailStep": {
+        "heading": "Reset your password",
+        "lead": "Enter your email — we'll send a code to reset your password.",
+        "label": "Email",
+        "placeholder": "email@example.com",
+        "cta": "Send code",
+        "ctaLoading": "Sending…"
+      },
+      "codeStep": {
+        "heading": "Enter the code",
+        "lead": "We sent a code to {email}",
+        "label": "Code from the email",
+        "placeholder": "000000",
+        "cta": "Confirm",
+        "ctaLoading": "Checking…"
+      },
+      "newPasswordStep": {
+        "heading": "New password",
+        "lead": "Choose a new password for signing in.",
+        "label": "New password",
+        "placeholder": "At least 8 characters",
+        "confirmLabel": "Confirm password",
+        "confirmPlaceholder": "Type it again",
+        "cta": "Save password",
+        "ctaLoading": "Saving…"
+      },
+      "errors": {
+        "emailRequired": "Enter your email",
+        "codeRequired": "Enter the code",
+        "passwordShort": "Password must be at least 8 characters",
+        "passwordMismatch": "Passwords don't match",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "codeStep": {
+      "heading": "Enter the code",
+      "subheading": "We sent a code to {phone}",
+      "label": "Verification code",
+      "placeholder": "000000",
+      "submitCta": "Confirm",
+      "resendCta": "Resend code",
+      "changeNumber": "Change number",
+      "resent": "Code sent again"
+    },
+    "callback": {
+      "loading": "Signing you in…",
+      "failed": "Couldn't sign you in. Please try again.",
+      "retry": "Back to sign-in"
+    },
     "visual": {
       "revenueLabel": "Revenue · month",
       "revenueValue": "+ 24.8%",
@@ -209,24 +284,143 @@
       "phone": {
         "label": "Phone number",
         "placeholder": "00 000 00 00"
-      },
-      "google": {
-        "label": "Gmail address",
-        "placeholder": "you@gmail.com"
-      },
-      "telegram": {
-        "label": "Telegram username",
-        "placeholder": "username"
-      },
-      "whatsapp": {
-        "label": "WhatsApp number",
-        "placeholder": "00 000 00 00"
       }
     },
     "ctaCode": "Get the code",
     "ctaContinue": "Continue",
     "providerHint": "Sign in with {name}",
     "resetProvider": "Back to phone sign-in"
+  },
+  "onboarding": {
+    "stepLabel": "Step {current} of {total}",
+    "back": "Back",
+    "backToStores": "My stores",
+    "welcome": {
+      "heading": "Welcome to TIM!",
+      "lead": "A few steps to set up your store — takes less than a minute.",
+      "cta": "Let's start"
+    },
+    "storeName": {
+      "heading": "What's your store called?",
+      "lead": "This name will show up in the system and on receipts.",
+      "label": "Store name",
+      "placeholder": "e.g. Guliston Clothing",
+      "errorShort": "Needs at least 2 characters",
+      "cta": "Continue"
+    },
+    "businessType": {
+      "heading": "What type of business is this?",
+      "lead": "This helps us tailor the interface for you.",
+      "retail": { "name": "Retail", "desc": "One store, selling to customers" },
+      "wholesale": { "name": "Wholesale", "desc": "Selling to other stores" },
+      "network": { "name": "Chain/Branches", "desc": "Multiple points of sale" },
+      "cta": "Continue"
+    },
+    "features": {
+      "heading": "Which features do you need?",
+      "lead": "You can add more later — try free for 14 days.",
+      "priceSuffix": "TJS/mo",
+      "trialNote": "{days} days free, then you'll need to contact us",
+      "cta": "Create store",
+      "ctaLoading": "Creating…"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    },
+    "logout": "Sign out"
+  },
+  "dashboard": {
+    "logout": "Sign out",
+    "settings": "Settings",
+    "switchStore": "My stores",
+    "loading": "Loading…",
+    "empty": {
+      "heading": "Welcome, {name}!",
+      "lead": "Your store is ready. Add your first product to get started.",
+      "cta": "Add product",
+      "checklist": {
+        "addProduct": "Add a product",
+        "inviteSeller": "Invite a seller",
+        "firstSale": "Record your first sale"
+      },
+      "soon": "Coming soon"
+    },
+    "overview": {
+      "healthLabel": "Store health",
+      "status": {
+        "good": "Good",
+        "warning": "Needs attention",
+        "critical": "Critical"
+      },
+      "revenue": "Revenue",
+      "netProfit": "Net profit",
+      "salesCount": "Sales",
+      "openDebt": "Open debt"
+    }
+  },
+  "inventory": {
+    "new": {
+      "back": "Back",
+      "heading": "Add your first product",
+      "lead": "Enter a name, price and quantity — you can add the rest later.",
+      "nameLabel": "Product name",
+      "namePlaceholder": "e.g. Men's jacket",
+      "priceLabel": "Sale price",
+      "costPriceLabel": "Cost price",
+      "quantityLabel": "Quantity in store",
+      "cta": "Add",
+      "ctaLoading": "Adding…",
+      "errors": {
+        "nameRequired": "Enter a product name (at least 2 characters)",
+        "priceRequired": "Enter a valid sale price",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  },
+  "settings": {
+    "back": "Back",
+    "heading": "Sign-in methods",
+    "lead": "Manage how you sign in. The primary method can't be unlinked.",
+    "loading": "Loading…",
+    "primary": "Primary",
+    "unlink": "Unlink",
+    "cancel": "Cancel",
+    "providers": {
+      "PHONE": "Phone",
+      "WHATSAPP": "WhatsApp",
+      "TELEGRAM": "Telegram",
+      "GOOGLE": "Google"
+    },
+    "linkPhone": {
+      "cta": "Link a phone number",
+      "label": "Phone number",
+      "placeholder": "00 000 00 00",
+      "alsoWhatsapp": "This number is also used on WhatsApp",
+      "sendCode": "Send code",
+      "codeLabel": "Code from SMS",
+      "verifyCta": "Confirm",
+      "ctaLoading": "Sending…",
+      "success": "Phone linked"
+    },
+    "telegram": {
+      "comingSoon": "Telegram linking is coming soon — it needs a Telegram bot, which the project doesn't have yet."
+    },
+    "errors": {
+      "phoneRequired": "Enter a phone number",
+      "codeRequired": "Enter the code",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "stores": {
+    "heading": "Your stores",
+    "lead": "Choose a store to continue, or create a new one.",
+    "loading": "Loading…",
+    "createNew": "Create a new store",
+    "logout": "Sign out",
+    "roles": {
+      "OWNER": "Owner",
+      "STAFF": "Staff"
+    }
   },
   "common": {
     "languageSwitcher": "Interface language",

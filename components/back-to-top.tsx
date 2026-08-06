@@ -48,7 +48,10 @@ export function BackToTop({ label }: { label: string }) {
       tabIndex={isVisible ? 0 : -1}
       aria-hidden={!isVisible}
       className={cn(
-        "fixed right-5 bottom-5 z-40 flex size-12 items-center justify-center rounded-full",
+        // bottom учитывает safe-area: на iPhone с жестовой полосой
+        // кнопка иначе прижимается к самому краю и попадает под неё.
+        "fixed right-5 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-40",
+        "flex size-12 items-center justify-center rounded-full",
         "border border-line bg-card text-brand-ink shadow-[0_10px_30px_-12px_rgb(15_25_60/0.45)]",
         "transition-[opacity,transform] duration-200",
         "hover:bg-brand-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",

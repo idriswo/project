@@ -1,0 +1,33 @@
+import { setRequestLocale } from "next-intl/server";
+import { use } from "react";
+
+import { AuthGuard } from "@/components/auth/auth-guard";
+import { VisualPanel } from "@/components/auth/visual-panel";
+import { StorePicker } from "@/components/stores/store-picker";
+import { routing, type Locale } from "@/i18n/routing";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default function StoresPage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = use(params);
+  setRequestLocale(locale);
+
+  return (
+    // Та же рамка, что у /onboarding: выбор магазина и создание нового —
+    // один и тот же шаг для пользователя, разное оформление сбивало бы.
+    <AuthGuard>
+      <main className="flex min-h-screen items-center justify-center bg-surface px-5 py-8">
+        <div className="grid w-full max-w-[1040px] grid-cols-[minmax(0,1fr)] overflow-hidden rounded-[24px] border border-line bg-card shadow-[0_40px_90px_-50px_rgb(15_25_60/0.35)] auth:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+          <VisualPanel />
+          <StorePicker />
+        </div>
+      </main>
+    </AuthGuard>
+  );
+}

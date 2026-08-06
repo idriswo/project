@@ -61,6 +61,9 @@
   --color-divider: #eaeef4;
   --color-divider-text: #9aa3b3;
   --color-danger: #c2341d;
+  /* ---------- Цвета: статус health score (dashboard) ---------- */
+  --color-success: #1a7f5a;
+  --color-warning: #b45309;
 
   /* ---------- Шрифт ---------- */
   --font-sans: var(--font-manrope), system-ui, sans-serif;
@@ -144,6 +147,8 @@
     --color-divider: #1e2942;
     --color-divider-text: #7c8699;
     --color-danger: #ff8b76;
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
 
     --shadow-mockup: 0 24px 60px -30px rgb(0 0 0 / 0.7);
     --shadow-plan: 0 30px 60px -30px rgb(0 0 0 / 0.8);
@@ -184,6 +189,8 @@
   --color-divider: #1e2942;
   --color-divider-text: #7c8699;
   --color-danger: #ff8b76;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
 
   --shadow-mockup: 0 24px 60px -30px rgb(0 0 0 / 0.7);
   --shadow-plan: 0 30px 60px -30px rgb(0 0 0 / 0.8);
@@ -201,6 +208,25 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /* Ни один блок не должен уметь распирать страницу вбок:
+     * на телефоне это даёт болтающийся горизонтальный скролл. */
+    overflow-x: clip;
+  }
+
+  /* Серый прямоугольник по тапу на iOS/Android выглядит как артефакт:
+   * свои состояния :active и :focus-visible у элементов уже есть. */
+  a,
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Поля ввода мельче 16px заставляют iOS Safari зумить страницу
+   * при фокусе, и обратно она уже не отъезжает. */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
   }
 
   ::selection {

@@ -14,9 +14,12 @@ type NavItem = { href: string; label: string };
 export function MobileMenu({
   items,
   labels,
+  children,
 }: {
   items: NavItem[];
   labels: { open: string; close: string; signIn: string; cta: string };
+  /** Переключатели темы и языка: в шапке телефона для них нет места. */
+  children?: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const panelId = useId();
@@ -40,7 +43,7 @@ export function MobileMenu({
   }, [isOpen]);
 
   return (
-    <div className="tablet:hidden">
+    <div className="desktop:hidden">
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
@@ -74,18 +77,25 @@ export function MobileMenu({
             ))}
           </nav>
 
-          <div className="mt-5 flex flex-col gap-3">
+          <div className="mt-5 flex flex-col gap-3 tablet:hidden">
             <Button
               href="/auth"
               variant="secondary"
+              size="lg"
               onClick={() => setIsOpen(false)}
             >
               {labels.signIn}
             </Button>
-            <Button href="/auth" onClick={() => setIsOpen(false)}>
+            <Button href="/auth" size="lg" onClick={() => setIsOpen(false)}>
               {labels.cta}
             </Button>
           </div>
+
+          {children ? (
+            <div className="mt-5 flex items-center justify-between border-t border-line pt-5 tablet:hidden">
+              {children}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

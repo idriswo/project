@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -20,6 +20,23 @@ const manrope = Manrope({
   variable: "--font-manrope",
   display: "swap",
 });
+
+/**
+ * Цвет системной панели браузера на телефоне. Два значения, чтобы
+ * панель совпадала с фоном страницы в обеих темах, а не оставалась
+ * белой полосой над тёмным сайтом.
+ */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0f1e" },
+  ],
+  // Масштабирование намеренно не запрещаем: это ломает доступность
+  // для тех, кто увеличивает текст.
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 /** Все локали известны заранее → страницы собираются статически (SSG). */
 export function generateStaticParams() {
