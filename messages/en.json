@@ -334,6 +334,8 @@
     "settings": "Settings",
     "switchStore": "My stores",
     "loading": "Loading…",
+    "loadFailed": "Could not load your store data. Check your connection and try again.",
+    "retry": "Try again",
     "empty": {
       "heading": "Welcome, {name}!",
       "lead": "Your store is ready. Add your first product to get started.",
