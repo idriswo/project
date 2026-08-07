@@ -3,30 +3,57 @@ import type { ComponentProps } from "react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary" | "ghost";
-type Size = "md" | "lg";
+type Variant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "sapphire"
+  | "quiet"
+  | "danger";
+type Size = "sm" | "md" | "lg" | "xl";
 
 /*
  * primary   — янтарная кнопка, основной CTA макета (#F2A623)
  * secondary — белая с рамкой, «Смотреть демо»
  * ghost     — текстовая ссылка, «Войти» в хедере
+ * sapphire  — синяя заливка: действие внутри приложения, которое не про
+ *             деньги (сохранить, вынести в зал). Янтарь бережём для главного
+ *             действия экрана, иначе он перестанет выделяться
+ * quiet     — на светлой подложке, второстепенное действие в карточке
+ * danger    — отмена продажи, удаление
  */
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent-500 text-on-accent hover:bg-accent-600 focus-visible:outline-accent-600",
+    "bg-accent-500 text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] " +
+    "hover:bg-accent-600 hover:-translate-y-px active:translate-y-0 " +
+    "focus-visible:outline-accent-600 motion-reduce:hover:translate-y-0",
   secondary:
     "bg-card text-ink border border-line-strong hover:border-brand-600 hover:text-brand-ink focus-visible:outline-brand-600",
   ghost: "text-ink hover:text-brand-ink focus-visible:outline-brand-600",
+  sapphire:
+    "bg-app-sapphire text-white shadow-[0_12px_24px_-14px_rgb(15_82_186/0.75)] " +
+    "hover:bg-[#0b3f8f] hover:-translate-y-px active:translate-y-0 " +
+    "focus-visible:outline-app-sapphire motion-reduce:hover:translate-y-0",
+  quiet:
+    "bg-app-panel text-app-ink border border-app-line hover:border-app-sapphire hover:text-app-sapphire focus-visible:outline-app-sapphire",
+  danger:
+    "bg-app-out-soft text-app-out border border-app-out/25 hover:bg-app-out hover:text-white focus-visible:outline-app-out",
 };
 
 const sizes: Record<Size, string> = {
+  sm: "h-9 px-3.5 text-[13px]",
   md: "px-[22px] py-[11px] text-[15px]",
   lg: "px-[30px] py-[15px] text-base",
+  /* Кнопка, по которой бьют пальцем стоя: 60px — это тот размер, который
+   * не надо искать. Ниже 56px промахи в кассе начинаются сразу. */
+  xl: "h-15 px-8 text-[17px]",
 };
 
 const base =
-  "inline-flex items-center justify-center gap-[9px] rounded-btn font-bold transition-colors " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-[9px] rounded-btn font-bold " +
+  "transition-[background-color,border-color,color,transform,box-shadow,opacity] duration-150 " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "disabled:pointer-events-none disabled:opacity-45";
 
 type StyleProps = {
   variant?: Variant;

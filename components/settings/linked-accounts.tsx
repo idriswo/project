@@ -76,7 +76,9 @@ export function LinkedAccountsSettings() {
   }, []);
 
   function errorMessage(err: unknown): string {
-    return err instanceof Error && err.message ? err.message : t("errors.generic");
+    return err instanceof Error && err.message
+      ? err.message
+      : t("errors.generic");
   }
 
   async function handleUnlink(id: string) {
@@ -116,7 +118,9 @@ export function LinkedAccountsSettings() {
     setSubmitting(true);
     try {
       const fullPhone = `${COUNTRY_CODE}${digits}`;
-      const { error: updateError } = await supabase.auth.updateUser({ phone: fullPhone });
+      const { error: updateError } = await supabase.auth.updateUser({
+        phone: fullPhone,
+      });
       if (updateError) throw updateError;
       setPendingPhone(fullPhone);
       setCode("");
@@ -154,7 +158,10 @@ export function LinkedAccountsSettings() {
       if (alsoWhatsapp) {
         await fetchApi("/auth/link-account", {
           method: "POST",
-          body: JSON.stringify({ provider: "WHATSAPP", providerId: pendingPhone }),
+          body: JSON.stringify({
+            provider: "WHATSAPP",
+            providerId: pendingPhone,
+          }),
         }).catch(() => {
           // Телефон уже привязан — это самое важное; если WhatsApp-запись
           // не встала (например дубликат), не рушим весь флоу из-за этого.
@@ -189,7 +196,9 @@ export function LinkedAccountsSettings() {
           <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-balance">
             {t("heading")}
           </h1>
-          <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">{t("lead")}</p>
+          <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
+            {t("lead")}
+          </p>
 
           {accounts === null ? (
             <p className="mt-7 text-subtle">{t("loading")}</p>
@@ -227,7 +236,9 @@ export function LinkedAccountsSettings() {
             </ul>
           )}
 
-          {notice ? <p className="mt-4 text-sm text-success">{notice}</p> : null}
+          {notice ? (
+            <p className="mt-4 text-sm text-success">{notice}</p>
+          ) : null}
 
           <div className="mt-6 border-t border-line pt-6">
             {linkStep === "idle" ? (
@@ -247,9 +258,16 @@ export function LinkedAccountsSettings() {
                 </div>
               </div>
             ) : linkStep === "enterPhone" ? (
-              <form onSubmit={handleSendCode} noValidate className="flex flex-col gap-4">
+              <form
+                onSubmit={handleSendCode}
+                noValidate
+                className="flex flex-col gap-4"
+              >
                 <div>
-                  <label htmlFor={phoneId} className="mb-2 block text-[13px] font-bold text-muted">
+                  <label
+                    htmlFor={phoneId}
+                    className="mb-2 block text-[13px] font-bold text-muted"
+                  >
                     {t("linkPhone.label")}
                   </label>
                   <div className="flex items-stretch gap-2.5">
@@ -303,14 +321,23 @@ export function LinkedAccountsSettings() {
                     disabled={submitting}
                     className="h-13 flex-1 rounded-card bg-accent-500 text-sm font-extrabold text-on-accent disabled:pointer-events-none disabled:opacity-70"
                   >
-                    {submitting ? t("linkPhone.ctaLoading") : t("linkPhone.sendCode")}
+                    {submitting
+                      ? t("linkPhone.ctaLoading")
+                      : t("linkPhone.sendCode")}
                   </button>
                 </div>
               </form>
             ) : (
-              <form onSubmit={handleVerifyCode} noValidate className="flex flex-col gap-4">
+              <form
+                onSubmit={handleVerifyCode}
+                noValidate
+                className="flex flex-col gap-4"
+              >
                 <div>
-                  <label htmlFor={codeId} className="mb-2 block text-[13px] font-bold text-muted">
+                  <label
+                    htmlFor={codeId}
+                    className="mb-2 block text-[13px] font-bold text-muted"
+                  >
                     {t("linkPhone.codeLabel")}
                   </label>
                   <input
@@ -320,7 +347,9 @@ export function LinkedAccountsSettings() {
                     autoFocus
                     value={code}
                     onChange={(event) => {
-                      setCode(event.target.value.replace(/\D/g, "").slice(0, 6));
+                      setCode(
+                        event.target.value.replace(/\D/g, "").slice(0, 6),
+                      );
                       if (error) setError(null);
                     }}
                     placeholder="000000"
@@ -347,7 +376,9 @@ export function LinkedAccountsSettings() {
                     disabled={submitting}
                     className="h-13 flex-1 rounded-card bg-accent-500 text-sm font-extrabold text-on-accent disabled:pointer-events-none disabled:opacity-70"
                   >
-                    {submitting ? t("linkPhone.ctaLoading") : t("linkPhone.verifyCta")}
+                    {submitting
+                      ? t("linkPhone.ctaLoading")
+                      : t("linkPhone.verifyCta")}
                   </button>
                 </div>
               </form>

@@ -1,14 +1,20 @@
 "use client";
 
+import { AlertTriangle, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { Badge, type Tone } from "@/components/ui/badge";
+import { DataCard, Eyebrow, HeroStat, SubStat } from "@/components/ui/stat";
 import { cn } from "@/lib/cn";
+import { count, money } from "@/lib/format";
+import type { AppRole } from "@/lib/roles";
+import { canSeeProfit } from "@/lib/roles";
 
 /**
  * Совпадает с `overview()` в бэкенде (`reports.service.ts`).
  * `healthScore` объявлен необязательным намеренно: тип описывает то, что
- * реально пришло по сети, а не то, что обещано схемой. Неполный ответ должен
- * стоить одной карточки, а не всего экрана.
+ * реально пришло по сети, а не то, что обещано схемой. Неполный ответ
+ * должен стоить одной карточки, а не всего экрана.
  */
 export interface Overview {
   revenue: number;
@@ -18,6 +24,12 @@ export interface Overview {
   healthScore?: HealthScore;
 }
 
+/** Часть `/reports/sales` — то, чего нет в `/reports/overview`. */
+export interface SalesSummary {
+  averageCheck: number;
+  itemsSold: number;
+}
+
 /** Соответствует `HealthScore` в `reports.service.ts` бэкенда. */
 interface HealthScore {
   score: number;
@@ -25,108 +37,140 @@ interface HealthScore {
   insights: string[];
 }
 
-const STATUS_TEXT: Record<HealthScore["status"], string> = {
-  good: "text-success",
-  warning: "text-warning",
-  critical: "text-danger",
+const STATUS_TONE: Record<HealthScore["status"], Tone> = {
+  good: "ok",
+  warning: "low",
+  critical: "out",
 };
 
-const STATUS_RING: Record<HealthScore["status"], string> = {
-  good: "border-success",
-  warning: "border-warning",
-  critical: "border-danger",
-};
-
-/** Прочерк вместо `NaN`: пропущенное число — это «неизвестно», а не «ноль». */
-const NO_VALUE = "—";
-
-function formatMoney(value: number | null | undefined): string {
-  if (typeof value !== "number" || !Number.isFinite(value)) return NO_VALUE;
-  return new Intl.NumberFormat("ru-RU").format(Math.round(value));
-}
-
-function formatCount(value: number | null | undefined): string {
-  if (typeof value !== "number" || !Number.isFinite(value)) return NO_VALUE;
-  return String(value);
-}
-
-export function OverviewCards({ overview }: { overview: Overview }) {
+/**
+ * Главный блок дашборда.
+ *
+ * Иерархия здесь — сама суть экрана. Владелец открывает приложение
+ * ради одного числа: сколько заработано. Оно и стоит первым, крупнее
+ * всего остального в два с лишним раза и в фирменном сапфире. Чеки,
+ * средний чек и долг — тем же порядком, но серым и мелким: их читают
+ * вторым взглядом, а не первым.
+ *
+ * Управляющему главным числом ставится выручка, а не чистая прибыль:
+ * закуп и маржа — не его данные (`canSeeProfit`).
+ */
+export function OverviewCards({
+  overview,
+  summary,
+  role,
+  periodLabel,
+}: {
+  overview: Overview;
+  summary: SalesSummary | null;
+  role: AppRole;
+  periodLabel: string;
+}) {
   const t = useTranslations("dashboard.overview");
+  const showProfit = canSeeProfit(role);
   const { healthScore } = overview;
-  const statusColor = healthScore ? STATUS_TEXT[healthScore.status] : "";
-  const ringColor = healthScore ? STATUS_RING[healthScore.status] : "";
 
   return (
-    <div className="flex flex-col gap-6">
-      {healthScore ? (
-        <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[20px] border border-line bg-card p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-          <span className="text-[13px] font-bold tracking-[0.4px] text-subtle uppercase">
-            {t("healthLabel")}
-          </span>
-          <div
-            className={cn(
-              "mt-4 flex size-28 items-center justify-center rounded-full border-4",
-              ringColor,
-            )}
-          >
-            <span className={cn("text-[40px] font-extrabold", statusColor)}>
-              {healthScore.score}
-            </span>
-          </div>
-          <span className={cn("mt-3 text-sm font-bold", statusColor)}>
-            {t(`status.${healthScore.status}`)}
-          </span>
-
-          {healthScore.insights.length > 0 ? (
-            <ul className="mt-6 flex w-full flex-col gap-2 text-left">
-              {healthScore.insights.map((insight) => (
-                <li key={insight} className="rounded-card bg-surface px-4 py-3 text-sm text-ink">
-                  {insight}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ) : null}
-
-      <div className="grid grid-cols-2 gap-4 tablet:grid-cols-4">
-        <StatTile label={t("revenue")} value={formatMoney(overview.revenue)} />
-        <StatTile label={t("netProfit")} value={formatMoney(overview.netProfit)} emphasis />
-        <StatTile label={t("salesCount")} value={formatCount(overview.salesCount)} />
-        <StatTile
-          label={t("openDebt")}
-          value={formatMoney(overview.openDebt)}
-          warn={(overview.openDebt ?? 0) > 0}
+    <div className="flex flex-col gap-4">
+      <DataCard className="p-6 tablet:p-8">
+        <HeroStat
+          label={showProfit ? t("netProfitToday") : t("revenueToday")}
+          value={money(showProfit ? overview.netProfit : overview.revenue)}
+          unit={t("currency")}
+          hint={periodLabel}
         />
-      </div>
+
+        <div className="mt-8 flex flex-wrap gap-x-10 gap-y-6 border-t border-app-line pt-6">
+          <SubStat
+            label={t("salesCount")}
+            value={count(overview.salesCount)}
+          />
+          <SubStat
+            label={t("averageCheck")}
+            value={money(summary?.averageCheck)}
+            unit={t("currency")}
+          />
+          {showProfit ? (
+            <SubStat
+              label={t("revenue")}
+              value={money(overview.revenue)}
+              unit={t("currency")}
+            />
+          ) : null}
+          <SubStat
+            label={t("openDebt")}
+            value={money(overview.openDebt)}
+            unit={t("currency")}
+            tone={overview.openDebt > 0 ? "low" : "dim"}
+          />
+        </div>
+      </DataCard>
+
+      {healthScore ? <HealthCard health={healthScore} /> : null}
     </div>
   );
 }
 
-function StatTile({
-  label,
-  value,
-  emphasis,
-  warn,
-}: {
-  label: string;
-  value: string;
-  emphasis?: boolean;
-  warn?: boolean;
-}) {
+/**
+ * Оценка состояния магазина.
+ *
+ * Раньше это был круг на 112px с числом внутри — самый крупный элемент
+ * страницы. Оценка полезна, но она не то, ради чего сюда заходят, и
+ * забирать у выручки первое место ей нельзя. Теперь это строка со
+ * значком, а объяснения оценки — списком под ней: они и есть польза,
+ * само число без них ничего не говорит.
+ */
+function HealthCard({ health }: { health: HealthScore }) {
+  const t = useTranslations("dashboard.overview");
+  const tone = STATUS_TONE[health.status];
+  const Icon = health.status === "good" ? CheckCircle2 : AlertTriangle;
+
   return (
-    <div className="rounded-card border border-line bg-card p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-      <span className="block text-[12px] font-bold tracking-[0.3px] text-subtle uppercase">
-        {label}
-      </span>
-      <span
-        className={cn(
-          "mt-2 block text-2xl font-extrabold",
-          warn ? "text-danger" : emphasis ? "text-brand-ink" : "text-ink",
-        )}
-      >
-        {value}
-      </span>
-    </div>
+    <DataCard className="p-6 tablet:p-7">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <div className="flex items-center gap-3.5">
+          <span
+            aria-hidden
+            className={cn(
+              "flex size-11 shrink-0 items-center justify-center rounded-xl",
+              tone === "ok"
+                ? "bg-app-ok-soft text-app-ok"
+                : tone === "low"
+                  ? "bg-app-low-soft text-app-low"
+                  : "bg-app-out-soft text-app-out",
+            )}
+          >
+            <Icon className="size-5" />
+          </span>
+          <div className="flex flex-col gap-1">
+            <Eyebrow>{t("healthLabel")}</Eyebrow>
+            <span className="font-mono text-[19px] leading-none font-bold text-app-ink tabular-nums">
+              {health.score}
+              <small className="ml-1 text-[0.55em] font-semibold text-app-dim-2">
+                / 100
+              </small>
+            </span>
+          </div>
+        </div>
+        <Badge tone={tone}>{t(`status.${health.status}`)}</Badge>
+      </div>
+
+      {health.insights.length > 0 ? (
+        <ul className="mt-5 flex flex-col gap-2">
+          {health.insights.map((insight) => (
+            <li
+              key={insight}
+              className="flex items-start gap-2.5 rounded-card bg-app-panel px-4 py-3 text-[13.5px] leading-snug text-app-ink"
+            >
+              <ArrowUpRight
+                className="mt-0.5 size-4 shrink-0 text-app-sapphire"
+                aria-hidden
+              />
+              {insight}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </DataCard>
   );
 }

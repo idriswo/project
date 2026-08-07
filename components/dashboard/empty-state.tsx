@@ -3,7 +3,9 @@
 import { CheckCircle2, Circle, PackagePlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EmptyBlock } from "@/components/ui/empty";
 import { cn } from "@/lib/cn";
 
 interface Props {
@@ -14,11 +16,23 @@ interface Props {
 }
 
 /**
- * Чеклисти "даъвати корманд" ба маълумоти воқеӣ (usersCount > 1) такя
- * мекунад, вале ягон роҳи воқеии даъват дар backend ҳанӯз нест — бинобар
- * ин бидуни матни "тez мешавад" ин банд фиреб медод.
+ * Первый экран нового магазина.
+ *
+ * «Нет данных» здесь было бы правдой и не было бы помощью: магазин
+ * только что завели, данным взяться неоткуда. Поэтому экран не
+ * оправдывается, а показывает три шага до первой продажи и ведёт к
+ * первому из них.
+ *
+ * Пункт «пригласить продавца» опирается на реальные данные
+ * (`usersCount > 1`), но настоящего приглашения в бэкенде ещё нет —
+ * без пометки «скоро» этот пункт обманывал бы.
  */
-export function EmptyState({ tenantName, productsCount, usersCount, salesCount }: Props) {
+export function EmptyState({
+  tenantName,
+  productsCount,
+  usersCount,
+  salesCount,
+}: Props) {
   const t = useTranslations("dashboard.empty");
 
   const checklist = [
@@ -28,50 +42,49 @@ export function EmptyState({ tenantName, productsCount, usersCount, salesCount }
   ] as const;
 
   return (
-    <div className="mx-auto max-w-[560px] rounded-[20px] border border-line bg-card p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.08)] tablet:p-12">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">
-        {t("heading", { name: tenantName })}
-      </h1>
-      <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">{t("lead")}</p>
-
-      <Link
-        href="/inventory/new"
-        className="mt-8 inline-flex h-14.5 items-center justify-center gap-2 rounded-card bg-accent-500 px-8 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0"
-      >
-        <PackagePlus className="size-5" aria-hidden />
-        {t("cta")}
-      </Link>
-
-      <ul className="mt-10 flex flex-col gap-3 text-left">
+    <EmptyBlock
+      art="box"
+      title={t("heading", { name: tenantName })}
+      lead={t("lead")}
+      action={
+        <Button href="/inventory/new" size="xl">
+          <PackagePlus className="size-5" aria-hidden />
+          {t("cta")}
+        </Button>
+      }
+      className="mx-auto max-w-[620px]"
+    >
+      <ul className="flex flex-col gap-2.5 text-left">
         {checklist.map((item) => (
           <li
             key={item.key}
             className={cn(
-              "flex items-center gap-3 rounded-card border border-line px-4.5 py-3.5",
-              item.done ? "bg-success/5" : "bg-surface",
+              "flex items-center gap-3 rounded-card border px-4.5 py-3.5",
+              item.done
+                ? "border-app-ok/20 bg-app-ok-soft"
+                : "border-app-line bg-app-panel",
             )}
           >
             {item.done ? (
-              <CheckCircle2 className="size-5 shrink-0 text-success" aria-hidden />
+              <CheckCircle2
+                className="size-5 shrink-0 text-app-ok"
+                aria-hidden
+              />
             ) : (
-              <Circle className="size-5 shrink-0 text-subtle" aria-hidden />
+              <Circle className="size-5 shrink-0 text-app-dim-2" aria-hidden />
             )}
             <span
               className={cn(
-                "flex-1 font-semibold",
-                item.done ? "text-subtle line-through" : "text-ink",
+                "flex-1 text-[14.5px] font-semibold",
+                item.done ? "text-app-dim line-through" : "text-app-ink",
               )}
             >
               {t(`checklist.${item.key}`)}
             </span>
-            {item.soon && !item.done ? (
-              <span className="shrink-0 rounded-full bg-line px-2.5 py-1 text-[11px] font-bold whitespace-nowrap text-subtle">
-                {t("soon")}
-              </span>
-            ) : null}
+            {item.soon && !item.done ? <Badge>{t("soon")}</Badge> : null}
           </li>
         ))}
       </ul>
-    </div>
+    </EmptyBlock>
   );
 }

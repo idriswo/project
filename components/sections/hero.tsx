@@ -1,6 +1,7 @@
 import { Check, PlayCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { HeroMockup } from "@/components/sections/mockups";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { anchors } from "@/lib/site";
@@ -47,16 +48,25 @@ export function Hero() {
           </ul>
         </div>
 
-        {/* Плейсхолдер мокапа — заменяется на next/image после получения
-            скриншота системы от заказчика (блокер Б-3, задача 1.14). */}
-        <div className="rounded-frame border border-line-alt bg-card p-3.5 shadow-mockup">
-          <div
-            className="flex aspect-[560/420] items-center justify-center rounded-[10px] bg-surface-alt font-mono text-[15px] text-subtle"
-            role="img"
-            aria-label={t("mockupAlt")}
-          >
-            app dashboard mockup
-          </div>
+        {/* Настоящий интерфейс кассы, а не серая заглушка (Этап 18.4).
+            Блокер Б-3 «ждём скриншот системы» снят: приложение построено
+            на Этапе 17, и показывать теперь есть что. Это разметка, а не
+            картинка — значит без лишнего запроса и без сдвига макета. */}
+        <div role="img" aria-label={t("mockupAlt")}>
+          <HeroMockup
+            labels={{
+              tab: t("mockup.tab"),
+              search: t("mockup.search"),
+              product: t("mockup.product"),
+              product2: t("mockup.product2"),
+              color: t("mockup.color"),
+              color2: t("mockup.color2"),
+              curveCaption: t("mockup.curveCaption"),
+              receipt: t("mockup.receipt"),
+              total: t("mockup.total"),
+              sell: t("mockup.sell"),
+            }}
+          />
         </div>
       </Container>
     </section>

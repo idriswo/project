@@ -5,6 +5,9 @@ import { AuthGuard } from "@/components/auth/auth-guard";
 import { VisualPanel } from "@/components/auth/visual-panel";
 import { StorePicker } from "@/components/stores/store-picker";
 import { routing, type Locale } from "@/i18n/routing";
+import { privateMetadata } from "@/lib/privateMetadata";
+
+export const metadata = privateMetadata;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

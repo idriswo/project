@@ -7,8 +7,12 @@ import { inStore, inWarehouse, type Variant } from "@/lib/catalog";
 import { compareSizes } from "@/lib/sizes";
 
 /**
- * Ряд размеров, нарисованный формой, — подпись всего дизайна приложения
- * (решение заказчика 2026-08-07, вариант «Б»).
+ * Ряд размеров, нарисованный формой, — подпись всего дизайна приложения.
+ *
+ * Этап 19: те же столбцы на светлой карточке. Форма ряда не изменилась,
+ * поменялась только подложка — пустая часть столбца стала серой
+ * (`app-track`) вместо белой полупрозрачной, иначе на белой карточке
+ * столбца просто не было бы видно.
  *
  * В одежде первыми заканчиваются средние размеры, и с этого момента вещь
  * перестаёт продаваться. В таблице чисел этот провал приходится вычислять,
@@ -122,8 +126,8 @@ export function SizeCurve({
                 bar.gone
                   ? "text-app-dim-2"
                   : bar.alert
-                    ? "text-app-gold"
-                    : "text-white",
+                    ? "text-[#a8700c]"
+                    : "text-app-ink",
               )}
             >
               {bar.gone ? "—" : lead}
@@ -131,15 +135,15 @@ export function SizeCurve({
 
             <span
               className={cn(
-                "relative overflow-hidden rounded-[5px] bg-white/5",
+                "relative overflow-hidden rounded-[5px] bg-app-track",
                 compact ? "h-14 w-7" : "h-[76px] w-[34px]",
-                bar.alert && "ring-[1.5px] ring-app-gold/55",
+                bar.alert && "ring-[1.5px] ring-app-gold",
               )}
             >
               {behindHeight > 0 ? (
                 <span
                   aria-hidden
-                  className="absolute inset-x-0 bottom-0 bg-[repeating-linear-gradient(-45deg,rgb(255_255_255/0.09)_0_3px,transparent_3px_6px)]"
+                  className="absolute inset-x-0 bottom-0 bg-[repeating-linear-gradient(-45deg,rgb(15_82_186/0.16)_0_3px,transparent_3px_6px)]"
                   style={{ height: `${behindHeight}%` }}
                 />
               ) : null}
@@ -164,7 +168,7 @@ export function SizeCurve({
             <span
               className={cn(
                 "font-mono text-[11.5px] tracking-[0.04em] tabular-nums",
-                bar.alert ? "text-app-gold" : "text-app-dim",
+                bar.alert ? "font-bold text-[#a8700c]" : "text-app-dim",
               )}
             >
               {bar.size}

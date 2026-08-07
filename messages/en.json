@@ -26,7 +26,29 @@
       "fastStart": "Up and running in 5 minutes",
       "yourLanguage": "In your language"
     },
-    "mockupAlt": "The TIM system interface"
+    "mockupAlt": "The TIM system interface",
+    "mockup": {
+      "tab": "Checkout",
+      "tabStock": "Warehouse",
+      "tabCheckout": "Checkout",
+      "tabMoney": "Reports",
+      "tabStaff": "Shifts",
+      "search": "Jacket, jeans, SKU…",
+      "product": "Winter jacket",
+      "product2": "Straight jeans",
+      "color": "Black",
+      "color2": "Blue",
+      "curveCaption": "Blue is on the floor, hatching is in the back",
+      "receipt": "Receipt",
+      "total": "To pay",
+      "sell": "Sell",
+      "revenue": "Revenue",
+      "profit": "Profit",
+      "sales": "Sales",
+      "debt": "Debt",
+      "roleSeller": "Seller",
+      "roleOwner": "Owner"
+    }
   },
   "features": {
     "eyebrow": "Features",
@@ -35,20 +57,46 @@
     "items": {
       "warehouse": {
         "title": "Inventory",
-        "text": "Stock in, stock out and balances per location. Stocktaking without pausing work."
+        "text": "Stock in, stock out and balances per location. Stocktaking without pausing work.",
+        "label": "Stock"
       },
       "checkout": {
         "title": "Till",
-        "text": "Sales, refunds and shifts. The receipt prints and stock is deducted straight away."
+        "text": "Sales, refunds and shifts. The receipt prints and stock is deducted straight away.",
+        "label": "Checkout"
       },
       "accounting": {
         "title": "Accounting",
-        "text": "Income, expenses and cash flow. Reports build themselves — no manual spreadsheets."
+        "text": "Income, expenses and cash flow. Reports build themselves — no manual spreadsheets.",
+        "label": "Money"
       },
       "staff": {
         "title": "Staff",
-        "text": "Role-based access, shifts and each person's sales. You can see who did what."
+        "text": "Role-based access, shifts and each person's sales. You can see who did what.",
+        "label": "People"
       }
+    },
+    "mockup": {
+      "tab": "Checkout",
+      "tabStock": "Warehouse",
+      "tabCheckout": "Checkout",
+      "tabMoney": "Reports",
+      "tabStaff": "Shifts",
+      "search": "Jacket, jeans, SKU…",
+      "product": "Winter jacket",
+      "product2": "Straight jeans",
+      "color": "Black",
+      "color2": "Blue",
+      "curveCaption": "Blue is on the floor, hatching is in the back",
+      "receipt": "Receipt",
+      "total": "To pay",
+      "sell": "Sell",
+      "revenue": "Revenue",
+      "profit": "Profit",
+      "sales": "Sales",
+      "debt": "Debt",
+      "roleSeller": "Seller",
+      "roleOwner": "Owner"
     }
   },
   "industries": {
@@ -58,7 +106,8 @@
     "items": {
       "clothing": {
         "name": "Clothing",
-        "desc": "sizes, colours, collections"
+        "desc": "sizes, colours, collections",
+        "long": "Sizes, colours and stock for every item. You see which size is missing from the floor while the customer is still in the shop."
       },
       "grocery": {
         "name": "Groceries",
@@ -76,7 +125,8 @@
         "name": "Hypermarket",
         "desc": "warehouses and branches"
       }
-    }
+    },
+    "readyLabel": "Built and running"
   },
   "howItWorks": {
     "eyebrow": "How it works",
@@ -336,7 +386,13 @@
     "errors": {
       "generic": "Something went wrong. Please try again."
     },
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "steps": {
+      "welcome": "Welcome",
+      "name": "Name",
+      "type": "Business type",
+      "modules": "Features"
+    }
   },
   "dashboard": {
     "logout": "Sign out",
@@ -366,7 +422,34 @@
       "revenue": "Revenue",
       "netProfit": "Net profit",
       "salesCount": "Sales",
-      "openDebt": "Open debt"
+      "openDebt": "Open debt",
+      "netProfitToday": "Net profit",
+      "revenueToday": "Revenue",
+      "averageCheck": "Average check",
+      "currency": "TJS"
+    },
+    "eyebrow": "Overview",
+    "loadFailedHeading": "No data came back",
+    "period": {
+      "today": "Today",
+      "week": "Week",
+      "month": "Month"
+    },
+    "noAccess": {
+      "heading": "Reports aren't your section",
+      "lead": "This screen shows the store's revenue and profit. Your work starts on a different screen.",
+      "cta": "Go to my work"
+    },
+    "chart": {
+      "title": "Revenue, 30 days",
+      "bestDay": "Best day",
+      "empty": "No sales in this period",
+      "checks": "{count} sales"
+    },
+    "lowStock": {
+      "title": "Running out",
+      "cta": "To warehouse",
+      "out": "none"
     }
   },
   "inventory": {
@@ -444,8 +527,14 @@
       "pos": "Checkout",
       "floor": "Floor",
       "warehouse": "Warehouse",
+      "switchStore": "My stores",
+      "dashboard": "Overview",
+      "profile": "Profile",
+      "logout": "Sign out",
+      "customers": "Customers",
       "reports": "Reports",
-      "switchStore": "My stores"
+      "staff": "Staff",
+      "more": "More sections"
     },
     "curve": {
       "noSizes": "This item has no sizes",
@@ -473,7 +562,15 @@
         "CASH": "Cash",
         "CARD": "Card",
         "TRANSFER": "Transfer"
-      }
+      },
+      "nothingFoundHeading": "Nothing found",
+      "noProductsHeading": "Nothing to sell yet",
+      "clearSearch": "Clear search",
+      "addProduct": "Add a product",
+      "onFloor": "{count} on floor",
+      "outOfStock": "Not on floor",
+      "itemsInCart": "{count} items",
+      "removeLine": "Remove from receipt"
     },
     "stock": {
       "floorEyebrow": "Shop floor",
@@ -502,7 +599,10 @@
       "moveFailed": "Could not start the move. Stock is unchanged — safe to retry.",
       "moveStuck": "Removed {count} from the back but could not add them to the floor: {reason}. Counts no longer match — check by hand.",
       "failed": "That did not work. Check your connection and try again.",
-      "newProduct": "Add product"
+      "newProduct": "Add product",
+      "emptyHeading": "No products yet",
+      "inStock": "In stock",
+      "outOfStock": "Out"
     },
     "newProduct": {
       "eyebrow": "Range",
@@ -536,6 +636,151 @@
         "sizes": "Pick at least one size",
         "empty": "Fill at least one cell — otherwise there is no product",
         "generic": "Could not save. Check your connection and try again."
+      },
+      "basics": "What is it",
+      "basicsHint": "Name and price — the minimum a product needs.",
+      "variants": "Sizes and colours",
+      "variantsHint": "Tick the sizes, add colours — they build the grid on the last step.",
+      "whereHint": "A delivery arrives in one place, all of it.",
+      "costHint": "Cost price is needed to compute profit. May be left empty.",
+      "gridWaiting": "Tick some sizes on step 2 first."
+    },
+    "customers": {
+      "eyebrow": "People",
+      "title": "Customers",
+      "add": "Add",
+      "cancel": "Cancel",
+      "total": "total",
+      "owing": "owing",
+      "debtTotal": "debt total",
+      "name": "Name",
+      "namePlaceholder": "Madina Rahimova",
+      "phone": "Phone",
+      "phoneHint": "Optional",
+      "save": "Save customer",
+      "saving": "Saving…",
+      "searchLabel": "Search customers",
+      "searchPlaceholder": "Name or phone…",
+      "noPhone": "No phone on file",
+      "owes": "Owes {amount}",
+      "points": "{count} points",
+      "empty": {
+        "heading": "No customers yet",
+        "lead": "Add your buyers — then you can sell on credit and award points.",
+        "foundHeading": "Nobody found",
+        "foundLead": "Check the name or number. If the customer is new, add them."
+      },
+      "errors": {
+        "name": "Enter a name — at least two characters",
+        "phoneTaken": "That phone already belongs to another customer",
+        "generic": "Could not save. Check your connection and try again."
+      }
+    },
+    "reports": {
+      "eyebrow": "Numbers",
+      "title": "Reports",
+      "period": {
+        "today": "Today",
+        "week": "Week",
+        "month": "Month"
+      },
+      "noAccess": {
+        "heading": "Reports are not for you",
+        "lead": "This section is for the owner and the manager. Your work is elsewhere.",
+        "cta": "Go to my section"
+      },
+      "sales": {
+        "revenue": "revenue",
+        "count": "receipts",
+        "average": "average check",
+        "items": "items sold",
+        "discount": "discounts"
+      },
+      "profit": {
+        "title": "Profit",
+        "net": "net profit",
+        "margin": "margin",
+        "cost": "cost",
+        "gross": "gross"
+      },
+      "top": {
+        "title": "Selling best",
+        "sold": "{count} pcs",
+        "empty": "No sales in this period."
+      },
+      "low": {
+        "title": "Running out",
+        "left": "{count} left",
+        "empty": "Everything is in stock."
+      },
+      "dead": {
+        "title": "Sitting still",
+        "hint": "no sales in 60 days",
+        "pieces": "{count} pcs",
+        "empty": "Nothing is sitting still."
+      },
+      "sizes": {
+        "title": "Which sizes sell",
+        "empty": "Nothing to judge by yet — no sales."
+      }
+    },
+    "staff": {
+      "eyebrow": "Team",
+      "title": "Staff",
+      "total": "total",
+      "active": "working",
+      "noAccess": {
+        "heading": "Owner only",
+        "lead": "The shop owner adds and disables staff.",
+        "cta": "Go to my section"
+      },
+      "rolesNote": "The backend still tells apart only owner and staff. Narrow roles — cashier, stockkeeper, manager — are resolved in the interface for now and are not real access: the server checks permissions.",
+      "roleLabel": "Role",
+      "roles": {
+        "OWNER": "Owner",
+        "STAFF": "Staff"
+      },
+      "you": "this is you",
+      "off": "disabled",
+      "noName": "No name",
+      "noPhone": "No phone on file",
+      "turnOff": "Disable",
+      "turnOn": "Enable",
+      "failed": "That did not work. Check your connection and try again.",
+      "empty": {
+        "heading": "Nobody but you",
+        "lead": "Once the shop has sellers, they will show up here."
+      }
+    }
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "The short answers",
+    "lead": "If something is missing here, write to us and we will answer.",
+    "items": {
+      "start": {
+        "q": "How long does it take to get going?",
+        "a": "Signing up takes a minute, then you add products and start selling. No server to set up, nothing to install, no engineer to call — TIM runs in the browser."
+      },
+      "training": {
+        "q": "Do sellers need training?",
+        "a": "The checkout screen works by tapping a size, which drops it into the receipt. One shift is usually enough for someone to work confidently."
+      },
+      "data": {
+        "q": "Where is my data kept and who can see it?",
+        "a": "Each shop is kept separate: a staff member sees only their own shop, and only what their role allows. The owner sees everything."
+      },
+      "offline": {
+        "q": "What happens if the internet drops?",
+        "a": "Honestly: right now you need a connection. An offline checkout mode is planned, and we would rather not promise it as finished."
+      },
+      "devices": {
+        "q": "What does it run on?",
+        "a": "Computer, tablet and phone. Checkout is usually used from a tablet at the counter, reports from a computer."
+      },
+      "switch": {
+        "q": "Everything of mine is in a notebook and a spreadsheet. How do I move over?",
+        "a": "Start with the products you sell every day and add the rest as you go. There is no need to move everything at once."
       }
     }
   }

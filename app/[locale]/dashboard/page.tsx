@@ -4,6 +4,9 @@ import { use } from "react";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { DashboardView } from "@/components/dashboard/dashboard-view";
 import { routing, type Locale } from "@/i18n/routing";
+import { privateMetadata } from "@/lib/privateMetadata";
+
+export const metadata = privateMetadata;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

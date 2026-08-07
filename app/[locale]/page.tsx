@@ -4,6 +4,7 @@ import { use } from "react";
 
 import { BackToTop } from "@/components/back-to-top";
 import { CtaStrip } from "@/components/sections/cta-strip";
+import { Faq } from "@/components/sections/faq";
 import { Features } from "@/components/sections/features";
 import { Footer } from "@/components/sections/footer";
 import { Header } from "@/components/sections/header";
@@ -11,6 +12,7 @@ import { Hero } from "@/components/sections/hero";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { Industries } from "@/components/sections/industries";
 import { Pricing } from "@/components/sections/pricing";
+import { JsonLd } from "@/components/seo/json-ld";
 import type { Locale } from "@/i18n/routing";
 
 export default function HomePage({
@@ -23,6 +25,7 @@ export default function HomePage({
 
   return (
     <>
+      <JsonLd locale={locale} />
       <Header locale={locale} />
 
       <main>
@@ -31,6 +34,7 @@ export default function HomePage({
         <Industries />
         <HowItWorks />
         <Pricing />
+        <Faq />
         <CtaStrip />
       </main>
 

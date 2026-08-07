@@ -7,6 +7,7 @@ import Script from "next/script";
 
 import { themeInitScript, ThemeSync } from "@/components/theme-toggle";
 import { routing } from "@/i18n/routing";
+import { absoluteUrl, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 /*
@@ -64,9 +65,50 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
 
+  const title = t("title");
+  const description = t("description");
+
+  /*
+   * hreflang: каждая локаль перечисляет все остальные, иначе поисковик
+   * считает переводы отдельными конкурирующими страницами. `x-default`
+   * указывает на русскую версию — она же отдаётся с корня (`/` → `/ru`).
+   */
+  const languages = Object.fromEntries(
+    routing.locales.map((code) => [code, absoluteUrl(`/${code}`)]),
+  );
+
   return {
-    title: t("title"),
-    description: t("description"),
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
+    alternates: {
+      canonical: absoluteUrl(`/${locale}`),
+      languages: {
+        ...languages,
+        "x-default": absoluteUrl(`/${routing.defaultLocale}`),
+      },
+    },
+    openGraph: {
+      type: "website",
+      siteName: "TIM",
+      title,
+      description,
+      url: absoluteUrl(`/${locale}`),
+      locale,
+      images: [
+        {
+          url: `/${locale}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 

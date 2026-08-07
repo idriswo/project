@@ -6,6 +6,12 @@ import { useEffect, useState } from "react";
 
 import { supabase } from "@/lib/supabase";
 
+/*
+ * `metadata` отсюда не экспортируется: это клиентский компонент, Next такой
+ * экспорт не примет. От индексации страницу закрывает `robots.ts` — она
+ * лежит под `/auth`, а весь этот префикс запрещён (ROADMAP 5.10).
+ */
+
 /**
  * Куда возвращает Google после OAuth (см. `redirectTo` в auth-form.tsx).
  *
@@ -36,9 +42,11 @@ export default function AuthCallbackPage() {
       router.replace("/onboarding");
     }
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) goToOnboarding();
-    });
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) goToOnboarding();
+      },
+    );
 
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) goToOnboarding();

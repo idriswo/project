@@ -1,16 +1,21 @@
 "use client";
 
+import { PackagePlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
-import { AppShell, HeadStat, SectionHead } from "@/components/app/app-shell";
+import { AppShell } from "@/components/app/app-shell";
 import {
   buildBars,
-  SizeCurve,
   type CurveBar,
   type CurveMode,
+  SizeCurve,
 } from "@/components/app/size-curve";
-import { Link } from "@/i18n/navigation";
+import { Badge, stockTone } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EmptyBlock } from "@/components/ui/empty";
+import { ListSkeleton } from "@/components/ui/skeleton";
+import { DataCard, PageHead, SubStat } from "@/components/ui/stat";
 import { fetchApi } from "@/lib/apiClient";
 import {
   colorsOf,
@@ -22,15 +27,21 @@ import {
   type SizeDemand,
 } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
+import { count, initial, money, toneOf } from "@/lib/format";
+import { useAppSession } from "@/lib/session";
 import { moveToFloor, receiveStock } from "@/lib/stock";
 
 /**
  * Зал и склад — один экран, показанный с разных сторон.
  *
- * В зале главное число столбца — витрина, на складе — коробки. Действие тоже
- * зеркальное: в зале «принести не хватающее», на складе «выдать в зал» и
- * «принять поставку». Разводить это на два почти одинаковых компонента
- * значило бы чинить каждую правку дважды.
+ * В зале главное число столбца — витрина, на складе — коробки. Действие
+ * тоже зеркальное: в зале «принести не хватающее», на складе «выдать в
+ * зал» и «принять поставку». Разводить это на два почти одинаковых
+ * компонента значило бы чинить каждую правку дважды.
+ *
+ * Этап 19: список стал карточками с плиткой и значком состояния. Строка
+ * таблицы заставляет читать число, чтобы понять, всё ли в порядке;
+ * значок отвечает на этот вопрос цветом, до чтения.
  */
 
 interface Picked {
@@ -40,17 +51,13 @@ interface Picked {
   amount: string;
 }
 
-function money(value: number): string {
-  return new Intl.NumberFormat("ru-RU").format(Math.round(value));
-}
-
 export function StockView({ mode }: { mode: CurveMode }) {
   const t = useTranslations("app.stock");
+  const session = useAppSession();
   const floor = mode === "store";
 
   const [products, setProducts] = useState<Product[] | null>(null);
   const [popular, setPopular] = useState<Set<string>>(new Set());
-  const [storeName, setStoreName] = useState("");
   const [pickedColor, setPickedColor] = useState<Record<string, string>>({});
 
   const [picked, setPicked] = useState<Picked | null>(null);
@@ -75,10 +82,6 @@ export function StockView({ mode }: { mode: CurveMode }) {
   }, []);
 
   useEffect(() => {
-    fetchApi("/me")
-      .then((me) => setStoreName(me?.tenant?.name ?? ""))
-      .catch(() => {});
-
     fetchApi("/reports/size-analysis?period=month")
       .then((rows: SizeDemand[]) =>
         setPopular(popularSizes(Array.isArray(rows) ? rows : [])),
@@ -155,47 +158,50 @@ export function StockView({ mode }: { mode: CurveMode }) {
   }
 
   return (
-    <AppShell storeName={storeName}>
-      <SectionHead
-        eyebrow={floor ? t("floorEyebrow") : t("warehouseEyebrow")}
-        title={floor ? t("floorTitle") : t("warehouseTitle")}
-      >
-        <HeadStat value={String(all.length)} label={t("models")} />
-        {floor ? (
-          <>
-            <HeadStat value={String(onFloor)} label={t("itemsOnFloor")} />
-            <HeadStat
-              value={String(holes)}
-              label={t("holes")}
-              gold={holes > 0}
-            />
-          </>
-        ) : (
-          <>
-            <HeadStat value={String(inBack)} label={t("itemsInBack")} />
-            <HeadStat
-              value={money(backValue)}
-              label={t("backValue", { currency: t("currency") })}
-            />
-            <Link
-              href="/inventory/new"
-              className="rounded-lg bg-app-gold px-4 py-2.5 text-[11.5px] font-bold tracking-[0.09em] text-on-accent uppercase shadow-[0_10px_22px_-13px_rgb(242_166_35/0.85)] transition-transform duration-150 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:hover:translate-y-0"
-            >
+    <AppShell storeName={session.storeName} role={session.role}>
+      <div className="mx-auto flex w-full max-w-[1040px] flex-col gap-6">
+        <PageHead
+          eyebrow={floor ? t("floorEyebrow") : t("warehouseEyebrow")}
+          title={floor ? t("floorTitle") : t("warehouseTitle")}
+        >
+          {!floor ? (
+            <Button href="/inventory/new" size="md">
+              <PackagePlus className="size-4.5" aria-hidden />
               {t("newProduct")}
-            </Link>
-          </>
-        )}
-      </SectionHead>
+            </Button>
+          ) : null}
+        </PageHead>
 
-      <div className="flex flex-col px-5 pb-10 tablet:px-6">
+        <DataCard className="flex flex-wrap gap-x-10 gap-y-6 p-6 tablet:p-7">
+          <SubStat label={t("models")} value={count(all.length)} />
+          {floor ? (
+            <>
+              <SubStat label={t("itemsOnFloor")} value={count(onFloor)} />
+              <SubStat
+                label={t("holes")}
+                value={count(holes)}
+                tone={holes > 0 ? "low" : "ok"}
+              />
+            </>
+          ) : (
+            <>
+              <SubStat label={t("itemsInBack")} value={count(inBack)} />
+              <SubStat
+                label={t("backValue", { currency: t("currency") })}
+                value={money(backValue)}
+              />
+            </>
+          )}
+        </DataCard>
+
         {note ? (
           <p
             role={note.kind === "bad" ? "alert" : "status"}
             className={cn(
-              "mt-4 rounded-[10px] border px-4 py-3 text-sm",
+              "rounded-card px-4 py-3.5 text-[13.5px] leading-snug font-semibold",
               note.kind === "bad"
-                ? "border-app-gold/40 bg-app-gold/10 text-app-gold"
-                : "border-white/12 bg-white/5 text-app-dim",
+                ? "bg-app-out-soft text-app-out"
+                : "bg-app-ok-soft text-app-ok",
             )}
           >
             {note.text}
@@ -203,175 +209,225 @@ export function StockView({ mode }: { mode: CurveMode }) {
         ) : null}
 
         {products === null ? (
-          <p className="py-8 text-sm text-app-dim">{t("loading")}</p>
+          <ListSkeleton rows={5} />
         ) : all.length === 0 ? (
-          <p className="py-8 text-sm text-app-dim">{t("empty")}</p>
+          <EmptyBlock
+            art="box"
+            title={t("emptyHeading")}
+            lead={t("empty")}
+            action={
+              <Button href="/inventory/new" size="xl">
+                <PackagePlus className="size-5" aria-hidden />
+                {t("newProduct")}
+              </Button>
+            }
+          />
         ) : (
-          all.map((product) => {
-            const colors = colorsOf(product);
-            const color = pickedColor[product.id] ?? colors[0] ?? null;
-            const variants = color
-              ? product.variants.filter((v) => v.color === color)
-              : product.variants;
-            const bars = buildBars(variants, popular);
-            const rowHoles = bars.filter((bar) => bar.alert);
-            const isOpen = picked?.product.id === product.id;
+          <div className="flex flex-col gap-3">
+            {all.map((product) => {
+              const colors = colorsOf(product);
+              const color = pickedColor[product.id] ?? colors[0] ?? null;
+              const variants = color
+                ? product.variants.filter((v) => v.color === color)
+                : product.variants;
+              const bars = buildBars(variants, popular);
+              const rowHoles = bars.filter((bar) => bar.alert);
+              const lead = bars.reduce(
+                (sum, bar) => sum + (floor ? bar.store : bar.warehouse),
+                0,
+              );
+              const isOpen = picked?.product.id === product.id;
 
-            return (
-              <div
-                key={product.id}
-                className="flex flex-col gap-4 border-b border-white/7 py-5 last:border-b-0"
-              >
-                <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
-                  <div className="flex min-w-[176px] flex-col gap-1">
-                    <b className="text-[15.5px] font-bold tracking-[-0.014em]">
-                      {product.name}
-                    </b>
-                    <span className="font-mono text-[11px] tracking-[0.05em] text-app-dim-2 uppercase">
-                      {[
-                        variants[0]?.sku,
-                        color,
-                        floor
-                          ? null
-                          : `${t("cost")} ${money(variants[0]?.costPrice ?? 0)}`,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
+              return (
+                <DataCard key={product.id} className="p-4 tablet:p-5">
+                  <div className="flex items-start gap-4">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "flex size-13 shrink-0 items-center justify-center rounded-xl text-[20px] font-extrabold",
+                        toneOf(product.name),
+                      )}
+                    >
+                      {initial(product.name)}
                     </span>
-                  </div>
 
-                  <SizeCurve
-                    bars={bars}
-                    mode={mode}
-                    onPick={(bar) =>
-                      setPicked({
-                        bar,
-                        product,
-                        amount: String(
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      <b className="truncate text-[16px] leading-tight font-extrabold tracking-[-0.015em] text-app-ink">
+                        {product.name}
+                      </b>
+                      <span className="truncate font-mono text-[11.5px] tracking-[0.05em] text-app-dim-2 uppercase">
+                        {[
+                          variants[0]?.sku,
+                          color,
                           floor
-                            ? Math.min(
-                                bar.warehouse,
-                                Math.max(1, bar.warehouse),
-                              )
-                            : 1,
-                        ),
-                      })
-                    }
-                  />
-
-                  <div className="ml-auto flex flex-wrap items-center gap-2.5">
-                    {floor && rowHoles.length === 0 ? (
-                      <span className="rounded-lg border border-white/16 px-4 py-2.5 text-[11.5px] font-semibold tracking-[0.09em] text-app-dim uppercase">
-                        {t("rowFine")}
-                      </span>
-                    ) : null}
-                    {floor && rowHoles.length > 0 ? (
-                      <span className="rounded-lg border border-app-gold/40 bg-app-gold/10 px-4 py-2.5 text-[11.5px] font-semibold tracking-[0.09em] text-app-gold uppercase">
-                        {t("rowHoles", { count: rowHoles.length })}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-
-                {colors.length > 1 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {colors.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => {
-                          setPickedColor((prev) => ({
-                            ...prev,
-                            [product.id]: c,
-                          }));
-                          setPicked(null);
-                        }}
-                        aria-pressed={c === color}
-                        className={cn(
-                          "rounded-full border px-3 py-1.5 text-[12px] transition-colors duration-150",
-                          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire-lift",
-                          c === color
-                            ? "border-white/50 bg-white/7 text-white"
-                            : "border-white/13 text-app-dim hover:text-white",
-                        )}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
-
-                {isOpen && picked ? (
-                  <div className="flex flex-wrap items-end gap-4 rounded-[10px] border border-white/12 bg-white/4 p-4">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-mono text-[10.5px] tracking-[0.16em] text-app-dim-2 uppercase">
-                        {[picked.bar.variant.color, picked.bar.size]
+                            ? null
+                            : `${t("cost")} ${money(variants[0]?.costPrice ?? 0)}`,
+                        ]
                           .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                      <span className="text-[13px] text-app-dim">
-                        {t("standing", {
-                          store: picked.bar.store,
-                          warehouse: picked.bar.warehouse,
-                        })}
+                          .join(" · ") || "—"}
                       </span>
                     </div>
 
-                    <label className="flex flex-col gap-1.5">
-                      <span className="font-mono text-[10.5px] tracking-[0.16em] text-app-dim-2 uppercase">
-                        {t("howMany")}
+                    <div className="flex shrink-0 flex-col items-end gap-1.5">
+                      <span className="font-mono text-[18px] leading-none font-bold text-app-ink tabular-nums">
+                        {count(lead)}
                       </span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        autoFocus
-                        value={picked.amount}
-                        onChange={(event) =>
-                          setPicked({
-                            ...picked,
-                            amount: event.target.value.replace(/\D/g, ""),
-                          })
-                        }
-                        className="w-24 rounded-lg border border-white/14 bg-white/5 px-3 py-2 text-right font-mono text-[14px] text-white tabular-nums transition-colors duration-150 outline-none focus:border-app-sapphire-lift"
-                      />
-                    </label>
-
-                    <div className="flex flex-wrap gap-2.5">
-                      <button
-                        type="button"
-                        disabled={busy || picked.bar.warehouse === 0}
-                        onClick={() => commit("move")}
-                        className="rounded-lg bg-app-gold px-4 py-2.5 text-[11.5px] font-bold tracking-[0.09em] text-on-accent uppercase shadow-[0_10px_22px_-13px_rgb(242_166_35/0.85)] transition-opacity duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:pointer-events-none disabled:opacity-45"
-                      >
-                        {busy ? t("working") : t("moveToFloor")}
-                      </button>
-
-                      {!floor ? (
-                        <button
-                          type="button"
-                          disabled={busy}
-                          onClick={() => commit("receive")}
-                          className="rounded-lg border border-white/16 px-4 py-2.5 text-[11.5px] font-semibold tracking-[0.09em] text-app-dim uppercase transition-colors duration-150 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire-lift disabled:pointer-events-none disabled:opacity-45"
-                        >
-                          {t("receive")}
-                        </button>
-                      ) : null}
-
-                      <button
-                        type="button"
-                        onClick={() => setPicked(null)}
-                        className="rounded-lg px-3 py-2.5 text-[11.5px] font-semibold tracking-[0.09em] text-app-dim-2 uppercase transition-colors duration-150 hover:text-app-dim focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire-lift"
-                      >
-                        {t("cancel")}
-                      </button>
+                      {floor && rowHoles.length > 0 ? (
+                        <Badge tone="gold">
+                          {t("rowHoles", { count: rowHoles.length })}
+                        </Badge>
+                      ) : (
+                        <Badge tone={stockTone(lead)}>
+                          {lead > 0
+                            ? floor
+                              ? t("rowFine")
+                              : t("inStock")
+                            : t("outOfStock")}
+                        </Badge>
+                      )}
                     </div>
                   </div>
-                ) : null}
-              </div>
-            );
-          })
+
+                  {colors.length > 1 ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {colors.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => {
+                            setPickedColor((prev) => ({
+                              ...prev,
+                              [product.id]: c,
+                            }));
+                            setPicked(null);
+                          }}
+                          aria-pressed={c === color}
+                          className={cn(
+                            "rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold",
+                            "transition-[background-color,border-color,color] duration-150",
+                            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire",
+                            c === color
+                              ? "border-app-sapphire bg-app-sapphire-soft text-app-sapphire"
+                              : "border-app-line-strong text-app-dim hover:border-app-sapphire hover:text-app-sapphire",
+                          )}
+                        >
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  <div className="mt-4 border-t border-app-line pt-4">
+                    <SizeCurve
+                      bars={bars}
+                      mode={mode}
+                      onPick={(bar) =>
+                        setPicked({
+                          bar,
+                          product,
+                          amount: String(
+                            floor ? Math.max(1, bar.warehouse) : 1,
+                          ),
+                        })
+                      }
+                    />
+                  </div>
+
+                  {isOpen && picked ? (
+                    <MovePanel
+                      picked={picked}
+                      floor={floor}
+                      busy={busy}
+                      onAmount={(amount) => setPicked({ ...picked, amount })}
+                      onMove={() => commit("move")}
+                      onReceive={() => commit("receive")}
+                      onCancel={() => setPicked(null)}
+                    />
+                  ) : null}
+                </DataCard>
+              );
+            })}
+          </div>
         )}
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * Панель перевода. Открывается по конкретному столбцу — «вынести всё»
+ * звучало бы удобно, но магазин так не работает: из шести штук выносят
+ * две (решение 17.6.2).
+ */
+function MovePanel({
+  picked,
+  floor,
+  busy,
+  onAmount,
+  onMove,
+  onReceive,
+  onCancel,
+}: {
+  picked: Picked;
+  floor: boolean;
+  busy: boolean;
+  onAmount: (value: string) => void;
+  onMove: () => void;
+  onReceive: () => void;
+  onCancel: () => void;
+}) {
+  const t = useTranslations("app.stock");
+
+  return (
+    <div className="mt-4 flex flex-wrap items-end gap-4 rounded-card border border-app-line bg-app-panel p-4">
+      <div className="flex flex-col gap-1">
+        <span className="font-mono text-[11px] tracking-[0.14em] text-app-dim-2 uppercase">
+          {[picked.bar.variant.color, picked.bar.size]
+            .filter(Boolean)
+            .join(" · ")}
+        </span>
+        <span className="text-[13px] text-app-dim">
+          {t("standing", {
+            store: picked.bar.store,
+            warehouse: picked.bar.warehouse,
+          })}
+        </span>
+      </div>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="font-mono text-[11px] tracking-[0.14em] text-app-dim-2 uppercase">
+          {t("howMany")}
+        </span>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoFocus
+          value={picked.amount}
+          onChange={(event) => onAmount(event.target.value.replace(/\D/g, ""))}
+          className="h-11 w-24 rounded-card border-[1.5px] border-app-line-strong bg-app-card px-3 text-right font-mono text-[15px] font-bold text-app-ink tabular-nums transition-[border-color,box-shadow] duration-150 outline-none focus:border-app-sapphire focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
+        />
+      </label>
+
+      <div className="flex flex-wrap gap-2.5">
+        <Button
+          variant="sapphire"
+          size="md"
+          disabled={busy || picked.bar.warehouse === 0}
+          onClick={onMove}
+        >
+          {busy ? t("working") : t("moveToFloor")}
+        </Button>
+
+        {!floor ? (
+          <Button variant="quiet" size="md" disabled={busy} onClick={onReceive}>
+            {t("receive")}
+          </Button>
+        ) : null}
+
+        <Button variant="ghost" size="md" onClick={onCancel}>
+          {t("cancel")}
+        </Button>
+      </div>
+    </div>
   );
 }

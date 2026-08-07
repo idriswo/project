@@ -1,10 +1,12 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, ChevronLeft, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ChoiceCard, Field, TextInput } from "@/components/ui/field";
+import { Link, useRouter } from "@/i18n/navigation";
 import { setActiveTenantId } from "@/lib/activeTenant";
 import { fetchApi } from "@/lib/apiClient";
 import { cn } from "@/lib/cn";
@@ -24,18 +26,24 @@ interface Plan {
   comingSoon: boolean;
 }
 
-const TOTAL_STEPS = 4;
+const STEPS = ["welcome", "name", "type", "modules"] as const;
+const TOTAL_STEPS = STEPS.length;
 
 /**
- * Мастер створення дӯкон дар 4 қадам: хушомадгӯӣ → номи мағоза →
- * намуди тиҷорат → функсияҳои лозима. Дар охир `POST /tenants`, баъд
- * барои ҳар функсияи пулакии интихобшуда `POST /billing/subscribe`
- * (MVP: пардохти воқеӣ нест — модул ҳамчун 14-рӯза TRIAL фаъол мешавад,
- * бинобар ин саҳифаи алоҳидаи "checkout" сохта нашуд — он ҷои холии
- * бидуни маъно мешуд).
+ * Мастер создания магазина в 4 шага: приветствие → название →
+ * тип бизнеса → нужные функции. В конце `POST /tenants`, затем на каждую
+ * выбранную платную функцию `POST /billing/subscribe` (MVP: настоящей
+ * оплаты нет — модуль включается как 14-дневный TRIAL, поэтому отдельной
+ * страницы «оплата» нет, она была бы пустой).
  *
- * `businessType` (Қадам 3) дар backend ҳанӯз ҷой надорад — танҳо дар
- * интерфейс сабт мешавад, монанди `role`/`neededModules`-и шакли кӯҳна.
+ * `businessType` (шаг 3) в бэкенде пока не хранится — остаётся только на
+ * клиенте, как `role`/`neededModules` старой формы.
+ *
+ * Дизайн (Этап 19): один вопрос на шаг. Полоса прогресса подписана
+ * названиями шагов, а не только процентами: «шаг 2 из 4» говорит, сколько
+ * осталось, но не говорит, что будет дальше, и человек не понимает, стоит
+ * ли начинать. Кнопка продолжения — янтарная и на всю ширину: на этом
+ * экране она всегда единственное главное действие.
  */
 export function OnboardingWizard() {
   const t = useTranslations("onboarding");
@@ -51,11 +59,11 @@ export function OnboardingWizard() {
   /** Есть ли куда возвращаться: сюда попадают и с пустым аккаунтом, и по «Создать ещё». */
   const [hasStores, setHasStores] = useState(false);
 
-  const nameInputId = useId();
-
   useEffect(() => {
     fetchApi("/me")
-      .then((me) => setHasStores(Array.isArray(me?.profiles) && me.profiles.length > 0))
+      .then((me) =>
+        setHasStores(Array.isArray(me?.profiles) && me.profiles.length > 0),
+      )
       .catch(() => {
         // Не смогли выяснить — не показываем ссылку, чем вести в пустой список.
       });
@@ -64,11 +72,13 @@ export function OnboardingWizard() {
   useEffect(() => {
     fetchApi("/billing/plans")
       .then(({ plans: allPlans }: { plans: Plan[] }) => {
-        setPlans(allPlans.filter((p) => !p.includedWithRegistration && !p.comingSoon));
+        setPlans(
+          allPlans.filter((p) => !p.includedWithRegistration && !p.comingSoon),
+        );
       })
       .catch(() => {
-        // Тарифҳо танҳо барои намоиш дар қадами 4 лозиманд — агар нашуд,
-        // қадами 4 бе чекбокс нишон дода мешавад, ин ҷараёнро намебандад.
+        // Тарифы нужны только для показа на шаге 4 — если не пришли,
+        // шаг 4 рисуется без флажков, поток это не ломает.
       });
   }, []);
 
@@ -106,14 +116,18 @@ export function OnboardingWizard() {
       let tenant: { id: string } | null = null;
       let attempt = 0;
 
-      // Коллизияи slug (хеле кам эҳтимол дорад — тасодуфист) — якчанд бор
-      // бо slug-и нав кӯшиш мекунем, то корбар онро набинад.
+      // Коллизия slug (маловероятна — он случайный) — пробуем несколько
+      // раз с новым slug, чтобы пользователь этого не увидел.
       while (!tenant && attempt < 3) {
         attempt += 1;
         try {
           const { tenant: created } = await fetchApi("/tenants", {
             method: "POST",
-            body: JSON.stringify({ name: name.trim(), slug: slugify(name), industry: "CLOTHING" }),
+            body: JSON.stringify({
+              name: name.trim(),
+              slug: slugify(name),
+              industry: "CLOTHING",
+            }),
           });
           tenant = created;
         } catch (err) {
@@ -127,9 +141,8 @@ export function OnboardingWizard() {
         setActiveTenantId(tenant.id);
       }
 
-      // Модулҳои пулакии интихобшуда — MVP: 14 рӯз TRIAL, бе пардохти воқеӣ.
-      // Хатои алоҳидаи як модул ҷараёнро намебандад — соҳиб баъдтар аз
-      // dashboard дубора кӯшиш карда метавонад.
+      // Выбранные платные модули — MVP: 14 дней TRIAL, без реальной оплаты.
+      // Ошибка одного модуля не рвёт поток — владелец повторит из дашборда.
       await Promise.allSettled(
         selectedModules.map((moduleKey) =>
           fetchApi("/billing/subscribe", {
@@ -152,120 +165,78 @@ export function OnboardingWizard() {
   }
 
   return (
-    <div className="flex min-w-0 flex-col p-6 tablet:p-14">
-      <div className="mb-8.5">
-        <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-subtle">
-          <span>{t("stepLabel", { current: step, total: TOTAL_STEPS })}</span>
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-line">
-          <div
-            className="h-full rounded-full bg-brand-600 transition-[width] duration-300 ease-out"
-            style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-          />
-        </div>
-      </div>
+    <div className="flex min-w-0 flex-col p-6 tablet:p-12">
+      <Progress step={step} />
 
-      <div className="flex flex-1 flex-col justify-center">
+      <div className="flex flex-1 flex-col justify-center pt-9">
         {step === 1 ? (
           <div className="text-center">
-            <h1 className="text-[30px] font-extrabold tracking-[-0.8px] text-balance">
+            <span
+              aria-hidden
+              className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-app-gold-soft text-app-gold"
+            >
+              <Sparkles className="size-7" />
+            </span>
+            <h1 className="mt-6 text-[30px] leading-tight font-extrabold tracking-[-0.03em] text-balance">
               {t("welcome.heading")}
             </h1>
-            <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
+            <p className="mt-3 text-body leading-normal text-pretty text-app-dim">
               {t("welcome.lead")}
             </p>
-            <button
-              type="button"
-              onClick={goNext}
-              className="mt-8.5 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0"
-            >
-              {t("welcome.cta")}
-            </button>
           </div>
         ) : null}
 
         {step === 2 ? (
           <div>
-            <div className="text-center">
-              <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">
-                {t("storeName.heading")}
-              </h1>
-              <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
-                {t("storeName.lead")}
-              </p>
-            </div>
-
-            <div className="mt-8.5">
-              <label
-                htmlFor={nameInputId}
-                className="mb-2.5 block text-[13px] font-bold tracking-[0.2px] text-muted"
-              >
-                {t("storeName.label")}
-              </label>
-              <input
-                id={nameInputId}
-                type="text"
-                autoFocus
-                value={name}
-                onChange={(event) => {
-                  setName(event.target.value);
-                  if (error) setError(null);
-                }}
-                placeholder={t("storeName.placeholder")}
-                aria-invalid={error ? true : undefined}
-                className="h-15 w-full rounded-card border-[1.5px] border-field-border bg-field px-4.5 font-bold transition-[border-color,box-shadow] duration-150 outline-none placeholder:font-medium placeholder:text-field-placeholder focus:border-brand-600 focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
-              />
-              {error ? (
-                <p role="alert" className="mt-2.5 text-sm text-danger">
-                  {error}
-                </p>
-              ) : null}
-            </div>
+            <StepHead
+              heading={t("storeName.heading")}
+              lead={t("storeName.lead")}
+            />
+            <Field label={t("storeName.label")} error={error} className="mt-8">
+              {(props) => (
+                <TextInput
+                  {...props}
+                  type="text"
+                  autoFocus
+                  value={name}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    if (error) setError(null);
+                  }}
+                  placeholder={t("storeName.placeholder")}
+                />
+              )}
+            </Field>
           </div>
         ) : null}
 
         {step === 3 ? (
           <div>
-            <div className="text-center">
-              <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">
-                {t("businessType.heading")}
-              </h1>
-              <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
-                {t("businessType.lead")}
-              </p>
-            </div>
-
-            <div className="mt-8.5 flex flex-col gap-3">
+            <StepHead
+              heading={t("businessType.heading")}
+              lead={t("businessType.lead")}
+            />
+            <div className="mt-8 flex flex-col gap-3">
               {BUSINESS_TYPES.map((type) => {
-                const isSelected = businessType === type;
                 const key = type.toLowerCase();
+                const selected = businessType === type;
 
                 return (
-                  <button
+                  <ChoiceCard
                     key={type}
-                    type="button"
+                    selected={selected}
+                    title={t(`businessType.${key}.name`)}
+                    description={t(`businessType.${key}.desc`)}
                     onClick={() => setBusinessType(type)}
-                    aria-pressed={isSelected}
-                    className={cn(
-                      "flex items-center justify-between rounded-card border-[1.5px] px-5 py-4 text-left transition-[border-color,box-shadow,background] duration-150",
-                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",
-                      isSelected
-                        ? "border-brand-600 bg-brand-50 shadow-[0_10px_22px_-14px_rgb(15_82_186/0.5)]"
-                        : "border-field-border bg-card hover:border-brand-600 hover:shadow-[0_10px_22px_-14px_rgb(15_82_186/0.5)]",
-                    )}
-                  >
-                    <span>
-                      <span className="block font-extrabold text-ink">
-                        {t(`businessType.${key}.name`)}
-                      </span>
-                      <span className="mt-0.5 block text-sm text-subtle">
-                        {t(`businessType.${key}.desc`)}
-                      </span>
-                    </span>
-                    {isSelected ? (
-                      <Check className="size-5 shrink-0 text-brand-ink" aria-hidden />
-                    ) : null}
-                  </button>
+                    right={
+                      selected ? (
+                        <Check
+                          className="size-5 shrink-0 text-app-sapphire"
+                          aria-hidden
+                        />
+                      ) : null
+                    }
+                  />
                 );
               })}
             </div>
@@ -274,100 +245,96 @@ export function OnboardingWizard() {
 
         {step === 4 ? (
           <div>
-            <div className="text-center">
-              <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">
-                {t("features.heading")}
-              </h1>
-              <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
-                {t("features.lead")}
-              </p>
-            </div>
+            <StepHead
+              heading={t("features.heading")}
+              lead={t("features.lead")}
+            />
 
-            <div className="mt-8.5 flex flex-col gap-3">
+            <div className="mt-8 flex flex-col gap-3">
               {plans.map((plan) => {
-                const isChecked = selectedModules.includes(plan.key);
+                const checked = selectedModules.includes(plan.key);
 
                 return (
-                  <label
+                  <ChoiceCard
                     key={plan.key}
-                    className={cn(
-                      "flex cursor-pointer items-center gap-3.5 rounded-card border-[1.5px] px-5 py-4 transition-[border-color,box-shadow] duration-150",
-                      isChecked
-                        ? "border-brand-600 bg-brand-50"
-                        : "border-field-border bg-card hover:border-brand-600",
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => toggleModule(plan.key)}
-                      className="size-5 shrink-0 rounded border-field-border text-brand-600 focus:ring-brand-600"
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-extrabold text-ink">{plan.name}</span>
-                      <span className="mt-0.5 block text-sm text-subtle">{plan.description}</span>
-                    </span>
-                    <span className="shrink-0 text-sm font-bold whitespace-nowrap text-brand-ink">
-                      {plan.pricePerMonth} {t("features.priceSuffix")}
-                    </span>
-                  </label>
+                    selected={checked}
+                    title={plan.name}
+                    description={plan.description}
+                    onClick={() => toggleModule(plan.key)}
+                    right={
+                      <span className="flex shrink-0 items-center gap-3">
+                        <span className="font-mono text-[13px] font-bold whitespace-nowrap text-app-dim tabular-nums">
+                          {plan.pricePerMonth} {t("features.priceSuffix")}
+                        </span>
+                        <span
+                          aria-hidden
+                          className={cn(
+                            "flex size-6 items-center justify-center rounded-md border-[1.5px] transition-colors duration-150",
+                            checked
+                              ? "border-app-sapphire bg-app-sapphire text-white"
+                              : "border-app-line-strong",
+                          )}
+                        >
+                          {checked ? <Check className="size-3.5" /> : null}
+                        </span>
+                      </span>
+                    }
+                  />
                 );
               })}
 
               {plans.length > 0 ? (
-                <p className="mt-1 text-center text-sm text-subtle">
+                <p className="mt-1 text-center text-[13px] text-app-dim-2">
                   {t("features.trialNote", { days: 14 })}
                 </p>
               ) : null}
             </div>
 
             {error ? (
-              <p role="alert" className="mt-4 text-center text-sm text-danger">
+              <p role="alert" className="mt-4 text-center text-sm text-app-out">
                 {error}
               </p>
             ) : null}
           </div>
         ) : null}
 
-        <div className="mt-8.5 flex items-center gap-3">
+        {/* ── Действия ──────────────────────────────────────────── */}
+        <div className="mt-9 flex items-center gap-3">
           {step > 1 ? (
             <button
               type="button"
               onClick={goBack}
               disabled={loading}
-              className="h-14.5 rounded-card border-[1.5px] border-field-border px-6 font-bold text-ink transition-colors duration-150 hover:border-brand-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:pointer-events-none disabled:opacity-70"
+              aria-label={t("back")}
+              className="flex h-15 w-15 shrink-0 items-center justify-center rounded-card border-[1.5px] border-app-line-strong text-app-dim transition-colors duration-150 hover:border-app-sapphire hover:text-app-sapphire focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire disabled:pointer-events-none disabled:opacity-50"
             >
-              {t("back")}
+              <ChevronLeft className="size-5" aria-hidden />
             </button>
           ) : null}
 
-          {step > 1 && step < TOTAL_STEPS ? (
-            <button
-              type="button"
-              onClick={goNext}
-              className="h-14.5 flex-1 rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0"
-            >
-              {step === 2 ? t("storeName.cta") : t("businessType.cta")}
-            </button>
-          ) : null}
-
-          {step === TOTAL_STEPS ? (
-            <button
-              type="button"
-              onClick={handleFinish}
-              disabled={loading}
-              className="h-14.5 flex-1 rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
-            >
-              {loading ? t("features.ctaLoading") : t("features.cta")}
-            </button>
-          ) : null}
+          <Button
+            size="xl"
+            onClick={step === TOTAL_STEPS ? handleFinish : goNext}
+            disabled={loading}
+            className="w-full flex-1"
+          >
+            {step === 1
+              ? t("welcome.cta")
+              : step === 2
+                ? t("storeName.cta")
+                : step === 3
+                  ? t("businessType.cta")
+                  : loading
+                    ? t("features.ctaLoading")
+                    : t("features.cta")}
+          </Button>
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           {hasStores ? (
             <Link
               href="/stores"
-              className="text-sm font-semibold text-subtle transition-colors hover:text-brand-ink"
+              className="text-sm font-semibold text-app-dim transition-colors hover:text-app-sapphire"
             >
               {t("backToStores")}
             </Link>
@@ -375,11 +342,60 @@ export function OnboardingWizard() {
           <button
             type="button"
             onClick={handleLogout}
-            className="text-sm font-semibold text-subtle transition-colors hover:text-brand-ink"
+            className="text-sm font-semibold text-app-dim transition-colors hover:text-app-sapphire"
           >
             {t("logout")}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function StepHead({ heading, lead }: { heading: string; lead: string }) {
+  return (
+    <div>
+      <h1 className="text-[26px] leading-tight font-extrabold tracking-[-0.028em] text-balance">
+        {heading}
+      </h1>
+      <p className="mt-2.5 text-body leading-normal text-pretty text-app-dim">
+        {lead}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Полоса прогресса с подписанными шагами.
+ *
+ * Названия видны только на широком экране: на телефоне четыре подписи
+ * либо режутся, либо мельчают до нечитаемого. Там остаётся «шаг 2 из 4»
+ * и сама полоса — этого хватает, чтобы понять, сколько осталось.
+ */
+function Progress({ step }: { step: number }) {
+  const t = useTranslations("onboarding");
+
+  return (
+    <div>
+      <div className="flex h-1.5 gap-1.5">
+        {STEPS.map((key, index) => (
+          <span
+            key={key}
+            className={cn(
+              "h-full flex-1 rounded-full transition-colors duration-200",
+              index < step ? "bg-app-sapphire" : "bg-app-track",
+            )}
+          />
+        ))}
+      </div>
+
+      <div className="mt-3 flex items-center justify-between gap-4">
+        <span className="text-[12.5px] font-bold text-app-dim-2">
+          {t("stepLabel", { current: step, total: TOTAL_STEPS })}
+        </span>
+        <span className="hidden text-[12.5px] font-bold text-app-sapphire tablet:block">
+          {t(`steps.${STEPS[step - 1]}`)}
+        </span>
       </div>
     </div>
   );
