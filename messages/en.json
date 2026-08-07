@@ -311,9 +311,18 @@
     "businessType": {
       "heading": "What type of business is this?",
       "lead": "This helps us tailor the interface for you.",
-      "retail": { "name": "Retail", "desc": "One store, selling to customers" },
-      "wholesale": { "name": "Wholesale", "desc": "Selling to other stores" },
-      "network": { "name": "Chain/Branches", "desc": "Multiple points of sale" },
+      "retail": {
+        "name": "Retail",
+        "desc": "One store, selling to customers"
+      },
+      "wholesale": {
+        "name": "Wholesale",
+        "desc": "Selling to other stores"
+      },
+      "network": {
+        "name": "Chain/Branches",
+        "desc": "Multiple points of sale"
+      },
       "cta": "Continue"
     },
     "features": {
@@ -428,5 +437,106 @@
     "languageSwitcher": "Interface language",
     "themeToDark": "Dark theme",
     "themeToLight": "Light theme"
+  },
+  "app": {
+    "nav": {
+      "label": "Sections",
+      "pos": "Checkout",
+      "floor": "Floor",
+      "warehouse": "Warehouse",
+      "reports": "Reports",
+      "switchStore": "My stores"
+    },
+    "curve": {
+      "noSizes": "This item has no sizes",
+      "groupLabel": "Size run",
+      "barLabel": "{size} — {store} on the floor, {warehouse} in the back"
+    },
+    "pos": {
+      "searchLabel": "Search products",
+      "searchPlaceholder": "Jacket, jeans, SKU…",
+      "loading": "Loading…",
+      "nothingFound": "Nothing found",
+      "noProducts": "No products yet",
+      "currency": "TJS",
+      "cart": "Receipt",
+      "cartEmpty": "Tap a size to add an item",
+      "less": "Remove one",
+      "more": "Add one",
+      "discount": "Discount",
+      "toPay": "To pay",
+      "sell": "Sell",
+      "selling": "Recording…",
+      "sold": "Sold for {total}",
+      "saveFailed": "Could not record the sale. Check your connection and try again.",
+      "payment": {
+        "CASH": "Cash",
+        "CARD": "Card",
+        "TRANSFER": "Transfer"
+      }
+    },
+    "stock": {
+      "floorEyebrow": "Shop floor",
+      "floorTitle": "Floor",
+      "warehouseEyebrow": "Back room",
+      "warehouseTitle": "Warehouse",
+      "models": "models",
+      "itemsOnFloor": "items on floor",
+      "itemsInBack": "items in back",
+      "holes": "gaps in bestsellers",
+      "backValue": "{currency} in stock",
+      "currency": "TJS",
+      "cost": "cost",
+      "loading": "Loading…",
+      "empty": "No products yet",
+      "rowFine": "Run is even",
+      "rowHoles": "{count} unfilled",
+      "standing": "{store} on the floor, {warehouse} in the back",
+      "howMany": "How many",
+      "moveToFloor": "Move to floor",
+      "receive": "Receive into stock",
+      "cancel": "Cancel",
+      "working": "Working…",
+      "moved": "Moved to the floor: {count}",
+      "received": "Received into stock: {count}",
+      "moveFailed": "Could not start the move. Stock is unchanged — safe to retry.",
+      "moveStuck": "Removed {count} from the back but could not add them to the floor: {reason}. Counts no longer match — check by hand.",
+      "failed": "That did not work. Check your connection and try again.",
+      "newProduct": "Add product"
+    },
+    "newProduct": {
+      "eyebrow": "Range",
+      "title": "New product",
+      "name": "Name",
+      "namePlaceholder": "Winter jacket",
+      "brand": "Brand",
+      "sku": "SKU",
+      "price": "Price",
+      "cost": "Cost",
+      "sizes": "Sizes",
+      "customSize": "Custom size",
+      "add": "Add",
+      "colors": "Colours",
+      "colorPlaceholder": "Black",
+      "removeColor": "Remove colour",
+      "noColors": "No colours — one size run",
+      "noColorRow": "No colour",
+      "where": "Where it goes",
+      "whereOption": {
+        "warehouse": "Into the back",
+        "store": "Onto the floor"
+      },
+      "grid": "How many of what",
+      "gridHint": "An empty cell means that combination does not exist. No need to type zero.",
+      "save": "Save product",
+      "saving": "Saving…",
+      "errors": {
+        "name": "Enter a name — at least two characters",
+        "price": "Enter a price",
+        "sizes": "Pick at least one size",
+        "empty": "Fill at least one cell — otherwise there is no product",
+        "generic": "Could not save. Check your connection and try again."
+      }
+    }
   }
 }

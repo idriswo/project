@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -18,6 +18,19 @@ const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-manrope",
+  display: "swap",
+});
+
+/*
+ * IBM Plex Mono — только числа приложения: остатки, артикулы, деньги.
+ * Причина функциональная, а не вкусовая: остатки читают колонкой, и
+ * цифры обязаны стоять друг под другом. Рядом с геометричным Manrope
+ * её промышленная интонация ещё и слышна (Этап 17, вариант «Б»).
+ */
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -74,7 +87,11 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={manrope.variable} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={`${manrope.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
+    >
       <body className="bg-page font-sans antialiased">
         {/* Выставляет сохранённую тему до первой отрисовки, иначе страница
             мигает светлой темой перед загрузкой React. Через next/script,
