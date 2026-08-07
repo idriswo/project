@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AlertTriangle, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -144,10 +144,12 @@ function HealthCard({ health }: { health: HealthScore }) {
           </span>
           <div className="flex flex-col gap-1">
             <Eyebrow>{t("healthLabel")}</Eyebrow>
-            <span className="font-mono text-[19px] leading-none font-bold text-app-ink tabular-nums">
+            <span className="num font-mono text-[19px] leading-none font-bold text-app-ink">
               {health.score}
-              <small className="ml-1 text-[0.55em] font-semibold text-app-dim-2">
-                / 100
+              {/* Без пробела внутри строки: у числа поджат разделитель
+                  разрядов (утилита `num`), и «/ 100» съезжало бы к цифрам. */}
+              <small className="ml-1.5 text-[0.55em] font-semibold text-app-dim-2">
+                /100
               </small>
             </span>
           </div>

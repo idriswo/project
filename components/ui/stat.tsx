@@ -81,7 +81,7 @@ export function HeroStat({
       <Eyebrow>{label}</Eyebrow>
       <span
         className={cn(
-          "font-mono leading-none font-extrabold tracking-[-0.035em] tabular-nums",
+          "num font-mono leading-none font-extrabold tracking-[-0.035em]",
           "text-[clamp(36px,7vw,48px)]",
           color,
         )}
@@ -125,7 +125,7 @@ export function SubStat({
     <div className="flex min-w-0 flex-col gap-1">
       <span
         className={cn(
-          "font-mono text-[19px] leading-none font-bold tracking-[-0.02em] tabular-nums",
+          "num font-mono text-[19px] leading-none font-bold tracking-[-0.02em]",
           color,
         )}
       >
