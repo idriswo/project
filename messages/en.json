@@ -751,6 +751,9 @@
         "heading": "Nobody but you",
         "lead": "Once the shop has sellers, they will show up here."
       }
+    },
+    "splash": {
+      "greeting": "Welcome"
     }
   },
   "faq": {

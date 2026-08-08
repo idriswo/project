@@ -36,15 +36,28 @@ export function percent(value: number | null | undefined): string {
 }
 
 /**
- * Короткая подпись оси графика: `12 500` в подпись столбца не влезает,
- * а `12.5к` влезает и читается. Ниже тысячи сокращать нечего.
+ * Короткая подпись оси графика: `12 500` в подпись не влезает, а `12.5к`
+ * влезает и читается. Ниже тысячи сокращать нечего.
+ *
+ * До десяти тысяч показываем десятые. Округление до целых давало на оси
+ * две одинаковые подписи: 1500 и 2000 обе превращались в «2к», и шкала
+ * выглядела сломанной. Дальше десяти тысяч шаг оси и так крупный, дробь
+ * там только удлиняет подпись.
  */
 export function moneyShort(value: number | null | undefined): string {
   if (!isNumber(value)) return NO_VALUE;
   const abs = Math.abs(value);
-  if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}м`;
-  if (abs >= 1_000) return `${Math.round(value / 1_000)}к`;
+  if (abs >= 1_000_000) return `${trim(value / 1_000_000)}м`;
+  if (abs >= 1_000) {
+    const k = value / 1_000;
+    return `${Math.abs(k) < 10 ? trim(k) : Math.round(k)}к`;
+  }
   return String(Math.round(value));
+}
+
+/** `2.0` → `2`, `1.5` → `1.5`: нулевая десятая ничего не сообщает. */
+function trim(value: number): string {
+  return value.toFixed(1).replace(/\.0$/, "");
 }
 
 /**

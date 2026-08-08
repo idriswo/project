@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "@/i18n/navigation";
 
@@ -99,9 +100,49 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, [pathname, router]);
 
-  if (loading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
-  }
+  if (loading) return <Splash />;
 
   return <>{children}</>;
+}
+
+/**
+ * Заставка на время проверки сессии.
+ *
+ * Раньше здесь стояло голое «Loading...» — английское слово чёрным по
+ * белому. В браузере это проскакивало незаметно, но в установленном
+ * приложении именно оно и есть первый экран: программа открывается и
+ * первым делом показывает служебную надпись на чужом языке.
+ *
+ * Теперь это знак TIM и приветствие. Проверка занимает те же доли
+ * секунды, но окно с самого начала выглядит как программа.
+ */
+function Splash() {
+  const t = useTranslations("app.splash");
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-app-bg">
+      <span
+        aria-hidden
+        className="flex size-16 items-center justify-center rounded-[18px] bg-app-sapphire text-[30px] font-extrabold tracking-[0.5px] text-white shadow-[0_18px_36px_-18px_rgb(15_82_186/0.8)]"
+      >
+        T
+      </span>
+
+      <p
+        role="status"
+        className="text-[15px] font-bold tracking-[-0.01em] text-app-ink"
+      >
+        {t("greeting")}
+      </p>
+
+      {/* Полоса вместо спиннера: она заполняется слева направо и читается
+          как «идёт», а не как «зависло». */}
+      <span
+        aria-hidden
+        className="h-1 w-32 overflow-hidden rounded-full bg-app-track"
+      >
+        <span className="block h-full w-1/3 rounded-full bg-app-sapphire motion-safe:animate-app-slide" />
+      </span>
+    </div>
+  );
 }
