@@ -75,7 +75,9 @@ export function AuthForm() {
   }
 
   function errorMessage(err: unknown): string {
-    return err instanceof Error && err.message ? err.message : t("errors.generic");
+    return err instanceof Error && err.message
+      ? err.message
+      : t("errors.generic");
   }
 
   // ── LOGIN: email + пароль ──────────────────────────────────────
@@ -97,7 +99,10 @@ export function AuthForm() {
     setLoadingPhase("checkingAccount");
     // Чисто UX: один запрос signInWithPassword, но две фазы текста дают
     // ощущение "сначала проверили аккаунт, потом пароль".
-    const phaseTimer = setTimeout(() => setLoadingPhase("checkingPassword"), 350);
+    const phaseTimer = setTimeout(
+      () => setLoadingPhase("checkingPassword"),
+      350,
+    );
 
     try {
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -287,7 +292,11 @@ export function AuthForm() {
               </p>
             </div>
 
-            <form onSubmit={handleEmailLogin} noValidate className="mt-8.5 flex flex-col gap-5">
+            <form
+              onSubmit={handleEmailLogin}
+              noValidate
+              className="mt-8.5 flex flex-col gap-5"
+            >
               <div>
                 <label
                   htmlFor={emailId}
@@ -344,7 +353,7 @@ export function AuthForm() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-2 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
+                className="mt-2 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 disabled:pointer-events-none disabled:opacity-70 motion-reduce:hover:translate-y-0"
               >
                 {submitting && loadingPhase
                   ? t(`emailLogin.${loadingPhase}`)
@@ -408,12 +417,18 @@ export function AuthForm() {
                 }}
                 placeholder={t("codeStep.placeholder")}
                 aria-invalid={error ? true : undefined}
-                aria-describedby={error ? errorId : notice ? noticeId : undefined}
+                aria-describedby={
+                  error ? errorId : notice ? noticeId : undefined
+                }
                 className="h-15 w-full rounded-card border-[1.5px] border-field-border bg-field px-4.5 text-xl font-bold tracking-[4px] transition-[border-color,box-shadow] duration-150 outline-none placeholder:font-medium placeholder:tracking-normal placeholder:text-field-placeholder focus:border-brand-600 focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
               />
 
               {error ? (
-                <p id={errorId} role="alert" className="mt-2.5 text-sm text-danger">
+                <p
+                  id={errorId}
+                  role="alert"
+                  className="mt-2.5 text-sm text-danger"
+                >
                   {error}
                 </p>
               ) : null}
@@ -421,7 +436,7 @@ export function AuthForm() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-5 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
+                className="mt-5 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 disabled:pointer-events-none disabled:opacity-70 motion-reduce:hover:translate-y-0"
               >
                 {t("codeStep.submitCta")}
               </button>
@@ -460,15 +475,23 @@ export function AuthForm() {
           <>
             <div className="text-center">
               <h1 className="text-[30px] font-extrabold tracking-[-0.8px] text-balance">
-                {provider === "google" ? t("google.heading") : t(`${copy}.heading`)}
+                {provider === "google"
+                  ? t("google.heading")
+                  : t(`${copy}.heading`)}
               </h1>
               <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
-                {provider === "google" ? t("google.lead") : t(`${copy}.subheading`)}
+                {provider === "google"
+                  ? t("google.lead")
+                  : t(`${copy}.subheading`)}
               </p>
             </div>
 
             {provider === "google" ? (
-              <form onSubmit={handleGoogleSignup} noValidate className="mt-8.5 flex flex-col gap-5">
+              <form
+                onSubmit={handleGoogleSignup}
+                noValidate
+                className="mt-8.5 flex flex-col gap-5"
+              >
                 <div>
                   <label
                     htmlFor={gEmailId}
@@ -489,7 +512,9 @@ export function AuthForm() {
                     }}
                     placeholder={t("google.emailPlaceholder")}
                     aria-invalid={error ? true : undefined}
-                    aria-describedby={error ? errorId : notice ? noticeId : undefined}
+                    aria-describedby={
+                      error ? errorId : notice ? noticeId : undefined
+                    }
                     className="h-15 w-full rounded-card border-[1.5px] border-field-border bg-field px-4.5 font-bold transition-[border-color,box-shadow] duration-150 outline-none placeholder:font-medium placeholder:text-field-placeholder focus:border-brand-600 focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
                   />
                 </div>
@@ -513,7 +538,9 @@ export function AuthForm() {
                     }}
                     placeholder={t("google.passwordPlaceholder")}
                     aria-invalid={error ? true : undefined}
-                    aria-describedby={error ? errorId : notice ? noticeId : undefined}
+                    aria-describedby={
+                      error ? errorId : notice ? noticeId : undefined
+                    }
                     className="h-15 w-full rounded-card border-[1.5px] border-field-border bg-field px-4.5 font-bold transition-[border-color,box-shadow] duration-150 outline-none placeholder:font-medium placeholder:text-field-placeholder focus:border-brand-600 focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
                   />
                 </div>
@@ -527,7 +554,7 @@ export function AuthForm() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="mt-2 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
+                  className="mt-2 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 disabled:pointer-events-none disabled:opacity-70 motion-reduce:hover:translate-y-0"
                 >
                   {submitting ? t("google.ctaLoading") : t("google.cta")}
                 </button>
@@ -574,7 +601,9 @@ export function AuthForm() {
                     }}
                     placeholder={t(`providers.${provider}.placeholder`)}
                     aria-invalid={error ? true : undefined}
-                    aria-describedby={error ? errorId : notice ? noticeId : undefined}
+                    aria-describedby={
+                      error ? errorId : notice ? noticeId : undefined
+                    }
                     className={cn(
                       "h-15 min-w-0 flex-1 rounded-card border-[1.5px] border-field-border bg-field px-4.5 font-bold transition-[border-color,box-shadow] duration-150 outline-none",
                       "placeholder:font-medium placeholder:text-field-placeholder",
@@ -585,7 +614,11 @@ export function AuthForm() {
                 </div>
 
                 {error ? (
-                  <p id={errorId} role="alert" className="mt-2.5 text-sm text-danger">
+                  <p
+                    id={errorId}
+                    role="alert"
+                    className="mt-2.5 text-sm text-danger"
+                  >
                     {error}
                   </p>
                 ) : null}
@@ -593,9 +626,13 @@ export function AuthForm() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="mt-5 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 motion-reduce:hover:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
+                  className="mt-5 h-14.5 w-full rounded-card bg-accent-500 text-[17px] font-extrabold text-on-accent shadow-[0_12px_24px_-12px_rgb(242_166_35/0.7)] transition-[background,transform] duration-150 hover:-translate-y-0.5 hover:bg-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-0 disabled:pointer-events-none disabled:opacity-70 motion-reduce:hover:translate-y-0"
                 >
-                  {submitting ? t("sending") : usesSmsCode(provider) ? t("ctaCode") : t("ctaContinue")}
+                  {submitting
+                    ? t("sending")
+                    : usesSmsCode(provider)
+                      ? t("ctaCode")
+                      : t("ctaContinue")}
                 </button>
 
                 {notice ? (
@@ -620,7 +657,9 @@ export function AuthForm() {
 
             <button
               type="button"
-              onClick={() => selectProvider(provider === "google" ? "phone" : "google")}
+              onClick={() =>
+                selectProvider(provider === "google" ? "phone" : "google")
+              }
               aria-label={
                 provider === "google"
                   ? t("resetProvider")

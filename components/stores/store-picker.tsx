@@ -37,7 +37,8 @@ export function StorePicker() {
     async function load() {
       try {
         const me = await fetchApi("/me");
-        if (!cancelled) setProfiles(Array.isArray(me?.profiles) ? me.profiles : []);
+        if (!cancelled)
+          setProfiles(Array.isArray(me?.profiles) ? me.profiles : []);
       } catch {
         if (!cancelled) setProfiles([]);
       }
@@ -65,8 +66,12 @@ export function StorePicker() {
 
   return (
     <div className="flex min-w-0 flex-col p-6 tablet:p-14">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">{t("heading")}</h1>
-      <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">{t("lead")}</p>
+      <h1 className="text-[26px] font-extrabold tracking-[-0.6px] text-balance">
+        {t("heading")}
+      </h1>
+      <p className="mt-2.5 text-body leading-normal text-pretty text-subtle">
+        {t("lead")}
+      </p>
 
       {profiles === null ? (
         <p className="mt-8.5 text-subtle">{t("loading")}</p>
@@ -86,7 +91,9 @@ export function StorePicker() {
                 <span className="block truncate font-extrabold text-ink">
                   {profile.tenant.name}
                 </span>
-                <span className="block text-sm text-subtle">{t(`roles.${profile.role}`)}</span>
+                <span className="block text-sm text-subtle">
+                  {t(`roles.${profile.role}`)}
+                </span>
               </span>
             </button>
           ))}

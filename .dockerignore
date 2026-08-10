@@ -1,0 +1,25 @@
+# Бе ин файл `COPY . .` тамоми `node_modules` (570 МБ) ва `.next`-и маҳаллиро
+# ба контейнер мекашад — сохтан дақиқаҳо дароз мешавад, ва бадтараш: `.env.local`
+# бо калидҳо ба образ меафтад.
+
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*.local
+
+# Ҳуҷҷатҳо ва асбобҳои маҳаллӣ дар контейнер лозим нестанд
+*.md
+!README.md
+design
+.claude
+.agents
+skills-lock.json
+tsconfig.tsbuildinfo
+
+# Оғозкунандаи маҳаллии Windows
+tim.vbs
+start-tim.bat
+Dockerfile
+.dockerignore

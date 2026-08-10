@@ -113,6 +113,185 @@ export function homeFor(role: AppRole): string {
 }
 
 /**
+ * Разделы Этапа 20 — экраны из макетов Stitch.
+ *
+ * Их двадцать два, и в один список с ежедневными разделами они не лезут:
+ * столб превратился бы в стену из тридцати ссылок, в которой не найти
+ * кассу. Поэтому они собраны в группы по смыслу и живут ниже основного
+ * списка, под тихими заголовками.
+ *
+ * Часть экранов сюда намеренно **не** попала: акт списания открывают из
+ * архива документов, согласование — из уведомления, мастер акции — из
+ * лояльности, а этикетку — из карточки товара и приёмки. Дублировать их
+ * в меню значит предлагать вход туда, где нечего делать без контекста.
+ */
+export type SectionKey =
+  | "purchases"
+  | "stocktake"
+  | "transfer"
+  | "labels"
+  | "printQueue"
+  | "shiftClose"
+  | "expenses"
+  | "suppliers"
+  | "returns"
+  | "shiftAnalytics"
+  | "losses"
+  | "loyalty"
+  | "giftCards"
+  | "documents"
+  | "notifications"
+  | "scanner"
+  | "alerts";
+
+export type SectionGroup = "goods" | "money" | "analytics" | "clients" | "docs";
+
+type Section = {
+  key: SectionKey;
+  group: SectionGroup;
+  href: string;
+  roles: readonly AppRole[];
+};
+
+/**
+ * Номера в адресах приёмки и инвентаризации — временные: списков закупок
+ * и инвентаризаций ещё нет (модули 3 и 4 в `BACKEND-REQUESTS.md`).
+ * Когда появятся, пункт меню будет вести на список, а не на документ.
+ */
+const SECTIONS: readonly Section[] = [
+  {
+    key: "purchases",
+    group: "goods",
+    href: "/purchases/842",
+    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+  },
+  {
+    key: "stocktake",
+    group: "goods",
+    href: "/stocktake/12",
+    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+  },
+  {
+    key: "transfer",
+    group: "goods",
+    href: "/transfer",
+    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+  },
+  {
+    key: "labels",
+    group: "goods",
+    href: "/labels",
+    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+  },
+  {
+    key: "printQueue",
+    group: "goods",
+    href: "/labels/queue",
+    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+  },
+
+  {
+    key: "shiftClose",
+    group: "money",
+    href: "/shifts/close",
+    roles: ["OWNER", "MANAGER", "CASHIER"],
+  },
+  {
+    key: "returns",
+    group: "money",
+    href: "/pos/returns",
+    roles: ["OWNER", "MANAGER", "CASHIER"],
+  },
+  {
+    key: "expenses",
+    group: "money",
+    href: "/expenses",
+    roles: ["OWNER", "MANAGER"],
+  },
+  {
+    key: "suppliers",
+    group: "money",
+    href: "/suppliers",
+    roles: ["OWNER", "MANAGER"],
+  },
+
+  {
+    key: "shiftAnalytics",
+    group: "analytics",
+    href: "/reports/shifts",
+    roles: ["OWNER", "MANAGER"],
+  },
+  {
+    key: "losses",
+    group: "analytics",
+    href: "/reports/losses",
+    roles: ["OWNER", "MANAGER"],
+  },
+
+  {
+    key: "loyalty",
+    group: "clients",
+    href: "/loyalty",
+    roles: ["OWNER", "MANAGER"],
+  },
+  {
+    key: "giftCards",
+    group: "clients",
+    href: "/gift-cards/new",
+    roles: ["OWNER", "MANAGER", "CASHIER"],
+  },
+
+  {
+    key: "documents",
+    group: "docs",
+    href: "/documents",
+    roles: ["OWNER", "MANAGER"],
+  },
+  {
+    key: "notifications",
+    group: "docs",
+    href: "/notifications",
+    roles: ["OWNER", "MANAGER", "CASHIER", "SKLADCHI"],
+  },
+  {
+    key: "scanner",
+    group: "docs",
+    href: "/settings/scanner",
+    roles: ["OWNER", "MANAGER", "CASHIER", "SKLADCHI"],
+  },
+  {
+    key: "alerts",
+    group: "docs",
+    href: "/settings/alerts",
+    roles: ["OWNER", "MANAGER"],
+  },
+];
+
+export const SECTION_GROUPS: readonly SectionGroup[] = [
+  "goods",
+  "money",
+  "analytics",
+  "clients",
+  "docs",
+];
+
+/** Пункты одной группы, доступные этой роли. Пустая группа не рисуется. */
+export function sectionsFor(
+  role: AppRole,
+  group: SectionGroup,
+): { key: SectionKey; href: string }[] {
+  return SECTIONS.filter(
+    (section) => section.group === group && section.roles.includes(role),
+  ).map(({ key, href }) => ({ key, href }));
+}
+
+/** Определяет группу на основе текущего пути для Two-Tier Sidebar */
+export function groupForPath(pathname: string): "main" | SectionGroup {
+  const currentSection = SECTIONS.find((s) => pathname === s.href || pathname.startsWith(`${s.href}/`));
+  return currentSection ? currentSection.group : "main";
+}
+
+/**
  * Деньги, которые видит не каждый.
  *
  * `money` — выручка и чеки: их видит и управляющий, иначе он не сможет

@@ -4,6 +4,7 @@ import { use } from "react";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { LinkedAccountsSettings } from "@/components/settings/linked-accounts";
 import { MoreSections } from "@/components/settings/more-sections";
+import { AccountActions } from "@/components/settings/account-actions";
 import { routing, type Locale } from "@/i18n/routing";
 import { privateMetadata } from "@/lib/privateMetadata";
 
@@ -24,6 +25,7 @@ export default function SettingsPage({
   return (
     <AuthGuard>
       <div className="mx-auto flex w-full max-w-[1040px] flex-col gap-6">
+        <AccountActions />
         <MoreSections />
         <LinkedAccountsSettings />
       </div>

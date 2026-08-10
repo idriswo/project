@@ -8,9 +8,11 @@ import { AppShell } from "@/components/app/app-shell";
 import { Button } from "@/components/ui/button";
 import { Field, FormSection, TextInput } from "@/components/ui/field";
 import { PageHead } from "@/components/ui/stat";
+import { Toggle } from "@/components/ui/toggle";
 import { useRouter } from "@/i18n/navigation";
 import { fetchApi } from "@/lib/apiClient";
 import { cn } from "@/lib/cn";
+import { NO_VALUE } from "@/lib/format";
 import { useAppSession } from "@/lib/session";
 import { compareSizes } from "@/lib/sizes";
 
@@ -59,8 +61,23 @@ export function NewProductForm() {
   /** Ключ клетки — `цвет|размер`. */
   const [grid, setGrid] = useState<Record<string, string>>({});
 
+  /** После сохранения сразу уйти на печать ценников (макет Э-01, вариант 2). */
+  const [printLabels, setPrintLabels] = useState(false);
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Маржа от розничной цены, а не наценка от закупки: владельца
+   * интересует, какая доля чека остаётся ему. Пока цена или закуп
+   * пустые, считать нечего — показываем прочерк, а не «0.0%».
+   */
+  const marginText = (() => {
+    const retail = Number(price);
+    const purchase = Number(cost);
+    if (!retail || !purchase) return NO_VALUE;
+    return `${(((retail - purchase) / retail) * 100).toFixed(1)}%`;
+  })();
 
   const ordered = [...sizes].sort(compareSizes);
   const rows = colors.length > 0 ? colors : [""];
@@ -117,7 +134,7 @@ export function NewProductForm() {
 
     setSaving(true);
     try {
-      await fetchApi("/inventory/products", {
+      const created = await fetchApi("/inventory/products", {
         method: "POST",
         body: JSON.stringify({
           name: name.trim(),
@@ -125,6 +142,14 @@ export function NewProductForm() {
           variants,
         }),
       });
+
+      // Печать ценников — продолжение той же работы, поэтому уводим
+      // прямо на этикетку, а не в список, откуда её пришлось бы искать.
+      if (printLabels && created?.id) {
+        router.push(`/labels?product=${created.id}`);
+        return;
+      }
+
       router.push(where === "store" ? "/floor" : "/warehouse");
     } catch (err: unknown) {
       setError(
@@ -197,6 +222,19 @@ export function NewProductForm() {
                   placeholder="310"
                   className="font-mono tabular-nums"
                 />
+              )}
+            </Field>
+            {/* Маржа не поле, а следствие двух предыдущих. Считаем сразу:
+             * «сколько я на этом зарабатываю» — вопрос, который задают в
+             * момент ввода цены, а не после сохранения. */}
+            <Field label={t("margin")} hint={t("marginHint")}>
+              {(props) => (
+                <output
+                  {...props}
+                  className="flex h-14 items-center rounded-card border-[1.5px] border-dashed border-app-line-strong bg-app-panel px-4 font-mono font-bold text-app-ink num"
+                >
+                  {marginText}
+                </output>
               )}
             </Field>
           </div>
@@ -358,6 +396,16 @@ export function NewProductForm() {
             {error}
           </p>
         ) : null}
+
+        {/* Ценники печатают сразу после завоза — иначе товар уезжает в зал
+         * без цены, и продавец называет её по памяти. */}
+        <Toggle
+          label={t("printLabels")}
+          hint={t("printLabelsHint")}
+          checked={printLabels}
+          onChange={setPrintLabels}
+          className="rounded-frame border border-app-line bg-app-card p-5"
+        />
 
         <Button type="submit" size="xl" disabled={saving} className="w-full">
           {saving ? t("saving") : t("save")}

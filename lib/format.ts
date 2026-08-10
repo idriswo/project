@@ -96,6 +96,7 @@ const TILE_TONES = [
 export function toneOf(seed: string | null | undefined): string {
   const text = (seed ?? "").trim();
   let sum = 0;
-  for (let i = 0; i < text.length; i += 1) sum = (sum + text.charCodeAt(i)) % 997;
+  for (let i = 0; i < text.length; i += 1)
+    sum = (sum + text.charCodeAt(i)) % 997;
   return TILE_TONES[sum % TILE_TONES.length];
 }

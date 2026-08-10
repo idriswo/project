@@ -79,21 +79,15 @@ export function DashboardView() {
     let cancelled = false;
 
     async function load() {
-      const [
-        products,
-        users,
-        overviewData,
-        salesData,
-        byDay,
-        low,
-      ] = await Promise.allSettled([
-        get<{ total: number }>("/inventory/products?limit=1"),
-        get<unknown[]>("/users"),
-        get<Overview>(`/reports/overview?period=${period}`),
-        get<SalesSummary>(`/reports/sales?period=${period}`),
-        get<DayPoint[]>("/reports/sales-by-day?days=30"),
-        get<LowStockRow[]>("/reports/low-stock?threshold=3&limit=5"),
-      ]);
+      const [products, users, overviewData, salesData, byDay, low] =
+        await Promise.allSettled([
+          get<{ total: number }>("/inventory/products?limit=1"),
+          get<unknown[]>("/users"),
+          get<Overview>(`/reports/overview?period=${period}`),
+          get<SalesSummary>(`/reports/sales?period=${period}`),
+          get<DayPoint[]>("/reports/sales-by-day?days=30"),
+          get<LowStockRow[]>("/reports/low-stock?threshold=3&limit=5"),
+        ]);
 
       if (cancelled) return;
 
@@ -109,9 +103,13 @@ export function DashboardView() {
           : 1,
       );
       setOverview(
-        overviewData.status === "fulfilled" ? (overviewData.value ?? null) : null,
+        overviewData.status === "fulfilled"
+          ? (overviewData.value ?? null)
+          : null,
       );
-      setSummary(salesData.status === "fulfilled" ? (salesData.value ?? null) : null);
+      setSummary(
+        salesData.status === "fulfilled" ? (salesData.value ?? null) : null,
+      );
       setDays(
         byDay.status === "fulfilled" && Array.isArray(byDay.value)
           ? byDay.value

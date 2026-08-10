@@ -478,3 +478,23 @@
     animation-range: 0 100px;
   }
 }
+
+/* Красивый тонкий скроллбар (Custom Scrollbar) */
+@utility custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 148, 173, 0.3) transparent; /* --color-navy-text с прозрачностью */
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(138, 148, 173, 0.3);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(138, 148, 173, 0.6);
+  }
+}

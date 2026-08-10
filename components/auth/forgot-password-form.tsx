@@ -38,7 +38,9 @@ export function ForgotPasswordForm() {
   const confirmId = useId();
 
   function errorMessage(err: unknown): string {
-    return err instanceof Error && err.message ? err.message : t("errors.generic");
+    return err instanceof Error && err.message
+      ? err.message
+      : t("errors.generic");
   }
 
   async function handleSendCode(event: React.FormEvent<HTMLFormElement>) {
@@ -52,7 +54,9 @@ export function ForgotPasswordForm() {
 
     setSubmitting(true);
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim());
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email.trim(),
+      );
       if (resetError) throw resetError;
       setStep("code");
     } catch (err: unknown) {
@@ -102,7 +106,9 @@ export function ForgotPasswordForm() {
 
     setSubmitting(true);
     try {
-      const { error: updateError } = await supabase.auth.updateUser({ password });
+      const { error: updateError } = await supabase.auth.updateUser({
+        password,
+      });
       if (updateError) throw updateError;
       router.push("/onboarding");
     } catch (err: unknown) {
@@ -131,9 +137,16 @@ export function ForgotPasswordForm() {
               {t("emailStep.lead")}
             </p>
 
-            <form onSubmit={handleSendCode} noValidate className="mt-7 flex flex-col gap-5">
+            <form
+              onSubmit={handleSendCode}
+              noValidate
+              className="mt-7 flex flex-col gap-5"
+            >
               <div>
-                <label htmlFor={emailId} className="mb-2 block text-[13px] font-bold text-muted">
+                <label
+                  htmlFor={emailId}
+                  className="mb-2 block text-[13px] font-bold text-muted"
+                >
                   {t("emailStep.label")}
                 </label>
                 <input
@@ -157,7 +170,11 @@ export function ForgotPasswordForm() {
                 </p>
               ) : null}
 
-              <button type="submit" disabled={submitting} className={buttonClass}>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={buttonClass}
+              >
                 {submitting ? t("emailStep.ctaLoading") : t("emailStep.cta")}
               </button>
             </form>
@@ -171,9 +188,16 @@ export function ForgotPasswordForm() {
               {t("codeStep.lead", { email })}
             </p>
 
-            <form onSubmit={handleVerifyCode} noValidate className="mt-7 flex flex-col gap-5">
+            <form
+              onSubmit={handleVerifyCode}
+              noValidate
+              className="mt-7 flex flex-col gap-5"
+            >
               <div>
-                <label htmlFor={codeId} className="mb-2 block text-[13px] font-bold text-muted">
+                <label
+                  htmlFor={codeId}
+                  className="mb-2 block text-[13px] font-bold text-muted"
+                >
                   {t("codeStep.label")}
                 </label>
                 <input
@@ -198,7 +222,11 @@ export function ForgotPasswordForm() {
                 </p>
               ) : null}
 
-              <button type="submit" disabled={submitting} className={buttonClass}>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={buttonClass}
+              >
                 {submitting ? t("codeStep.ctaLoading") : t("codeStep.cta")}
               </button>
             </form>
@@ -212,7 +240,11 @@ export function ForgotPasswordForm() {
               {t("newPasswordStep.lead")}
             </p>
 
-            <form onSubmit={handleSetNewPassword} noValidate className="mt-7 flex flex-col gap-5">
+            <form
+              onSubmit={handleSetNewPassword}
+              noValidate
+              className="mt-7 flex flex-col gap-5"
+            >
               <div>
                 <label
                   htmlFor={passwordId}
@@ -262,8 +294,14 @@ export function ForgotPasswordForm() {
                 </p>
               ) : null}
 
-              <button type="submit" disabled={submitting} className={buttonClass}>
-                {submitting ? t("newPasswordStep.ctaLoading") : t("newPasswordStep.cta")}
+              <button
+                type="submit"
+                disabled={submitting}
+                className={buttonClass}
+              >
+                {submitting
+                  ? t("newPasswordStep.ctaLoading")
+                  : t("newPasswordStep.cta")}
               </button>
             </form>
           </>

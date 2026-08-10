@@ -4,12 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 
 type Variant =
-  | "primary"
-  | "secondary"
-  | "ghost"
-  | "sapphire"
-  | "quiet"
-  | "danger";
+  "primary" | "secondary" | "ghost" | "sapphire" | "quiet" | "danger";
 type Size = "sm" | "md" | "lg" | "xl";
 
 /*

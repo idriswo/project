@@ -377,7 +377,7 @@ function ProductCard({
         </div>
 
         <div className="flex shrink-0 flex-col items-end gap-1.5">
-          <span className="num font-mono text-[18px] leading-none font-bold text-app-ink">
+          <span className="font-mono text-[18px] leading-none font-bold text-app-ink num">
             {money(price)}
             <small className="ml-1 text-[0.6em] font-semibold text-app-dim-2">
               {t("currency")}
@@ -501,7 +501,7 @@ function Checkout({
                 </StepButton>
               </span>
 
-              <span className="num w-16 shrink-0 text-right font-mono text-[13.5px] font-bold text-app-ink">
+              <span className="w-16 shrink-0 text-right font-mono text-[13.5px] font-bold text-app-ink num">
                 {money(line.price * line.quantity)}
               </span>
 
@@ -562,7 +562,7 @@ function Checkout({
       {/* Сумма — второе по величине число экрана после самой кнопки. */}
       <div className="flex flex-col gap-1 border-t border-app-line pt-4">
         <Eyebrow>{t("toPay")}</Eyebrow>
-        <span className="num font-mono text-[clamp(32px,6vw,42px)] leading-none font-extrabold tracking-[-0.04em] text-app-ink">
+        <span className="font-mono text-[clamp(32px,6vw,42px)] leading-none font-extrabold tracking-[-0.04em] text-app-ink num">
           {money(total)}
           <small className="ml-1.5 text-[0.36em] font-bold tracking-[0.06em] text-app-dim">
             {t("currency")}
@@ -685,7 +685,7 @@ function MobileCheckout({
         <span className="text-[13px] font-bold text-app-dim">
           {items > 0 ? summaryLabel : emptyLabel}
         </span>
-        <span className="num font-mono text-[22px] leading-none font-extrabold text-app-ink">
+        <span className="font-mono text-[22px] leading-none font-extrabold text-app-ink num">
           {money(total)}
           <small className="ml-1 text-[0.45em] font-bold text-app-dim">
             {currency}

@@ -33,7 +33,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         if (!pathname.includes("/auth")) {
@@ -78,7 +80,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
         // Остальные страницы приложения требуют выбранного активного магазина.
         const activeTenantId = getActiveTenantId();
-        const activeIsValid = profiles.some((p) => p.tenantId === activeTenantId);
+        const activeIsValid = profiles.some(
+          (p) => p.tenantId === activeTenantId,
+        );
 
         if (!activeIsValid) {
           if (profiles.length === 1) {

@@ -83,7 +83,9 @@ export function OnboardingWizard() {
   }, []);
 
   function errorMessage(err: unknown): string {
-    return err instanceof Error && err.message ? err.message : t("errors.generic");
+    return err instanceof Error && err.message
+      ? err.message
+      : t("errors.generic");
   }
 
   function toggleModule(key: string) {

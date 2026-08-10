@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
+    "bwip-js": "^4.11.2",
     "lucide-react": "^1.28.0",
     "next": "16.2.12",
     "next-intl": "^4.13.4",

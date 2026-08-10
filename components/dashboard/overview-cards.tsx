@@ -81,10 +81,7 @@ export function OverviewCards({
         />
 
         <div className="mt-8 flex flex-wrap gap-x-10 gap-y-6 border-t border-app-line pt-6">
-          <SubStat
-            label={t("salesCount")}
-            value={count(overview.salesCount)}
-          />
+          <SubStat label={t("salesCount")} value={count(overview.salesCount)} />
           <SubStat
             label={t("averageCheck")}
             value={money(summary?.averageCheck)}
@@ -144,7 +141,7 @@ function HealthCard({ health }: { health: HealthScore }) {
           </span>
           <div className="flex flex-col gap-1">
             <Eyebrow>{t("healthLabel")}</Eyebrow>
-            <span className="num font-mono text-[19px] leading-none font-bold text-app-ink">
+            <span className="font-mono text-[19px] leading-none font-bold text-app-ink num">
               {health.score}
               {/* Без пробела внутри строки: у числа поджат разделитель
                   разрядов (утилита `num`), и «/ 100» съезжало бы к цифрам. */}
