@@ -115,7 +115,7 @@ export function AppShell({
 
   const activeGroup = groupForPath(pathname);
   const mainKeys = navFor(role);
-  const availableGroups = (["main"] as const).concat(
+  const availableGroups: ("main" | SectionGroup)[] = (["main"] as ("main" | SectionGroup)[]).concat(
     SECTION_GROUPS.filter((g) => sectionsFor(role, g).length > 0)
   );
 
