@@ -1,8 +1,19 @@
 import { getActiveTenantId } from "@/lib/activeTenant";
 import { supabase } from "@/lib/supabase";
 
+/**
+ * Адрес бэкенда. Документация — https://tim.tj/docs (Swagger), спецификация
+ * лежит на https://tim.tj/docs/json.
+ *
+ * По умолчанию — боевой бэкенд, а не `localhost:5000`, как было раньше.
+ * Причина: `NEXT_PUBLIC_*` вшивается в бандл на этапе сборки. Если на
+ * хостинге переменную не задали, старое значение уезжало в продакшен, и
+ * браузер посетителя честно стучался в свой собственный localhost:5000 —
+ * там, разумеется, никого нет, и **ни один запрос в приложении не работал**.
+ * Локальный бэкенд теперь включается явно, через `.env.local`.
+ */
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL || "https://tim.tj/api/v1";
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   // Get the current user session from Supabase
