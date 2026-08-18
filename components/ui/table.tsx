@@ -23,16 +23,16 @@ export function DataTable({
   return (
     <div
       className={cn(
-        "overflow-x-auto rounded-frame border border-app-line bg-app-card",
+        "overflow-x-auto rounded-[24px] border border-app-line bg-app-card shadow-sm",
         className,
       )}
     >
       <table className="w-full min-w-[640px] border-collapse text-left">
         <caption className="sr-only">{caption}</caption>
-        <thead className="bg-app-panel">
+        <thead className="bg-app-panel/90 backdrop-blur-md sticky top-0 z-10 border-b border-app-line">
           <tr>{head}</tr>
         </thead>
-        <tbody className="divide-y divide-app-line">{children}</tbody>
+        <tbody className="divide-y divide-app-line [&_tr]:transition-colors [&_tr:hover]:bg-app-panel">{children}</tbody>
       </table>
     </div>
   );
@@ -49,7 +49,7 @@ export function Th({
       scope="col"
       {...rest}
       className={cn(
-        "px-4 py-3 text-[11.5px] font-bold tracking-[0.08em] whitespace-nowrap text-app-dim uppercase",
+        "px-5 py-4 text-[12px] font-extrabold tracking-[0.1em] whitespace-nowrap text-app-dim uppercase",
         align === "right" && "text-right",
         align === "center" && "text-center",
         className,
@@ -75,8 +75,8 @@ export function Td({
     <td
       {...rest}
       className={cn(
-        "px-4 py-3.5 text-[14px] text-app-ink",
-        numeric && "font-mono font-semibold num",
+        "px-5 py-4 text-[14px] font-medium text-app-ink",
+        numeric && "font-mono font-bold num",
         align === "right" && "text-right",
         align === "center" && "text-center",
         className,
@@ -90,7 +90,7 @@ export function Td({
 /** Строка итога: та же таблица, но жирнее и без разделителя сверху. */
 export function TotalRow({ children }: { children: React.ReactNode }) {
   return (
-    <tr className="border-t-2 border-app-line-strong bg-app-panel font-extrabold">
+    <tr className="border-t-[3px] border-app-line-strong bg-app-panel font-extrabold text-app-ink">
       {children}
     </tr>
   );

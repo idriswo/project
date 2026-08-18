@@ -142,7 +142,7 @@ export function DashboardView() {
   const allowed = canSeeMoney(session.role);
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
+    <AppShell session={session}>
       <div className="mx-auto flex w-full max-w-[1040px] flex-col gap-6">
         <PageHead eyebrow={t("eyebrow")} title={session.storeName || "TIM"}>
           {allowed && !isEmpty ? (

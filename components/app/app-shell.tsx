@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import {
   Boxes,
   ChartColumn,
@@ -10,14 +11,15 @@ import {
   type LucideIcon,
   ScanLine,
   Shirt,
-  Store,
   UserRound,
   Users,
   Wallet,
   Settings,
-  FileText,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  ChefHat,
+  UtensilsCrossed,
+  CalendarClock,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -36,6 +38,7 @@ import {
   tabsFor,
   groupForPath
 } from "@/lib/roles";
+import { type AppSession } from "@/lib/session";
 import { supabase } from "@/lib/supabase";
 
 /**
@@ -50,6 +53,9 @@ const ICONS: Record<NavKey, LucideIcon> = {
   warehouse: Boxes,
   reports: ChartColumn,
   staff: IdCard,
+  kitchen: ChefHat,
+  tables: UtensilsCrossed,
+  booking: CalendarClock,
 };
 
 const HREFS: Record<NavKey, string> = {
@@ -60,6 +66,9 @@ const HREFS: Record<NavKey, string> = {
   warehouse: "/warehouse",
   reports: "/reports",
   staff: "/staff",
+  kitchen: "/kitchen",
+  tables: "/tables",
+  booking: "/booking",
 };
 
 const TIER1_ICONS: Record<"main" | SectionGroup, LucideIcon> = {
@@ -71,8 +80,8 @@ const TIER1_ICONS: Record<"main" | SectionGroup, LucideIcon> = {
   docs: Settings,
 };
 
-function getGroupHref(group: "main" | SectionGroup, role: AppRole): string {
-  if (group === "main") return HREFS[navFor(role)[0]];
+function getGroupHref(group: "main" | SectionGroup, role: AppRole, sphere: string, activeModules: string[]): string {
+  if (group === "main") return HREFS[navFor(role, sphere, activeModules)[0]];
   const items = sectionsFor(role, group);
   return items.length > 0 ? items[0].href : "/dashboard";
 }
@@ -83,14 +92,16 @@ function useActive() {
 }
 
 export function AppShell({
-  storeName,
-  role,
+  session,
   children,
 }: {
-  storeName?: string;
-  role: AppRole;
+  session: AppSession;
   children: React.ReactNode;
 }) {
+  const storeName = session.storeName;
+  const role = session.role;
+  const sphere = session.sphere;
+  const activeModules = session.activeModules;
   const t = useTranslations("app.nav");
   const isActive = useActive();
   const pathname = usePathname();
@@ -102,6 +113,7 @@ export function AppShell({
 
   useEffect(() => {
     const saved = localStorage.getItem("tim-sidebar-pinned");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saved !== null) setIsPinned(saved === "true");
   }, []);
 
@@ -114,7 +126,7 @@ export function AppShell({
   };
 
   const activeGroup = groupForPath(pathname);
-  const mainKeys = navFor(role);
+  const mainKeys = navFor(role, sphere, activeModules);
   const availableGroups: ("main" | SectionGroup)[] = (["main"] as ("main" | SectionGroup)[]).concat(
     SECTION_GROUPS.filter((g) => sectionsFor(role, g).length > 0)
   );
@@ -137,7 +149,7 @@ export function AppShell({
       >
         {/* Tier 1: Узкий сайдбар с иконками */}
         <aside
-          className="z-20 w-[72px] h-full flex-col items-center bg-[#051130] py-7 flex relative"
+          className="z-20 w-[72px] h-full flex-col items-center bg-[#051130] py-7 flex relative shadow-2xl"
           aria-label="Primary navigation"
         >
           <div className="flex w-full justify-center pb-6">
@@ -148,7 +160,7 @@ export function AppShell({
             {availableGroups.map((group) => (
               <Tier1Link
                 key={group}
-                href={getGroupHref(group, role)}
+                href={getGroupHref(group, role, sphere, activeModules)}
                 icon={TIER1_ICONS[group]}
                 label={t(`groups.${group}`)}
                 active={activeGroup === group}
@@ -172,11 +184,11 @@ export function AppShell({
         {/* Tier 2: Меню выбранной категории */}
         <aside
           className={cn(
-            "flex flex-col bg-app-navy z-10 transition-all duration-300 overflow-hidden h-full",
+            "flex flex-col bg-app-navy/95 backdrop-blur-md z-10 transition-all duration-300 overflow-hidden h-full",
             isPinned 
               ? "w-[236px] border-r border-[#1a2b5e] opacity-100 shadow-none" 
               : isHovered 
-                ? "w-[236px] border-r border-[#1a2b5e] opacity-100 shadow-[10px_0_30px_rgba(0,0,0,0.3)]" 
+                ? "w-[236px] border-r border-[#1a2b5e] opacity-100 shadow-[20px_0_40px_rgba(0,0,0,0.5)]" 
                 : "w-0 border-r-0 border-transparent opacity-0 shadow-none"
           )}
           aria-label={t("label")}
@@ -184,11 +196,11 @@ export function AppShell({
           <div className="w-[236px] flex flex-col h-full">
             <div className="flex items-start justify-between gap-2 px-6 pt-7 pb-6">
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-[13px] font-extrabold tracking-[0.14em] text-white uppercase">
+                <span className="text-[12px] font-extrabold tracking-[0.2em] text-white/80 uppercase">
                   {t(`groups.${activeGroup}`)}
                 </span>
                 {storeName ? (
-                  <span className="truncate text-[12px] font-semibold text-navy-text">
+                  <span className="truncate text-[12px] font-medium text-navy-text">
                     {storeName}
                   </span>
                 ) : null}
@@ -274,7 +286,7 @@ export function AppShell({
         {children}
       </main>
 
-      <BottomTabs role={role} />
+      <BottomTabs session={session} />
     </div>
   );
 }
@@ -298,14 +310,21 @@ function Tier1Link({
         href={href}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex size-[42px] items-center justify-center rounded-xl transition-colors duration-150",
-          active ? "bg-app-sapphire text-white" : "text-navy-text hover:bg-white/10 hover:text-white"
+          "relative flex size-[44px] items-center justify-center rounded-xl transition-colors duration-200 z-10",
+          active ? "text-white" : "text-white/50 hover:text-white"
         )}
       >
-        <Icon className="size-[20px]" aria-hidden />
+        {active && (
+          <motion.div
+            layoutId="tier1Active"
+            className="absolute inset-0 rounded-xl bg-app-sapphire/80 shadow-[0_0_15px_rgba(37,99,235,0.4)] -z-10"
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
+          />
+        )}
+        <Icon className="size-[22px] relative z-20" aria-hidden />
       </Link>
       {showTooltip && (
-        <div className="pointer-events-none absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 rounded-md bg-white px-2.5 py-1.5 text-[12.5px] font-semibold text-[#0f172a] opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 whitespace-nowrap z-50">
+        <div className="pointer-events-none absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 rounded-lg bg-zinc-800/95 backdrop-blur-sm px-3 py-1.5 text-[12.5px] font-bold tracking-wide text-white opacity-0 shadow-xl border border-white/10 transition-all duration-200 group-hover:opacity-100 whitespace-nowrap z-50">
           {label}
         </div>
       )}
@@ -329,28 +348,32 @@ function SideLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14.5px] font-semibold",
-        "transition-[background-color,color] duration-150",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire-lift",
+        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-semibold tracking-[0.02em]",
+        "transition-colors duration-200 z-10",
         active
-          ? // Полупрозрачный сапфир, а не сплошной: активный пункт должен
-            // читаться как подсветка внутри столба, а не как кнопка поверх него.
-            "bg-app-sapphire/28 text-white"
-          : "text-navy-text hover:bg-white/6 hover:text-white",
+          ? "text-white"
+          : "text-white/60 hover:text-white hover:bg-white/5",
       )}
     >
-      <Icon className="size-[18px] shrink-0" aria-hidden />
-      {label}
+      {active && (
+        <motion.div
+          layoutId="sideLinkActive"
+          className="absolute inset-0 rounded-xl bg-white/10 shadow-sm backdrop-blur-sm -z-10 border border-white/5"
+          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        />
+      )}
+      <Icon className="size-[18px] shrink-0 relative z-20" aria-hidden />
+      <span className="relative z-20">{label}</span>
     </Link>
   );
 }
 
-function BottomTabs({ role }: { role: AppRole }) {
+function BottomTabs({ session }: { session: AppSession }) {
   const t = useTranslations("app.nav");
   const isActive = useActive();
   // Не `navFor`: в полосу помещаются четыре раздела, остальные живут в
   // профиле — иначе у владельца было бы восемь целей шириной по 40px.
-  const keys = tabsFor(role);
+  const keys = tabsFor(session.role, session.sphere, session.activeModules);
 
   // Профиль — всегда последняя вкладка: у кассира разделов всего один,
   // и без него он не смог бы выйти из аккаунта.

@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
-import { ChevronDown, Minus, Plus, Search, Trash2 } from "lucide-react";
+import { ChevronDown, Minus, Plus, Search, Trash2, ShoppingCart, CreditCard, Banknote, HandCoins } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 import { AppShell } from "@/components/app/app-shell";
 import {
@@ -14,7 +15,6 @@ import { Badge, stockTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyBlock } from "@/components/ui/empty";
 import { ListSkeleton } from "@/components/ui/skeleton";
-import { DataCard, Eyebrow } from "@/components/ui/stat";
 import {
   colorsOf,
   popularSizes,
@@ -29,7 +29,6 @@ import { initial, money, toneOf } from "@/lib/format";
 import { useAppSession } from "@/lib/session";
 
 type Payment = "CASH" | "CARD" | "TRANSFER";
-
 const PAYMENTS: Payment[] = ["CASH", "CARD", "TRANSFER"];
 
 interface CartLine {
@@ -39,29 +38,9 @@ interface CartLine {
   size: string;
   price: number;
   quantity: number;
-  /** Сколько всего лежит в зале — дальше этого продавать нечего. */
   available: number;
 }
 
-/**
- * Касса (Этап 19).
- *
- * Экран, которым пользуются стоя, в очереди и не глядя. Отсюда всё
- * остальное:
- *
- * - поиск — самое крупное поле экрана и получает фокус сразу; аппаратный
- *   сканер печатает как клавиатура, и его ввод попадает туда же;
- * - товар — карточка с плиткой, а не строка таблицы: в очереди ищут
- *   глазами форму и цвет, а не читают колонку;
- * - чек виден всегда: на широком экране сбоку, на телефоне — полосой
- *   над нижними вкладками, которая разворачивается в полный чек;
- * - «Оплатить» — самый крупный элемент экрана и единственный янтарный.
- *   Промахнуться по нему нельзя, искать его не нужно.
- *
- * Продажа идёт по варианту (размер + цвет), потому что так устроен
- * `POST /sales`: в магазине одежды продаётся конкретная вещь конкретного
- * размера, а не «товар вообще».
- */
 export function PosView() {
   const t = useTranslations("app.pos");
   const session = useAppSession();
@@ -83,8 +62,6 @@ export function PosView() {
   const searchId = useId();
 
   useEffect(() => {
-    // Ходовые размеры решают, где кривой загораться золотом. Если отчёт
-    // не пришёл, золота просто не будет — подсветка без данных врала бы.
     fetchApi("/reports/size-analysis?period=month")
       .then((rows: SizeDemand[]) =>
         setPopular(popularSizes(Array.isArray(rows) ? rows : [])),
@@ -101,8 +78,6 @@ export function PosView() {
 
   useEffect(() => {
     let cancelled = false;
-    // 250 мс задержки на набор: без неё каждый символ — запрос, и список
-    // прыгает под пальцами. Пустой запрос грузим сразу, ждать нечего.
     const timer = setTimeout(
       () => {
         loadProducts(query.trim())
@@ -203,8 +178,6 @@ export function PosView() {
       setCart([]);
       setDiscount("");
       setSheetOpen(false);
-
-      // Остатки изменились — перечитываем, иначе кривая покажет проданное.
       setProducts(await loadProducts(query.trim()));
     } catch (err: unknown) {
       setError(
@@ -234,16 +207,17 @@ export function PosView() {
   );
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
-      <div className="mx-auto w-full max-w-[1180px] desktop:grid desktop:grid-cols-[minmax(0,1fr)_360px] desktop:items-start desktop:gap-6">
-        {/* ── Каталог ─────────────────────────────────────────── */}
-        <div className="flex flex-col gap-5">
-          <div className="relative">
+    <AppShell session={session}>
+      <div className="mx-auto w-full max-w-[1320px] desktop:grid desktop:grid-cols-[minmax(0,1fr)_420px] desktop:items-start desktop:gap-8 pt-4 desktop:pt-0">
+        {/* ── Catalog ─────────────────────────────────────────── */}
+        <div className="flex flex-col gap-6">
+          <div className="relative group">
             <label htmlFor={searchId} className="sr-only">
               {t("searchLabel")}
             </label>
+            <div className="absolute inset-0 bg-gradient-to-r from-app-sapphire/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
             <Search
-              className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-app-dim-2"
+              className="pointer-events-none absolute top-1/2 left-6 size-6 -translate-y-1/2 text-slate-400 group-focus-within:text-app-sapphire transition-colors"
               aria-hidden
             />
             <input
@@ -254,11 +228,11 @@ export function PosView() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("searchPlaceholder")}
               className={cn(
-                "h-16 w-full rounded-frame border-[1.5px] border-app-line-strong bg-app-card pr-5 pl-13",
-                "text-[17px] font-semibold text-app-ink outline-none",
-                "transition-[border-color,box-shadow] duration-150",
-                "placeholder:font-medium placeholder:text-app-dim-2",
-                "focus:border-app-sapphire focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]",
+                "relative h-18 w-full rounded-2xl border border-slate-200/60 bg-white/80 pr-6 pl-16",
+                "text-[18px] font-semibold text-slate-900 outline-none backdrop-blur-md shadow-sm",
+                "transition-all duration-300",
+                "placeholder:font-medium placeholder:text-slate-400",
+                "focus:border-app-sapphire/50 focus:bg-white focus:shadow-[0_8px_30px_rgb(0,0,0,0.08)]",
               )}
             />
           </div>
@@ -287,28 +261,30 @@ export function PosView() {
               }
             />
           ) : (
-            <div className="flex flex-col gap-3">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  popular={popular}
-                  color={pickedColor[product.id]}
-                  onColor={(c) =>
-                    setPickedColor((prev) => ({ ...prev, [product.id]: c }))
-                  }
-                  onPick={(bar) => addToCart(product, bar)}
-                />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <AnimatePresence>
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    popular={popular}
+                    color={pickedColor[product.id]}
+                    onColor={(c) =>
+                      setPickedColor((prev) => ({ ...prev, [product.id]: c }))
+                    }
+                    onPick={(bar) => addToCart(product, bar)}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </div>
 
-        {/* ── Чек: широкий экран ──────────────────────────────── */}
-        <div className="sticky top-8 hidden desktop:block">{checkout}</div>
+        {/* ── Checkout Desktop ──────────────────────────────── */}
+        <div className="sticky top-6 hidden desktop:block">{checkout}</div>
       </div>
 
-      {/* ── Чек: телефон ────────────────────────────────────── */}
+      {/* ── Checkout Mobile ────────────────────────────────────── */}
       <MobileCheckout
         items={items}
         total={total}
@@ -323,8 +299,6 @@ export function PosView() {
     </AppShell>
   );
 }
-
-/* ══ Карточка товара ═══════════════════════════════════════════ */
 
 function ProductCard({
   product,
@@ -351,35 +325,38 @@ function ProductCard({
   const onFloor = bars.reduce((sum, bar) => sum + bar.store, 0);
 
   return (
-    <DataCard className="p-4 tablet:p-5">
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col rounded-[24px] border border-app-line bg-app-card p-5 shadow-sm transition-all hover:shadow-md hover:border-app-sapphire/50 group"
+    >
       <div className="flex items-start gap-4">
-        {/* Фотографий товара бэкенд пока не отдаёт, поэтому плитка —
-         * буква на фирменном фоне. Цвет считается из названия, чтобы
-         * при перезагрузке куртка осталась той же куртки. */}
         <span
           aria-hidden
           className={cn(
-            "flex size-13 shrink-0 items-center justify-center rounded-xl text-[20px] font-extrabold",
+            "flex size-16 shrink-0 items-center justify-center rounded-2xl text-[24px] font-extrabold shadow-inner transition-transform group-hover:scale-105",
             toneOf(product.name),
           )}
         >
           {initial(product.name)}
         </span>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <b className="truncate text-[16px] leading-tight font-extrabold tracking-[-0.015em] text-app-ink">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-1">
+          <b className="truncate text-[17px] leading-tight font-extrabold tracking-tight text-app-ink group-hover:text-app-sapphire transition-colors">
             {product.name}
           </b>
-          <span className="truncate font-mono text-[11.5px] tracking-[0.05em] text-app-dim-2 uppercase">
+          <span className="truncate font-mono text-[12px] tracking-wider text-app-dim uppercase">
             {[product.variants[0]?.sku, active].filter(Boolean).join(" · ") ||
               "—"}
           </span>
         </div>
 
-        <div className="flex shrink-0 flex-col items-end gap-1.5">
-          <span className="font-mono text-[18px] leading-none font-bold text-app-ink num">
+        <div className="flex shrink-0 flex-col items-end gap-2 pt-1">
+          <span className="font-mono text-[20px] leading-none font-bold text-app-ink num">
             {money(price)}
-            <small className="ml-1 text-[0.6em] font-semibold text-app-dim-2">
+            <small className="ml-1 text-[0.6em] font-bold text-app-dim">
               {t("currency")}
             </small>
           </span>
@@ -390,7 +367,7 @@ function ProductCard({
       </div>
 
       {colors.length > 1 ? (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-2">
           {colors.map((c) => (
             <button
               key={c}
@@ -398,12 +375,11 @@ function ProductCard({
               onClick={() => onColor(c)}
               aria-pressed={c === active}
               className={cn(
-                "rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold",
-                "transition-[background-color,border-color,color] duration-150",
-                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire",
+                "rounded-full border px-4 py-1.5 text-[13px] font-bold",
+                "transition-all duration-200 active:scale-95",
                 c === active
-                  ? "border-app-sapphire bg-app-sapphire-soft text-app-sapphire"
-                  : "border-app-line-strong text-app-dim hover:border-app-sapphire hover:text-app-sapphire",
+                  ? "border-app-sapphire bg-app-sapphire text-white shadow-md shadow-app-sapphire/20"
+                  : "border-app-line text-app-dim hover:border-app-line-strong hover:bg-app-panel",
               )}
             >
               {c}
@@ -412,14 +388,12 @@ function ProductCard({
         </div>
       ) : null}
 
-      <div className="mt-4 border-t border-app-line pt-4">
+      <div className="mt-5 border-t border-app-line pt-5">
         <SizeCurve bars={bars} onPick={onPick} />
       </div>
-    </DataCard>
+    </motion.div>
   );
 }
-
-/* ══ Чек ═══════════════════════════════════════════════════════ */
 
 function Checkout({
   cart,
@@ -454,147 +428,168 @@ function Checkout({
   const discountId = useId();
 
   return (
-    <DataCard className="flex flex-col gap-5 p-5">
-      <div className="flex items-center justify-between gap-3">
-        <Eyebrow>{t("cart")}</Eyebrow>
-        {items > 0 ? (
-          <Badge tone="info">{t("itemsInCart", { count: items })}</Badge>
-        ) : null}
+    <div className="flex flex-col rounded-[32px] bg-app-panel/80 backdrop-blur-xl border border-app-line shadow-lg p-6 relative overflow-hidden">
+      {/* Decorative gradient corner */}
+      <div className="absolute -top-32 -right-32 size-64 rounded-full bg-app-sapphire/10 blur-[60px] pointer-events-none" />
+
+      <div className="relative z-10 flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-app-card text-app-dim">
+            <ShoppingCart className="size-5" />
+          </div>
+          <span className="text-[14px] font-extrabold tracking-[0.15em] text-app-dim-2 uppercase">
+            {t("cart")}
+          </span>
+        </div>
+        {items > 0 && (
+          <div className="flex h-8 items-center rounded-full bg-app-ink px-3 text-[13px] font-bold text-white shadow-sm">
+            {items}
+          </div>
+        )}
       </div>
 
       {cart.length === 0 ? (
-        <p className="py-6 text-center text-[13.5px] leading-snug text-pretty text-app-dim">
-          {t("cartEmpty")}
-        </p>
+        <div className="flex flex-col items-center justify-center py-12 opacity-50">
+          <ShoppingCart className="size-16 text-app-dim-2 mb-4" />
+          <p className="text-center text-[15px] font-medium text-app-dim">
+            {t("cartEmpty")}
+          </p>
+        </div>
       ) : (
-        <ul className="flex flex-col gap-2.5">
-          {cart.map((line) => (
-            <li
-              key={line.variant.id}
-              className="flex items-center gap-3 rounded-card bg-app-panel px-3.5 py-3"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[14px] font-bold text-app-ink">
-                  {line.productName}
-                </span>
-                <span className="mt-0.5 block font-mono text-[11px] tracking-[0.05em] text-app-dim-2 uppercase">
-                  {[line.color, line.size].filter(Boolean).join(" · ")}
-                </span>
-              </span>
-
-              <span className="flex shrink-0 items-center gap-1.5">
-                <StepButton
-                  label={t("less")}
-                  onClick={() => onStep(line.variant.id, -1)}
+        <div className="flex-1 overflow-y-auto custom-scrollbar -mx-2 px-2 mb-6 max-h-[40vh] desktop:max-h-[50vh]">
+          <ul className="flex flex-col gap-3">
+            <AnimatePresence>
+              {cart.map((line) => (
+                <motion.li
+                  key={line.variant.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-3 rounded-[20px] bg-app-card border border-app-line p-4 shadow-sm hover:border-app-line-strong transition-colors group"
                 >
-                  <Minus className="size-3.5" aria-hidden />
-                </StepButton>
-                <span className="w-5 text-center font-mono text-[14px] font-bold text-app-ink tabular-nums">
-                  {line.quantity}
-                </span>
-                <StepButton
-                  label={t("more")}
-                  disabled={line.quantity >= line.available}
-                  onClick={() => onStep(line.variant.id, 1)}
-                >
-                  <Plus className="size-3.5" aria-hidden />
-                </StepButton>
-              </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[15px] font-bold text-app-ink">
+                      {line.productName}
+                    </span>
+                    <span className="mt-1 block font-mono text-[11px] tracking-wider text-app-dim uppercase">
+                      {[line.color, line.size].filter(Boolean).join(" · ")}
+                    </span>
+                  </span>
 
-              <span className="w-16 shrink-0 text-right font-mono text-[13.5px] font-bold text-app-ink num">
-                {money(line.price * line.quantity)}
-              </span>
+                  <span className="flex items-center gap-1.5 rounded-[14px] border border-app-line bg-app-panel/50 p-1">
+                    <StepButton
+                      label={t("less")}
+                      onClick={() => onStep(line.variant.id, -1)}
+                    >
+                      <Minus className="size-3.5" />
+                    </StepButton>
+                    <span className="w-6 text-center font-mono text-[14px] font-bold text-app-ink">
+                      {line.quantity}
+                    </span>
+                    <StepButton
+                      label={t("more")}
+                      disabled={line.quantity >= line.available}
+                      onClick={() => onStep(line.variant.id, 1)}
+                    >
+                      <Plus className="size-3.5" />
+                    </StepButton>
+                  </span>
 
-              <button
-                type="button"
-                onClick={() => onRemove(line.variant.id)}
-                aria-label={t("removeLine")}
-                className="shrink-0 rounded-md p-1 text-app-dim-2 transition-colors duration-150 hover:text-app-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire"
-              >
-                <Trash2 className="size-4" aria-hidden />
-              </button>
-            </li>
-          ))}
-        </ul>
+                  <span className="w-16 shrink-0 text-right font-mono text-[14px] font-bold text-app-ink">
+                    {money(line.price * line.quantity)}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => onRemove(line.variant.id)}
+                    className="shrink-0 flex size-8 items-center justify-center rounded-lg text-app-dim-2 opacity-0 group-hover:opacity-100 transition-all hover:bg-app-out-soft hover:text-app-out"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </ul>
+        </div>
       )}
 
-      <div className="flex items-center justify-between gap-4">
-        <label
-          htmlFor={discountId}
-          className="text-[13px] font-bold text-app-dim"
+      <div className="relative z-10 flex flex-col gap-5 border-t border-app-line pt-6">
+        <div className="flex items-center justify-between gap-4">
+          <label htmlFor={discountId} className="text-[13px] font-bold text-app-dim">
+            {t("discount")}
+          </label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-app-dim-2 text-sm font-bold">-</span>
+            <input
+              id={discountId}
+              type="text"
+              inputMode="numeric"
+              value={discount}
+              onChange={(event) => onDiscount(event.target.value.replace(/\D/g, ""))}
+              placeholder="0"
+              className="h-12 w-32 rounded-xl border border-transparent bg-app-card px-3 text-right font-mono text-[16px] font-bold text-app-ink transition-all outline-none focus:border-app-sapphire focus:shadow-[0_0_0_4px_rgba(37,99,235,0.1)]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 bg-app-card p-2 rounded-[20px] border border-app-line">
+          {PAYMENTS.map((method) => {
+            const Icon = method === "CARD" ? CreditCard : method === "CASH" ? Banknote : HandCoins;
+            return (
+              <button
+                key={method}
+                type="button"
+                onClick={() => onPayment(method)}
+                className={cn(
+                  "relative flex flex-col items-center justify-center gap-1.5 h-16 rounded-xl text-[12px] font-bold transition-all duration-200",
+                  method === payment
+                    ? "bg-app-panel text-app-sapphire shadow-sm"
+                    : "text-app-dim hover:bg-app-panel/50 hover:text-app-ink",
+                )}
+              >
+                {method === payment && (
+                  <motion.div layoutId="payment_indicator" className="absolute inset-0 rounded-xl border-2 border-app-sapphire" transition={{ type: "spring", bounce: 0.2, duration: 0.4 }} />
+                )}
+                <Icon className="size-4 relative z-10" />
+                <span className="relative z-10">{t(`payment.${method}`)}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="flex flex-col gap-1 pt-2">
+          <span className="text-[12px] font-extrabold tracking-[0.1em] text-app-dim-2 uppercase">
+            {t("toPay")}
+          </span>
+          <span className="font-mono text-[clamp(40px,5vw,52px)] leading-none font-extrabold tracking-tight text-app-ink">
+            {money(total)}
+            <small className="ml-2 text-[0.4em] font-bold text-app-dim-2">
+              {t("currency")}
+            </small>
+          </span>
+        </div>
+
+        {error ? (
+          <p className="rounded-[16px] border border-app-out/20 bg-app-out-soft px-4 py-3 text-[13.5px] font-semibold text-app-out">
+            {error}
+          </p>
+        ) : null}
+        {done ? (
+          <p className="rounded-[16px] border border-app-ok/20 bg-app-ok-soft px-4 py-3 text-[13.5px] font-semibold text-app-ok">
+            {done}
+          </p>
+        ) : null}
+
+        <Button
+          onClick={onSell}
+          disabled={cart.length === 0 || saving}
+          className="h-16 w-full rounded-2xl text-[18px] font-bold shadow-xl shadow-app-sapphire/20 transition-all hover:scale-[1.02] active:scale-95 disabled:scale-100 disabled:shadow-none"
         >
-          {t("discount")}
-        </label>
-        <input
-          id={discountId}
-          type="text"
-          inputMode="numeric"
-          value={discount}
-          onChange={(event) =>
-            onDiscount(event.target.value.replace(/\D/g, ""))
-          }
-          placeholder="0"
-          className="h-11 w-28 rounded-card border-[1.5px] border-app-line-strong bg-app-card px-3 text-right font-mono text-[15px] font-bold text-app-ink tabular-nums transition-[border-color,box-shadow] duration-150 outline-none placeholder:font-medium placeholder:text-app-dim-2 focus:border-app-sapphire focus:shadow-[0_0_0_4px_rgb(15_82_186/0.10)]"
-        />
+          {saving ? t("selling") : t("sell")}
+        </Button>
       </div>
-
-      <div className="grid grid-cols-3 gap-2">
-        {PAYMENTS.map((method) => (
-          <button
-            key={method}
-            type="button"
-            onClick={() => onPayment(method)}
-            aria-pressed={method === payment}
-            className={cn(
-              "h-11 rounded-card border-[1.5px] text-[13px] font-bold",
-              "transition-[background-color,border-color,color] duration-150",
-              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire",
-              method === payment
-                ? "border-app-sapphire bg-app-sapphire-soft text-app-sapphire"
-                : "border-app-line-strong text-app-dim hover:border-app-sapphire",
-            )}
-          >
-            {t(`payment.${method}`)}
-          </button>
-        ))}
-      </div>
-
-      {/* Сумма — второе по величине число экрана после самой кнопки. */}
-      <div className="flex flex-col gap-1 border-t border-app-line pt-4">
-        <Eyebrow>{t("toPay")}</Eyebrow>
-        <span className="font-mono text-[clamp(32px,6vw,42px)] leading-none font-extrabold tracking-[-0.04em] text-app-ink num">
-          {money(total)}
-          <small className="ml-1.5 text-[0.36em] font-bold tracking-[0.06em] text-app-dim">
-            {t("currency")}
-          </small>
-        </span>
-      </div>
-
-      {error ? (
-        <p
-          role="alert"
-          className="rounded-card bg-app-out-soft px-4 py-3 text-[13.5px] leading-snug font-semibold text-app-out"
-        >
-          {error}
-        </p>
-      ) : null}
-      {done ? (
-        <p
-          role="status"
-          className="rounded-card bg-app-ok-soft px-4 py-3 text-[13.5px] font-semibold text-app-ok"
-        >
-          {done}
-        </p>
-      ) : null}
-
-      <Button
-        onClick={onSell}
-        disabled={cart.length === 0 || saving}
-        className="h-16 w-full text-[18px]"
-      >
-        {saving ? t("selling") : t("sell")}
-      </Button>
-    </DataCard>
+    </div>
   );
 }
 
@@ -615,21 +610,13 @@ function StepButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="flex size-8 items-center justify-center rounded-lg border border-app-line-strong bg-app-card text-app-dim transition-colors duration-150 hover:border-app-sapphire hover:text-app-sapphire focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire disabled:pointer-events-none disabled:opacity-40"
+      className="flex size-7 items-center justify-center rounded-[10px] bg-app-card text-app-ink shadow-sm transition-colors hover:bg-app-line hover:text-app-ink active:scale-95 disabled:pointer-events-none disabled:opacity-45"
     >
       {children}
     </button>
   );
 }
 
-/**
- * Чек на телефоне.
- *
- * Свернуть его совсем нельзя: продавец должен видеть сумму, не думая,
- * где она. Поэтому внизу всегда висит полоса с итогом, а полный чек
- * открывается по нажатию на неё. Полоса стоит над нижними вкладками,
- * а не поверх — иначе она накрыла бы навигацию.
- */
 function MobileCheckout({
   items,
   total,
@@ -651,43 +638,50 @@ function MobileCheckout({
 }) {
   return (
     <div className="desktop:hidden">
-      {open ? (
-        <div className="fixed inset-0 z-40 flex flex-col bg-app-bg">
-          <div className="flex items-center justify-between gap-4 border-b border-app-line bg-app-card px-5 py-3.5">
-            <span className="text-[13px] font-bold text-app-dim">
-              {items > 0 ? summaryLabel : emptyLabel}
-            </span>
-            <button
-              type="button"
-              onClick={onToggle}
-              className="flex size-9 items-center justify-center rounded-full bg-app-panel text-app-dim transition-colors duration-150 hover:text-app-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire"
-            >
-              <ChevronDown className="size-5" aria-hidden />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4">{children}</div>
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {open && (
+          <motion.div 
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="fixed inset-0 z-40 flex flex-col bg-slate-50/90 backdrop-blur-md"
+          >
+            <div className="flex items-center justify-between gap-4 border-b border-slate-200/50 bg-white/80 px-6 py-4 backdrop-blur-sm">
+              <span className="text-[14px] font-bold text-slate-500">
+                {items > 0 ? summaryLabel : emptyLabel}
+              </span>
+              <button
+                type="button"
+                onClick={onToggle}
+                className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-900"
+              >
+                <ChevronDown className="size-6" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 pb-24">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <button
         type="button"
         onClick={onToggle}
         className={cn(
-          "fixed inset-x-0 bottom-[68px] z-30 flex items-center justify-between gap-4",
-          "border-t border-app-line bg-app-card px-5 py-3",
-          "transition-[opacity] duration-150",
-          "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-app-sapphire",
-          open && "opacity-0",
+          "fixed inset-x-4 bottom-[84px] z-30 flex items-center justify-between gap-4 rounded-2xl shadow-2xl shadow-slate-900/10",
+          "border border-slate-200/50 bg-white/95 backdrop-blur-md px-6 py-4",
+          "transition-all duration-300",
+          open && "translate-y-24 opacity-0 pointer-events-none",
         )}
-        aria-hidden={open}
-        tabIndex={open ? -1 : 0}
       >
-        <span className="text-[13px] font-bold text-app-dim">
+        <span className="text-[14px] font-bold text-slate-500">
           {items > 0 ? summaryLabel : emptyLabel}
         </span>
-        <span className="font-mono text-[22px] leading-none font-extrabold text-app-ink num">
+        <span className="font-mono text-[24px] leading-none font-extrabold text-slate-900">
           {money(total)}
-          <small className="ml-1 text-[0.45em] font-bold text-app-dim">
+          <small className="ml-1.5 text-[0.45em] font-bold text-slate-400">
             {currency}
           </small>
         </span>

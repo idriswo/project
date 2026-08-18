@@ -20,7 +20,7 @@ export default function Page({
 
   return (
     <AuthGuard>
-      <AppScreen allow={["OWNER", "MANAGER", "SKLADCHI"]}>
+      <AppScreen allow={["OWNER", "MANAGER", "WAREHOUSE"]}>
         <WriteOffActView id={id} />
       </AppScreen>
     </AuthGuard>

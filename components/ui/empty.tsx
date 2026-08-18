@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { motion } from "motion/react";
 
 /**
  * Пустое состояние.
@@ -118,31 +119,61 @@ export function EmptyBlock({
   art?: Art;
   title: string;
   lead?: string;
-  /** Кнопка действия. Без неё пустое состояние всё ещё тупик. */
   action?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
 }) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={cn(
-        "flex flex-col items-center rounded-frame border border-app-line bg-app-card",
-        "px-6 py-10 text-center tablet:px-10 tablet:py-14",
-        "motion-safe:animate-app-in",
+        "flex flex-col items-center rounded-[32px] border border-app-line bg-app-card/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+        "px-6 py-12 text-center tablet:px-10 tablet:py-16 relative overflow-hidden",
         className,
       )}
     >
-      <Illustration art={art} />
-      <h2 className="mt-6 text-[22px] font-extrabold tracking-[-0.02em] text-balance text-app-ink">
-        {title}
-      </h2>
-      {lead ? (
-        <p className="mt-2.5 max-w-[38ch] text-body leading-normal text-pretty text-app-dim">
-          {lead}
-        </p>
-      ) : null}
-      {action ? <div className="mt-7">{action}</div> : null}
-      {children ? <div className="mt-9 w-full">{children}</div> : null}
-    </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-app-sapphire/5 to-transparent pointer-events-none" />
+      <div className="relative z-10 flex flex-col items-center">
+        <motion.div 
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.5, type: "spring" }}
+          className="drop-shadow-sm"
+        >
+          <Illustration art={art} />
+        </motion.div>
+        <motion.h2 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="mt-8 text-[24px] font-extrabold tracking-[-0.02em] text-balance text-app-ink drop-shadow-sm"
+        >
+          {title}
+        </motion.h2>
+        {lead ? (
+          <motion.p 
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="mt-3 max-w-[42ch] text-[15px] font-medium leading-relaxed text-pretty text-app-dim"
+          >
+            {lead}
+          </motion.p>
+        ) : null}
+        {action ? (
+          <motion.div 
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.4 }}
+            className="mt-8"
+          >
+            {action}
+          </motion.div>
+        ) : null}
+        {children ? <div className="mt-10 w-full relative z-10">{children}</div> : null}
+      </div>
+    </motion.div>
   );
 }

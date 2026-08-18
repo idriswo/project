@@ -36,19 +36,17 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-3.5 text-[13px]",
-  md: "px-[22px] py-[11px] text-[15px]",
-  lg: "px-[30px] py-[15px] text-base",
-  /* Кнопка, по которой бьют пальцем стоя: 60px — это тот размер, который
-   * не надо искать. Ниже 56px промахи в кассе начинаются сразу. */
+  sm: "h-9 px-4 text-[13px]",
+  md: "px-6 py-2.5 text-[14px]",
+  lg: "px-8 py-3.5 text-[15px]",
   xl: "h-15 px-8 text-[17px]",
 };
 
 const base =
-  "inline-flex items-center justify-center gap-[9px] rounded-btn font-bold " +
-  "transition-[background-color,border-color,color,transform,box-shadow,opacity] duration-150 " +
+  "inline-flex items-center justify-center gap-[9px] rounded-[14px] font-bold " +
+  "transition-all duration-200 " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 " +
-  "disabled:pointer-events-none disabled:opacity-45";
+  "disabled:pointer-events-none disabled:opacity-50 disabled:grayscale";
 
 type StyleProps = {
   variant?: Variant;

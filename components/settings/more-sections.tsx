@@ -10,6 +10,9 @@ import {
   ScanLine,
   Shirt,
   Users,
+  ChefHat,
+  UtensilsCrossed,
+  CalendarClock
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -44,6 +47,9 @@ const ICONS: Record<NavKey, LucideIcon> = {
   warehouse: Boxes,
   reports: ChartColumn,
   staff: IdCard,
+  kitchen: ChefHat,
+  tables: UtensilsCrossed,
+  booking: CalendarClock,
 };
 
 const HREFS: Record<NavKey, string> = {
@@ -54,12 +60,15 @@ const HREFS: Record<NavKey, string> = {
   warehouse: "/warehouse",
   reports: "/reports",
   staff: "/staff",
+  kitchen: "/kitchen",
+  tables: "/tables",
+  booking: "/booking",
 };
 
 export function MoreSections() {
   const t = useTranslations("app.nav");
   const session = useAppSession();
-  const keys = extraFor(session.role);
+  const keys = extraFor(session.role, session.sphere, session.activeModules);
 
   if (session.loading) return null;
 

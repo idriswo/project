@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/cn";
+import { motion } from "motion/react";
 
 /**
  * Числа приложения.
@@ -15,19 +18,20 @@ export function DataCard({
   className,
   children,
   ...rest
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<typeof motion.div>) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       {...rest}
       className={cn(
-        "rounded-frame border border-app-line bg-app-card",
-        "shadow-[0_1px_2px_rgb(15_25_60/0.04),0_12px_28px_-24px_rgb(15_25_60/0.35)]",
-        "motion-safe:animate-app-in",
+        "rounded-[24px] border border-app-line bg-app-card shadow-[0_1px_2px_rgb(15_25_60/0.04),0_12px_28px_-24px_rgb(15_25_60/0.35)] transition-all duration-300 hover:shadow-lg hover:border-app-line-strong",
         className,
       )}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -42,7 +46,7 @@ export function Eyebrow({
   return (
     <span
       className={cn(
-        "block text-[11.5px] font-bold tracking-[0.14em] text-app-dim-2 uppercase",
+        "block text-[12px] font-bold tracking-[0.14em] text-app-dim-2 uppercase",
         className,
       )}
     >
@@ -154,10 +158,10 @@ export function PageHead({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 pb-2 border-b border-app-line mb-4">
       <div className="flex min-w-0 flex-col gap-1.5">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="text-[clamp(24px,4vw,30px)] leading-none font-extrabold tracking-[-0.03em] text-app-ink">
+        <h1 className="text-[clamp(28px,5vw,36px)] leading-none font-extrabold tracking-[-0.03em] text-app-ink drop-shadow-sm">
           {title}
         </h1>
       </div>

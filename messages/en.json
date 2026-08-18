@@ -359,19 +359,31 @@
       "cta": "Continue"
     },
     "businessType": {
-      "heading": "What type of business is this?",
-      "lead": "This helps us tailor the interface for you.",
-      "retail": {
-        "name": "Retail",
-        "desc": "One store, selling to customers"
+      "heading": "What is your industry?",
+      "lead": "TIM will adapt the interface for your business.",
+      "clothing": {
+        "name": "Clothing & Shoes",
+        "desc": "Sizes, colors, and collections"
       },
-      "wholesale": {
-        "name": "Wholesale",
-        "desc": "Selling to other stores"
+      "grocery": {
+        "name": "Grocery & Supermarkets",
+        "desc": "Expiration dates and weights"
       },
-      "network": {
-        "name": "Chain/Branches",
-        "desc": "Multiple points of sale"
+      "restaurant": {
+        "name": "Restaurant or Cafe",
+        "desc": "Menu, tables, and kitchen"
+      },
+      "company": {
+        "name": "Services & Companies",
+        "desc": "Client appointments and services"
+      },
+      "supermarket": {
+        "name": "Supermarket",
+        "desc": "High volume, POS, and inventory"
+      },
+      "hypermarket": {
+        "name": "Hypermarket",
+        "desc": "Retail chains, multi-store, and analytics"
       },
       "cta": "Continue"
     },
@@ -388,10 +400,45 @@
     },
     "logout": "Sign out",
     "steps": {
-      "welcome": "Welcome",
+      "welcome": "Industry",
       "name": "Name",
       "type": "Business type",
-      "modules": "Features"
+      "modules": "Features",
+      "setup": "Setup"
+    },
+    "setupMagic": {
+      "heading": "Setting up your workspace",
+      "clothing": "Loading size matrices...",
+      "grocery": "Connecting barcodes and scales...",
+      "restaurant": "Preparing floor plan...",
+      "company": "Configuring service catalog...",
+      "final": "All set!"
+    },
+    "dynamicFeatures": {
+      "marketing": {
+        "name": "Marketing",
+        "desc": "Promotions, loyalty program, SMS"
+      },
+      "reports": {
+        "name": "Analytics",
+        "desc": "Revenue, profit, top products"
+      },
+      "kitchen": {
+        "name": "Kitchen Management",
+        "desc": "Chef screens and recipes"
+      },
+      "tables": {
+        "name": "Table Booking",
+        "desc": "Floor plan and reservations"
+      },
+      "loyalty": {
+        "name": "Loyalty Program",
+        "desc": "Bonus cards and discounts"
+      },
+      "booking": {
+        "name": "Online Booking",
+        "desc": "Calendar and SMS reminders"
+      }
     }
   },
   "dashboard": {
@@ -561,7 +608,10 @@
         "notifications": "Notifications",
         "scanner": "Scanner",
         "alerts": "Low stock alerts"
-      }
+      },
+      "kitchen": "Kitchen",
+      "tables": "Tables",
+      "booking": "Booking"
     },
     "curve": {
       "noSizes": "This item has no sizes",

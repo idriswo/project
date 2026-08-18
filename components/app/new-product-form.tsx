@@ -160,7 +160,7 @@ export function NewProductForm() {
   }
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
+    <AppShell session={session}>
       <form
         onSubmit={handleSubmit}
         className="mx-auto flex w-full max-w-[860px] flex-col gap-5"

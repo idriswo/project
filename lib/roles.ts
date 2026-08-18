@@ -15,9 +15,18 @@
 
 export type BackendRole = "OWNER" | "STAFF";
 
-export type AppRole = "OWNER" | "MANAGER" | "CASHIER" | "SKLADCHI";
+export type AppRole = "OWNER" | "MANAGER" | "CASHIER" | "WAREHOUSE" | "WAITER" | "KITCHEN" | "SALES" | "SPECIALIST";
 
-const APP_ROLES: AppRole[] = ["OWNER", "MANAGER", "CASHIER", "SKLADCHI"];
+const APP_ROLES: AppRole[] = [
+  "OWNER",
+  "MANAGER",
+  "CASHIER",
+  "WAREHOUSE",
+  "WAITER",
+  "KITCHEN",
+  "SALES",
+  "SPECIALIST",
+];
 
 export function isAppRole(value: unknown): value is AppRole {
   return typeof value === "string" && (APP_ROLES as string[]).includes(value);
@@ -46,18 +55,13 @@ export type NavKey =
   | "floor"
   | "warehouse"
   | "reports"
-  | "staff";
+  | "staff"
+  | "kitchen"
+  | "tables"
+  | "booking";
 
 /**
- * Какие разделы показываем. Порядок здесь же: он задаёт и боковое меню
- * на вебе, и нижние вкладки на телефоне — два списка разошлись бы.
- *
- * «Клиенты» стоят сразу после кассы: продавец открывает их в тот же
- * момент работы — записать долг или начислить бонусы по только что
- * пробитому чеку.
- *
- * У кладовщика этого раздела нет: он не работает ни с долгами, ни с
- * бонусами, и чужие телефоны ему видеть незачем.
+ * Какие разделы показываем по умолчанию для каждой роли.
  */
 const NAV_BY_ROLE: Record<AppRole, NavKey[]> = {
   OWNER: [
@@ -71,11 +75,47 @@ const NAV_BY_ROLE: Record<AppRole, NavKey[]> = {
   ],
   MANAGER: ["dashboard", "pos", "customers", "floor", "warehouse", "reports"],
   CASHIER: ["pos", "customers"],
-  SKLADCHI: ["floor", "warehouse"],
+  WAREHOUSE: ["floor", "warehouse"],
+  WAITER: ["tables", "floor"],
+  KITCHEN: ["kitchen"],
+  SALES: ["booking", "customers"],
+  SPECIALIST: ["booking", "customers"],
 };
 
-export function navFor(role: AppRole): NavKey[] {
-  return NAV_BY_ROLE[role];
+export function navFor(role: AppRole, sphere: string, activeModules: string[] = []): NavKey[] {
+  const base = NAV_BY_ROLE[role] || [];
+  
+  let filtered = base;
+
+  // Если это Ресторан, заменяем POS/Склад на Столы/Кухню для владельцев
+  if (sphere === "RESTAURANT") {
+    if (role === "OWNER" || role === "MANAGER") {
+      filtered = ["dashboard", "tables", "kitchen", "customers", "reports", "staff"];
+    }
+  }
+  
+  // Если это Услуги/Компании
+  if (sphere === "COMPANY") {
+    if (role === "OWNER" || role === "MANAGER") {
+      filtered = ["dashboard", "booking", "customers", "reports", "staff"];
+    }
+  }
+
+  // Скрываем модули, если они не куплены
+  if (!activeModules.includes("REPORTS") && !activeModules.includes("reports")) {
+    filtered = filtered.filter(k => k !== "reports");
+  }
+  if (!activeModules.includes("KITCHEN") && !activeModules.includes("kitchen")) {
+    filtered = filtered.filter(k => k !== "kitchen");
+  }
+  if (!activeModules.includes("TABLES") && !activeModules.includes("tables")) {
+    filtered = filtered.filter(k => k !== "tables");
+  }
+  if (!activeModules.includes("BOOKING") && !activeModules.includes("booking")) {
+    filtered = filtered.filter(k => k !== "booking");
+  }
+
+  return filtered;
 }
 
 /**
@@ -88,13 +128,13 @@ export function navFor(role: AppRole): NavKey[] {
  *
  * На широком экране столб показывает всё: там места хватает.
  */
-export function tabsFor(role: AppRole): NavKey[] {
-  return navFor(role).slice(0, 4);
+export function tabsFor(role: AppRole, sphere: string, activeModules: string[] = []): NavKey[] {
+  return navFor(role, sphere, activeModules).slice(0, 4);
 }
 
 /** Разделы, которые на телефоне живут только в профиле. */
-export function extraFor(role: AppRole): NavKey[] {
-  return navFor(role).slice(4);
+export function extraFor(role: AppRole, sphere: string, activeModules: string[] = []): NavKey[] {
+  return navFor(role, sphere, activeModules).slice(4);
 }
 
 /** Куда вести человека после входа: первый доступный ему раздел. */
@@ -106,10 +146,14 @@ const HOME_BY_KEY: Record<NavKey, string> = {
   warehouse: "/warehouse",
   reports: "/reports",
   staff: "/staff",
+  kitchen: "/kitchen",
+  tables: "/tables",
+  booking: "/booking",
 };
 
-export function homeFor(role: AppRole): string {
-  return HOME_BY_KEY[navFor(role)[0]];
+export function homeFor(role: AppRole, sphere: string = "CLOTHING", activeModules: string[] = []): string {
+  const nav = navFor(role, sphere, activeModules);
+  return nav.length > 0 ? HOME_BY_KEY[nav[0]] : "/dashboard";
 }
 
 /**
@@ -163,31 +207,31 @@ const SECTIONS: readonly Section[] = [
     key: "purchases",
     group: "goods",
     href: "/purchases/842",
-    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "WAREHOUSE"],
   },
   {
     key: "stocktake",
     group: "goods",
     href: "/stocktake/12",
-    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "WAREHOUSE"],
   },
   {
     key: "transfer",
     group: "goods",
     href: "/transfer",
-    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "WAREHOUSE"],
   },
   {
     key: "labels",
     group: "goods",
     href: "/labels",
-    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "WAREHOUSE"],
   },
   {
     key: "printQueue",
     group: "goods",
     href: "/labels/queue",
-    roles: ["OWNER", "MANAGER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "WAREHOUSE"],
   },
 
   {
@@ -251,13 +295,13 @@ const SECTIONS: readonly Section[] = [
     key: "notifications",
     group: "docs",
     href: "/notifications",
-    roles: ["OWNER", "MANAGER", "CASHIER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "CASHIER", "WAREHOUSE", "WAITER", "KITCHEN", "SALES", "SPECIALIST"],
   },
   {
     key: "scanner",
     group: "docs",
     href: "/settings/scanner",
-    roles: ["OWNER", "MANAGER", "CASHIER", "SKLADCHI"],
+    roles: ["OWNER", "MANAGER", "CASHIER", "WAREHOUSE", "WAITER", "SALES"],
   },
   {
     key: "alerts",
@@ -275,7 +319,16 @@ export const SECTION_GROUPS: readonly SectionGroup[] = [
   "docs",
 ];
 
-/** Пункты одной группы, доступные этой роли. Пустая группа не рисуется. */
+/**
+ * Пункты одной группы, доступные этой роли. Пустая группа не рисуется.
+ *
+ * Сфера и купленные модули здесь **намеренно не учитываются**: приёмка,
+ * инвентаризация, расходы и документы нужны и магазину одежды, и ресторану,
+ * и салону — это общая хозяйственная часть, а не отраслевая. Разводит по
+ * сферам только основное меню, `navFor`. Раньше эти два аргумента функция
+ * принимала и молча игнорировала — читающий код вправе был решить, что
+ * фильтрация есть.
+ */
 export function sectionsFor(
   role: AppRole,
   group: SectionGroup,

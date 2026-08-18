@@ -23,7 +23,7 @@ export default function Page({
 
   return (
     <AuthGuard>
-      <AppScreen allow={["OWNER", "MANAGER", "CASHIER", "SKLADCHI"]}>
+      <AppScreen allow={["OWNER", "MANAGER", "CASHIER", "WAREHOUSE"]}>
         <NotificationsPanel />
       </AppScreen>
     </AuthGuard>

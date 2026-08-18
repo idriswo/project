@@ -149,7 +149,7 @@ export function ReportsView() {
 
   if (!allowed) {
     return (
-      <AppShell storeName={session.storeName} role={session.role}>
+      <AppShell session={session}>
         <div className="mx-auto w-full max-w-[1040px]">
           <EmptyBlock
             art="chart"
@@ -169,7 +169,7 @@ export function ReportsView() {
   const peakSize = Math.max(...sizes.map((s) => s.soldQuantity), 1);
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
+    <AppShell session={session}>
       <div className="mx-auto flex w-full max-w-[1040px] flex-col gap-6">
         <PageHead eyebrow={t("eyebrow")} title={t("title")}>
           <div className="flex gap-1 rounded-full bg-app-panel p-1">

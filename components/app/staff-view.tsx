@@ -92,7 +92,7 @@ export function StaffView() {
 
   if (!isOwner) {
     return (
-      <AppShell storeName={session.storeName} role={session.role}>
+      <AppShell session={session}>
         <div className="mx-auto w-full max-w-[1040px]">
           <EmptyBlock
             art="search"
@@ -113,7 +113,7 @@ export function StaffView() {
   const active = all.filter((m) => m.isActive).length;
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
+    <AppShell session={session}>
       <div className="mx-auto flex w-full max-w-[1040px] flex-col gap-6">
         <PageHead eyebrow={t("eyebrow")} title={t("title")} />
 

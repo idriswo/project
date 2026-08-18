@@ -1,21 +1,15 @@
-﻿"use client";
+"use client";
 
-import { AlertTriangle, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, TrendingUp, Info, Receipt, ShoppingBag, Banknote } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { motion } from "motion/react";
 
-import { Badge, type Tone } from "@/components/ui/badge";
-import { DataCard, Eyebrow, HeroStat, SubStat } from "@/components/ui/stat";
+import type { Tone } from "@/components/ui/badge";
 import { cn } from "@/lib/cn";
 import { count, money } from "@/lib/format";
 import type { AppRole } from "@/lib/roles";
 import { canSeeProfit } from "@/lib/roles";
 
-/**
- * Совпадает с `overview()` в бэкенде (`reports.service.ts`).
- * `healthScore` объявлен необязательным намеренно: тип описывает то, что
- * реально пришло по сети, а не то, что обещано схемой. Неполный ответ
- * должен стоить одной карточки, а не всего экрана.
- */
 export interface Overview {
   revenue: number;
   netProfit: number;
@@ -24,13 +18,11 @@ export interface Overview {
   healthScore?: HealthScore;
 }
 
-/** Часть `/reports/sales` — то, чего нет в `/reports/overview`. */
 export interface SalesSummary {
   averageCheck: number;
   itemsSold: number;
 }
 
-/** Соответствует `HealthScore` в `reports.service.ts` бэкенда. */
 interface HealthScore {
   score: number;
   status: "good" | "warning" | "critical";
@@ -43,18 +35,6 @@ const STATUS_TONE: Record<HealthScore["status"], Tone> = {
   critical: "out",
 };
 
-/**
- * Главный блок дашборда.
- *
- * Иерархия здесь — сама суть экрана. Владелец открывает приложение
- * ради одного числа: сколько заработано. Оно и стоит первым, крупнее
- * всего остального в два с лишним раза и в фирменном сапфире. Чеки,
- * средний чек и долг — тем же порядком, но серым и мелким: их читают
- * вторым взглядом, а не первым.
- *
- * Управляющему главным числом ставится выручка, а не чистая прибыль:
- * закуп и маржа — не его данные (`canSeeProfit`).
- */
 export function OverviewCards({
   overview,
   summary,
@@ -71,65 +51,158 @@ export function OverviewCards({
   const { healthScore } = overview;
 
   return (
-    <div className="flex flex-col gap-4">
-      <DataCard className="p-6 tablet:p-8">
-        <HeroStat
-          label={showProfit ? t("netProfitToday") : t("revenueToday")}
-          value={money(showProfit ? overview.netProfit : overview.revenue)}
-          unit={t("currency")}
-          hint={periodLabel}
-        />
+    <div className="flex flex-col gap-4 tablet:gap-6">
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 tablet:gap-6">
+        
+        {/* Main Hero Card (Spans 2 columns) */}
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="col-span-2 relative overflow-hidden rounded-[24px] bg-[#051130] p-6 tablet:p-8 shadow-2xl shadow-[#051130]/20 border border-white/10"
+        >
+          {/* Subtle Glow Background */}
+          <div className="absolute -top-24 -right-24 size-48 rounded-full bg-app-sapphire/20 blur-[60px] pointer-events-none" />
+          
+          <div className="relative z-10 flex flex-col gap-3">
+            <span className="block text-[12px] font-extrabold tracking-[0.2em] text-white/50 uppercase">
+              {showProfit ? t("netProfitToday") : t("revenueToday")}
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-[clamp(40px,6vw,56px)] leading-[1.1] font-extrabold tracking-[-0.04em] text-white">
+                {money(showProfit ? overview.netProfit : overview.revenue)}
+              </span>
+              <span className="text-xl font-bold tracking-[0.06em] text-white/40">
+                {t("currency")}
+              </span>
+            </div>
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 w-fit border border-white/5 backdrop-blur-sm">
+              <TrendingUp className="size-3.5 text-app-ok" />
+              <span className="text-[12px] font-semibold text-white/70">{periodLabel}</span>
+            </div>
+          </div>
+        </motion.div>
 
-        <div className="mt-8 flex flex-wrap gap-x-10 gap-y-6 border-t border-app-line pt-6">
-          <SubStat label={t("salesCount")} value={count(overview.salesCount)} />
-          <SubStat
-            label={t("averageCheck")}
-            value={money(summary?.averageCheck)}
-            unit={t("currency")}
-          />
-          {showProfit ? (
-            <SubStat
-              label={t("revenue")}
-              value={money(overview.revenue)}
-              unit={t("currency")}
-            />
-          ) : null}
-          <SubStat
-            label={t("openDebt")}
-            value={money(overview.openDebt)}
-            unit={t("currency")}
-            tone={overview.openDebt > 0 ? "low" : "dim"}
-          />
-        </div>
-      </DataCard>
+        {/* Sales Count Card */}
+        <BentoCard delay={0.1}>
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-app-panel text-app-dim mb-4">
+            <Receipt className="size-5" />
+          </div>
+          <span className="text-[12px] font-extrabold tracking-[0.1em] text-app-dim-2 uppercase mb-1">
+            {t("salesCount")}
+          </span>
+          <span className="font-mono text-3xl font-extrabold tracking-tight text-app-ink">
+            {count(overview.salesCount)}
+          </span>
+        </BentoCard>
+
+        {/* Average Check Card */}
+        <BentoCard delay={0.2}>
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-app-sapphire/10 text-app-sapphire mb-4">
+            <ShoppingBag className="size-5" />
+          </div>
+          <span className="text-[12px] font-extrabold tracking-[0.1em] text-app-dim-2 uppercase mb-1">
+            {t("averageCheck")}
+          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-mono text-3xl font-extrabold tracking-tight text-app-ink">
+              {money(summary?.averageCheck)}
+            </span>
+            <span className="text-sm font-bold text-app-dim-2">{t("currency")}</span>
+          </div>
+        </BentoCard>
+
+        {/* Revenue Card (if Profit is shown above) */}
+        {showProfit ? (
+          <BentoCard delay={0.3}>
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-app-ok-soft text-app-ok mb-4">
+              <Banknote className="size-5" />
+            </div>
+            <span className="text-[12px] font-extrabold tracking-[0.1em] text-app-dim-2 uppercase mb-1">
+              {t("revenue")}
+            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-mono text-3xl font-extrabold tracking-tight text-app-ink">
+                {money(overview.revenue)}
+              </span>
+              <span className="text-sm font-bold text-app-dim-2">{t("currency")}</span>
+            </div>
+          </BentoCard>
+        ) : null}
+
+        {/* Debt Card */}
+        <BentoCard 
+          delay={0.4} 
+          className={cn(overview.openDebt > 0 && "border-app-low/30 bg-app-low-soft/50")}
+        >
+          <div className={cn(
+            "flex size-10 items-center justify-center rounded-2xl mb-4",
+            overview.openDebt > 0 ? "bg-app-low-soft text-app-low" : "bg-app-panel text-app-dim"
+          )}>
+            <Info className="size-5" />
+          </div>
+          <span className={cn(
+            "text-[12px] font-extrabold tracking-[0.1em] uppercase mb-1",
+            overview.openDebt > 0 ? "text-app-low" : "text-app-dim-2"
+          )}>
+            {t("openDebt")}
+          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className={cn(
+              "font-mono text-3xl font-extrabold tracking-tight",
+              overview.openDebt > 0 ? "text-app-low" : "text-app-ink"
+            )}>
+              {money(overview.openDebt)}
+            </span>
+            <span className={cn(
+              "text-sm font-bold",
+              overview.openDebt > 0 ? "text-app-low/60" : "text-app-dim-2"
+            )}>{t("currency")}</span>
+          </div>
+        </BentoCard>
+
+      </div>
 
       {healthScore ? <HealthCard health={healthScore} /> : null}
     </div>
   );
 }
 
-/**
- * Оценка состояния магазина.
- *
- * Раньше это был круг на 112px с числом внутри — самый крупный элемент
- * страницы. Оценка полезна, но она не то, ради чего сюда заходят, и
- * забирать у выручки первое место ей нельзя. Теперь это строка со
- * значком, а объяснения оценки — списком под ней: они и есть польза,
- * само число без них ничего не говорит.
- */
+function BentoCard({ children, delay = 0, className }: { children: React.ReactNode, delay?: number, className?: string }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      className={cn(
+        "col-span-1 flex flex-col justify-center rounded-[24px] border border-app-line bg-app-card p-6 shadow-[0_1px_2px_rgb(15_25_60/0.04),0_12px_28px_-24px_rgb(15_25_60/0.35)] transition-all duration-300 hover:shadow-lg hover:border-app-line-strong",
+        className
+      )}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 function HealthCard({ health }: { health: HealthScore }) {
   const t = useTranslations("dashboard.overview");
   const tone = STATUS_TONE[health.status];
   const Icon = health.status === "good" ? CheckCircle2 : AlertTriangle;
 
   return (
-    <DataCard className="p-6 tablet:p-7">
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <div className="flex items-center gap-3.5">
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
+      className="rounded-[24px] border border-app-line bg-app-card p-6 tablet:p-8 shadow-[0_1px_2px_rgb(15_25_60/0.04),0_12px_28px_-24px_rgb(15_25_60/0.35)]"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-b border-app-line pb-5">
+        <div className="flex items-center gap-4">
           <span
             aria-hidden
             className={cn(
-              "flex size-11 shrink-0 items-center justify-center rounded-xl",
+              "flex size-14 shrink-0 items-center justify-center rounded-[18px]",
               tone === "ok"
                 ? "bg-app-ok-soft text-app-ok"
                 : tone === "low"
@@ -137,39 +210,29 @@ function HealthCard({ health }: { health: HealthScore }) {
                   : "bg-app-out-soft text-app-out",
             )}
           >
-            <Icon className="size-5" />
+            <Icon className="size-6" />
           </span>
           <div className="flex flex-col gap-1">
-            <Eyebrow>{t("healthLabel")}</Eyebrow>
-            <span className="font-mono text-[19px] leading-none font-bold text-app-ink num">
-              {health.score}
-              {/* Без пробела внутри строки: у числа поджат разделитель
-                  разрядов (утилита `num`), и «/ 100» съезжало бы к цифрам. */}
-              <small className="ml-1.5 text-[0.55em] font-semibold text-app-dim-2">
-                /100
-              </small>
+            <span className="text-[12px] font-extrabold tracking-[0.14em] text-app-dim-2 uppercase">
+              {t("healthLabel")}
             </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-mono text-3xl font-extrabold tracking-tight text-app-ink">
+                {health.score}
+              </span>
+              <span className="text-sm font-bold text-app-dim-2">/100</span>
+            </div>
           </div>
         </div>
-        <Badge tone={tone}>{t(`status.${health.status}`)}</Badge>
       </div>
-
-      {health.insights.length > 0 ? (
-        <ul className="mt-5 flex flex-col gap-2">
-          {health.insights.map((insight) => (
-            <li
-              key={insight}
-              className="flex items-start gap-2.5 rounded-card bg-app-panel px-4 py-3 text-[13.5px] leading-snug text-app-ink"
-            >
-              <ArrowUpRight
-                className="mt-0.5 size-4 shrink-0 text-app-sapphire"
-                aria-hidden
-              />
-              {insight}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </DataCard>
+      <ul className="mt-5 flex flex-col gap-2.5">
+        {health.insights.map((text, i) => (
+          <li key={i} className="flex gap-3 text-[14px] font-medium leading-relaxed text-app-dim">
+            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-app-dim-2" aria-hidden />
+            <span>{text}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
   );
 }

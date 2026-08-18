@@ -21,7 +21,7 @@ export default function Page({
 
   return (
     <AuthGuard>
-      <AppScreen allow={["OWNER", "MANAGER", "SKLADCHI"]} wide>
+      <AppScreen allow={["OWNER", "MANAGER", "WAREHOUSE"]} wide>
         <PurchaseCheckinView id={id} />
       </AppScreen>
     </AuthGuard>

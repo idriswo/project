@@ -24,7 +24,7 @@ export default function Page({
 
   return (
     <AuthGuard>
-      <AppScreen allow={["OWNER", "MANAGER", "SKLADCHI"]}>
+      <AppScreen allow={["OWNER", "MANAGER", "WAREHOUSE"]}>
         {/* useSearchParams требует границы Suspense, иначе страница
          * не соберётся статически. */}
         <Suspense fallback={<ListSkeleton rows={1} />}>

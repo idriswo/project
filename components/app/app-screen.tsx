@@ -36,7 +36,7 @@ export function AppScreen({
   const permitted = !allow || allow.includes(session.role);
 
   return (
-    <AppShell storeName={session.storeName} role={session.role}>
+    <AppShell session={session}>
       <div
         className={
           wide

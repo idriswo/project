@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronLeft, Sparkles } from "lucide-react";
+import { Check, ChevronLeft, Loader2, Shirt, ShoppingCart, Utensils, Briefcase, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -13,9 +13,25 @@ import { cn } from "@/lib/cn";
 import { slugify } from "@/lib/slug";
 import { supabase } from "@/lib/supabase";
 
-type BusinessType = "RETAIL" | "WHOLESALE" | "NETWORK";
+type BusinessSphere = "CLOTHING" | "GROCERY" | "RESTAURANT" | "SUPERMARKET" | "HYPERMARKET" | "COMPANY";
 
-const BUSINESS_TYPES: BusinessType[] = ["RETAIL", "WHOLESALE", "NETWORK"];
+const BUSINESS_TYPES: BusinessSphere[] = [
+  "CLOTHING",
+  "GROCERY",
+  "RESTAURANT",
+  "SUPERMARKET",
+  "HYPERMARKET",
+  "COMPANY",
+];
+
+const ICONS = {
+  clothing: Shirt,
+  grocery: ShoppingCart,
+  restaurant: Utensils,
+  supermarket: Store,
+  hypermarket: Store,
+  company: Briefcase,
+};
 
 interface Plan {
   key: string;
@@ -26,7 +42,7 @@ interface Plan {
   comingSoon: boolean;
 }
 
-const STEPS = ["welcome", "name", "type", "modules"] as const;
+const STEPS = ["welcome", "name", "modules", "setup"] as const;
 const TOTAL_STEPS = STEPS.length;
 
 /**
@@ -51,7 +67,7 @@ export function OnboardingWizard() {
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [businessType, setBusinessType] = useState<BusinessType>("RETAIL");
+  const [businessSphere, setBusinessSphere] = useState<BusinessSphere>("CLOTHING");
   const [plans, setPlans] = useState<Plan[]>([]);
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -70,17 +86,16 @@ export function OnboardingWizard() {
   }, []);
 
   useEffect(() => {
-    fetchApi("/billing/plans")
+    fetchApi(`/billing/plans?sphere=${businessSphere}`)
       .then(({ plans: allPlans }: { plans: Plan[] }) => {
         setPlans(
           allPlans.filter((p) => !p.includedWithRegistration && !p.comingSoon),
         );
       })
       .catch(() => {
-        // Тарифы нужны только для показа на шаге 4 — если не пришли,
-        // шаг 4 рисуется без флажков, поток это не ломает.
+        setPlans([]);
       });
-  }, []);
+  }, [businessSphere]);
 
   function errorMessage(err: unknown): string {
     return err instanceof Error && err.message
@@ -99,6 +114,12 @@ export function OnboardingWizard() {
 
     if (step === 2 && name.trim().length < 2) {
       setError(t("storeName.errorShort"));
+      return;
+    }
+
+    if (step === 3) {
+      setStep(4);
+      handleFinish();
       return;
     }
 
@@ -128,7 +149,7 @@ export function OnboardingWizard() {
             body: JSON.stringify({
               name: name.trim(),
               slug: slugify(name),
-              industry: "CLOTHING",
+              sphere: businessSphere,
             }),
           });
           tenant = created;
@@ -149,10 +170,17 @@ export function OnboardingWizard() {
         selectedModules.map((moduleKey) =>
           fetchApi("/billing/subscribe", {
             method: "POST",
-            body: JSON.stringify({ moduleKey }),
+            body: JSON.stringify({ moduleKey: moduleKey.toUpperCase() }),
           }),
         ),
       );
+
+      // Искусственная задержка для вау-эффекта "магии настройки"
+      await new Promise((r) => setTimeout(r, 2000));
+
+      setLoading(false);
+      // Пауза перед редиректом, чтобы показать надпись "Готово!"
+      await new Promise((r) => setTimeout(r, 500));
 
       router.push("/dashboard");
     } catch (err) {
@@ -167,24 +195,66 @@ export function OnboardingWizard() {
   }
 
   return (
-    <div className="flex min-w-0 flex-col p-6 tablet:p-12">
+    <div className="flex min-w-0 flex-col p-6 tablet:p-8 tablet:px-10">
       <Progress step={step} />
 
-      <div className="flex flex-1 flex-col justify-center pt-9">
+      <div className="flex flex-1 flex-col justify-center pt-6">
         {step === 1 ? (
-          <div className="text-center">
-            <span
-              aria-hidden
-              className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-app-gold-soft text-app-gold"
-            >
-              <Sparkles className="size-7" />
-            </span>
-            <h1 className="mt-6 text-[30px] leading-tight font-extrabold tracking-[-0.03em] text-balance">
-              {t("welcome.heading")}
-            </h1>
-            <p className="mt-3 text-body leading-normal text-pretty text-app-dim">
-              {t("welcome.lead")}
-            </p>
+          <div className="flex flex-col min-h-0">
+            <StepHead
+              heading={t("businessType.heading")}
+              lead={t("businessType.lead")}
+            />
+            <div className="mt-6 grid grid-cols-1 gap-3 tablet:grid-cols-2 overflow-y-auto custom-scrollbar pr-2 -mr-2 pb-2">
+              {BUSINESS_TYPES.map((type) => {
+                const key = type.toLowerCase() as keyof typeof ICONS;
+                const selected = businessSphere === type;
+                const Icon = ICONS[key];
+
+                return (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setBusinessSphere(type)}
+                    className={cn(
+                      "group relative flex flex-col items-start gap-3 rounded-card border-[1.5px] p-4 text-left transition-all duration-200",
+                      selected
+                        ? "border-app-sapphire bg-app-sapphire/5 ring-1 ring-app-sapphire/20"
+                        : "border-app-line hover:border-app-line-strong hover:bg-surface",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-xl transition-colors",
+                        selected
+                          ? "bg-app-sapphire text-white"
+                          : "bg-surface text-app-dim group-hover:text-app-ink",
+                      )}
+                    >
+                      <Icon className="size-4.5" />
+                    </div>
+                    <div>
+                      <h3
+                        className={cn(
+                          "font-bold leading-tight",
+                          selected ? "text-app-sapphire" : "text-app-ink",
+                        )}
+                      >
+                        {t(`businessType.${key}.name`)}
+                      </h3>
+                      <p className="mt-1 text-[13.5px] leading-snug text-app-dim">
+                        {t(`businessType.${key}.desc`)}
+                      </p>
+                    </div>
+                    {selected && (
+                      <div className="absolute top-5 right-5 text-app-sapphire">
+                        <Check className="size-5" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         ) : null}
 
@@ -213,46 +283,16 @@ export function OnboardingWizard() {
         ) : null}
 
         {step === 3 ? (
-          <div>
-            <StepHead
-              heading={t("businessType.heading")}
-              lead={t("businessType.lead")}
-            />
-            <div className="mt-8 flex flex-col gap-3">
-              {BUSINESS_TYPES.map((type) => {
-                const key = type.toLowerCase();
-                const selected = businessType === type;
-
-                return (
-                  <ChoiceCard
-                    key={type}
-                    selected={selected}
-                    title={t(`businessType.${key}.name`)}
-                    description={t(`businessType.${key}.desc`)}
-                    onClick={() => setBusinessType(type)}
-                    right={
-                      selected ? (
-                        <Check
-                          className="size-5 shrink-0 text-app-sapphire"
-                          aria-hidden
-                        />
-                      ) : null
-                    }
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
-
-        {step === 4 ? (
-          <div>
+          <div className="flex flex-col min-h-0">
             <StepHead
               heading={t("features.heading")}
               lead={t("features.lead")}
             />
 
-            <div className="mt-8 flex flex-col gap-3">
+            <div className="mt-8 flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-2 -mr-2 pb-2">
+              {plans.length === 0 && (
+                <p className="text-sm text-app-dim">Модули загружаются или недоступны для данной сферы.</p>
+              )}
               {plans.map((plan) => {
                 const checked = selectedModules.includes(plan.key);
 
@@ -285,11 +325,9 @@ export function OnboardingWizard() {
                 );
               })}
 
-              {plans.length > 0 ? (
-                <p className="mt-1 text-center text-[13px] text-app-dim-2">
-                  {t("features.trialNote", { days: 14 })}
-                </p>
-              ) : null}
+              <p className="mt-1 text-center text-[13px] text-app-dim-2 shrink-0">
+                {t("features.trialNote", { days: 14 })}
+              </p>
             </div>
 
             {error ? (
@@ -300,39 +338,57 @@ export function OnboardingWizard() {
           </div>
         ) : null}
 
+        {step === 4 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            {loading ? (
+              <Loader2 className="size-12 animate-spin text-app-sapphire" />
+            ) : (
+              <div className="flex size-12 items-center justify-center rounded-full bg-app-sapphire text-white">
+                <Check className="size-6" />
+              </div>
+            )}
+            <h2 className="mt-8 text-[26px] font-extrabold tracking-tight text-app-ink">
+              {t("setupMagic.heading")}
+            </h2>
+            <p className="mt-2 text-body text-app-dim">
+              {loading
+                ? t(`setupMagic.${businessSphere.toLowerCase()}`, { fallback: t("setupMagic.final") })
+                : t("setupMagic.final")}
+            </p>
+          </div>
+        ) : null}
+
         {/* ── Действия ──────────────────────────────────────────── */}
-        <div className="mt-9 flex items-center gap-3">
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={goBack}
+        {step < 4 ? (
+          <div className="mt-6 flex items-center gap-3">
+            {step > 1 ? (
+              <button
+                type="button"
+                onClick={goBack}
+                disabled={loading}
+                aria-label={t("back")}
+                className="flex h-15 w-15 shrink-0 items-center justify-center rounded-card border-[1.5px] border-app-line-strong text-app-dim transition-colors duration-150 hover:border-app-sapphire hover:text-app-sapphire focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire disabled:pointer-events-none disabled:opacity-50"
+              >
+                <ChevronLeft className="size-5" aria-hidden />
+              </button>
+            ) : null}
+
+            <Button
+              size="xl"
+              onClick={goNext}
               disabled={loading}
-              aria-label={t("back")}
-              className="flex h-15 w-15 shrink-0 items-center justify-center rounded-card border-[1.5px] border-app-line-strong text-app-dim transition-colors duration-150 hover:border-app-sapphire hover:text-app-sapphire focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-sapphire disabled:pointer-events-none disabled:opacity-50"
+              className="w-full flex-1"
             >
-              <ChevronLeft className="size-5" aria-hidden />
-            </button>
-          ) : null}
+              {step === 1
+                ? t("businessType.cta")
+                : step === 2
+                  ? t("storeName.cta")
+                  : t("features.cta")}
+            </Button>
+          </div>
+        ) : null}
 
-          <Button
-            size="xl"
-            onClick={step === TOTAL_STEPS ? handleFinish : goNext}
-            disabled={loading}
-            className="w-full flex-1"
-          >
-            {step === 1
-              ? t("welcome.cta")
-              : step === 2
-                ? t("storeName.cta")
-                : step === 3
-                  ? t("businessType.cta")
-                  : loading
-                    ? t("features.ctaLoading")
-                    : t("features.cta")}
-          </Button>
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
           {hasStores ? (
             <Link
               href="/stores"

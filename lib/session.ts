@@ -24,7 +24,7 @@ interface TenantSummary {
   id: string;
   name: string;
   slug: string;
-  industry: string;
+  sphere: string;
 }
 
 interface Profile {
@@ -47,6 +47,8 @@ export interface AppSession {
    *  сотрудников: себе роль менять нельзя, и кнопку надо гасить заранее. */
   profileId: string;
   role: AppRole;
+  sphere: string;
+  activeModules: string[];
   /** Не удалось спросить `/me`. Экран решает сам, тупик это или нет. */
   failed: boolean;
 }
@@ -59,6 +61,8 @@ const INITIAL: AppSession = {
   // До ответа считаем правами самые узкие из «полных»: показать лишнее и
   // отобрать через секунду хуже, чем показать чуть позже.
   role: "MANAGER",
+  sphere: "CLOTHING",
+  activeModules: [],
   failed: false,
 };
 
@@ -69,9 +73,10 @@ export function useAppSession(): AppSession {
     let cancelled = false;
 
     async function load() {
-      const [me, user] = await Promise.allSettled([
+      const [me, user, modulesRes] = await Promise.allSettled([
         fetchApi("/me") as Promise<MeResponse>,
         supabase.auth.getUser(),
+        fetchApi("/billing/my-modules") as Promise<{ modules: { moduleKey: string, status: string }[] }>,
       ]);
 
       if (cancelled) return;
@@ -94,6 +99,10 @@ export function useAppSession(): AppSession {
           ? user.value.data.user?.user_metadata?.appRole
           : undefined;
 
+      const activeModules = modulesRes.status === "fulfilled" 
+        ? modulesRes.value.modules.filter(m => m.status === 'ACTIVE' || m.status === 'TRIAL').map(m => m.moduleKey)
+        : [];
+
       setSession({
         loading: false,
         failed: false,
@@ -101,6 +110,8 @@ export function useAppSession(): AppSession {
         fullName: profile?.fullName ?? "",
         profileId: profile?.id ?? "",
         role: resolveAppRole(profile?.role, metaRole),
+        sphere: profile?.tenant?.sphere ?? "CLOTHING",
+        activeModules,
       });
     }
 
