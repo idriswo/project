@@ -566,7 +566,8 @@
   "common": {
     "languageSwitcher": "Язык интерфейса",
     "themeToDark": "Тёмная тема",
-    "themeToLight": "Светлая тема"
+    "themeToLight": "Светлая тема",
+    "comingSoon": "Скоро"
   },
   "app": {
     "nav": {

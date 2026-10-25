@@ -2,10 +2,12 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { appOpen } from "@/lib/site";
 
 /** Синяя CTA-плашка перед футером. Есть в макете, в ТЗ отсутствует. */
 export function CtaStrip() {
   const t = useTranslations("ctaStrip");
+  const tCommon = useTranslations("common");
 
   return (
     <section className="bg-page pb-24">
@@ -19,9 +21,15 @@ export function CtaStrip() {
             {t("lead")}
           </p>
 
-          <Button href="/auth" size="lg" className="mt-8">
-            {t("cta")}
-          </Button>
+          {appOpen ? (
+            <Button href="/auth" size="lg" className="mt-8">
+              {t("cta")}
+            </Button>
+          ) : (
+            <Button size="lg" className="mt-8" disabled>
+              {tCommon("comingSoon")}
+            </Button>
+          )}
         </div>
       </Container>
     </section>

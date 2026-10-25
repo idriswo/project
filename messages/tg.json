@@ -566,7 +566,8 @@
   "common": {
     "languageSwitcher": "Забони интерфейс",
     "themeToDark": "Тамғаи торик",
-    "themeToLight": "Тамғаи равшан"
+    "themeToLight": "Тамғаи равшан",
+    "comingSoon": "Ба зудӣ"
   },
   "app": {
     "nav": {

@@ -4,13 +4,14 @@ import { useTranslations } from "next-intl";
 import { HeroMockup } from "@/components/sections/mockups";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { anchors } from "@/lib/site";
+import { anchors, appOpen } from "@/lib/site";
 
 const TRUST_KEYS = ["noCard", "fastStart", "yourLanguage"] as const;
 
 /** Hero: единственный <h1> страницы (ТЗ п. 4.1). */
 export function Hero() {
   const t = useTranslations("hero");
+  const tCommon = useTranslations("common");
 
   return (
     <section id={anchors.top.slice(1)} className="bg-surface">
@@ -29,9 +30,15 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3.5">
-            <Button href="/auth" size="lg">
-              {t("ctaPrimary")}
-            </Button>
+            {appOpen ? (
+              <Button href="/auth" size="lg">
+                {t("ctaPrimary")}
+              </Button>
+            ) : (
+              <Button size="lg" disabled>
+                {tCommon("comingSoon")}
+              </Button>
+            )}
             <Button href={anchors.features} size="lg" variant="secondary">
               <PlayCircle className="size-[19px]" aria-hidden />
               {t("ctaSecondary")}

@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { appOpen } from "@/lib/site";
 
 type NavItem = { href: string; label: string };
 
@@ -17,7 +18,13 @@ export function MobileMenu({
   children,
 }: {
   items: NavItem[];
-  labels: { open: string; close: string; signIn: string; cta: string };
+  labels: {
+    open: string;
+    close: string;
+    signIn: string;
+    cta: string;
+    comingSoon: string;
+  };
   /** Переключатели темы и языка: в шапке телефона для них нет места. */
   children?: React.ReactNode;
 }) {
@@ -78,17 +85,25 @@ export function MobileMenu({
           </nav>
 
           <div className="mt-5 flex flex-col gap-3 tablet:hidden">
-            <Button
-              href="/auth"
-              variant="secondary"
-              size="lg"
-              onClick={() => setIsOpen(false)}
-            >
-              {labels.signIn}
-            </Button>
-            <Button href="/auth" size="lg" onClick={() => setIsOpen(false)}>
-              {labels.cta}
-            </Button>
+            {appOpen ? (
+              <>
+                <Button
+                  href="/auth"
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {labels.signIn}
+                </Button>
+                <Button href="/auth" size="lg" onClick={() => setIsOpen(false)}>
+                  {labels.cta}
+                </Button>
+              </>
+            ) : (
+              <Button size="lg" disabled>
+                {labels.comingSoon}
+              </Button>
+            )}
           </div>
 
           {children ? (

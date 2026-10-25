@@ -566,7 +566,8 @@
   "common": {
     "languageSwitcher": "Interface language",
     "themeToDark": "Dark theme",
-    "themeToLight": "Light theme"
+    "themeToLight": "Light theme",
+    "comingSoon": "Coming soon"
   },
   "app": {
     "nav": {

@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { anchors } from "@/lib/site";
+import { anchors, appOpen } from "@/lib/site";
 
 import { MobileMenu } from "./mobile-menu";
 import { NavLinks } from "./nav-links";
@@ -51,14 +51,20 @@ export function Header({ locale }: { locale: Locale }) {
               label={tCommon("languageSwitcher")}
             />
 
-            <Link
-              href="/auth"
-              className="text-[15px] font-semibold text-ink transition-colors hover:text-brand-ink"
-            >
-              {t("signIn")}
-            </Link>
+            {appOpen ? (
+              <>
+                <Link
+                  href="/auth"
+                  className="text-[15px] font-semibold text-ink transition-colors hover:text-brand-ink"
+                >
+                  {t("signIn")}
+                </Link>
 
-            <Button href="/auth">{t("cta")}</Button>
+                <Button href="/auth">{t("cta")}</Button>
+              </>
+            ) : (
+              <Button disabled>{tCommon("comingSoon")}</Button>
+            )}
           </div>
 
           <MobileMenu
@@ -68,6 +74,7 @@ export function Header({ locale }: { locale: Locale }) {
               close: t("closeMenu"),
               signIn: t("signIn"),
               cta: t("cta"),
+              comingSoon: tCommon("comingSoon"),
             }}
           >
             <ThemeToggle
