@@ -1,4 +1,18 @@
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+/**
+ * Размеры шрифта из `@theme` в `app/globals.css` (`--text-*`).
+ *
+ * twMerge не читает CSS проекта и без этого списка принимает `text-price`
+ * за цвет текста. Тогда `cn("text-price", "text-white")` выбрасывал размер
+ * как «конфликтующий цвет», и цена на тарифах выходила 16px вместо 44px.
+ * Добавили токен в `@theme` — добавь и сюда.
+ */
+const FONT_SIZES = ["eyebrow", "body", "lead", "h3", "price", "h2", "h1"];
+
+const twMerge = extendTailwindMerge({
+  extend: { theme: { text: FONT_SIZES } },
+});
 
 /**
  * Склейка классов Tailwind с разрешением конфликтов.

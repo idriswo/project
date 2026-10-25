@@ -168,8 +168,8 @@
       "standard": {
         "name": "Standard",
         "tagline": "For a growing business",
-        "price": "149,000",
-        "period": "UZS / mo",
+        "price": "99",
+        "period": "TJS / mo",
         "features": [
           "Up to 3 locations",
           "Inventory and stock",
@@ -181,8 +181,8 @@
       "full": {
         "name": "Full",
         "tagline": "For chains and hypermarkets",
-        "price": "349,000",
-        "period": "UZS / mo",
+        "price": "199",
+        "period": "TJS / mo",
         "features": [
           "Unlimited locations",
           "Every TIM module",
