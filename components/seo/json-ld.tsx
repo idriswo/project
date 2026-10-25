@@ -45,7 +45,12 @@ export async function JsonLd({ locale }: { locale: Locale }) {
       "@type": "Organization",
       "@id": organizationId,
       name: "TIM",
+      // «TIM» в поиске занят чужими брендами; домен и страна помогают
+      // поисковику отличить продукт от них.
+      alternateName: ["tim.tj", "TIM Tajikistan"],
       url: siteUrl,
+      logo: absoluteUrl("/icon-512.png"),
+      areaServed: { "@type": "Country", name: "Tajikistan" },
       description: meta("description"),
     },
     {
@@ -57,6 +62,7 @@ export async function JsonLd({ locale }: { locale: Locale }) {
       operatingSystem: "Web",
       url: absoluteUrl(`/${locale}`),
       description: meta("description"),
+      inLanguage: ["tg", "ru"],
       publisher: { "@id": organizationId },
       offers: PLAN_KEYS.map((key) => ({
         "@type": "Offer",
